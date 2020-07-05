@@ -3181,11 +3181,11 @@ static string _player_spell_stats(const spell_type spell, bool rod)
             acc_str.str().c_str());
     }
 
-    description += make_stringf("\n%*s: ", padding, "Range");
-    description += spell_range_string(spell, rod);
-    description += make_stringf("\n%*s: ", padding, "Hunger");
-    description += spell_hunger_string(spell, rod);
-    description += make_stringf("\n%*s: ", padding, "Noise");
+    description += "\n\nPower : ";
+    description += spell_power_string(spell);
+    description += "\nRange : ";
+    description += spell_range_string(spell);
+    description += "\nNoise : ";
     description += spell_noise_string(spell);
     description += "\n";
     return description;

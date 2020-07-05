@@ -2061,16 +2061,6 @@ int player_spec_poison()
     return sp;
 }
 
-int player_energy()
-{
-    int pe = 0;
-
-    // Staves
-    pe += you.wearing(EQ_STAFF, STAFF_ENERGY);
-
-    return pe;
-}
-
 // If temp is set to false, temporary sources of resistance won't be
 // counted.
 int player_prot_life(bool calc_unid, bool temp, bool items)
