@@ -15,7 +15,8 @@ enum class area_centre_type
     leap,
     coward,
     antimagic,
-    healaura
+    healaura,
+    interdimensional
 };
 
 void invalidate_agrid(bool recheck_new = false);
@@ -65,3 +66,6 @@ bool antimagic_haloed(const coord_def& p);
 
 // ...or is the point of aura of healing?
 bool within_healaura(const coord_def& p);
+
+// is the crosspoint of interdimensional intersection?
+bool dissolved(const coord_def& p);

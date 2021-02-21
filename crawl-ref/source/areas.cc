@@ -43,11 +43,12 @@ enum class areaprop
     quad          = (1 << 8),
     disjunction   = (1 << 9),
     soul_aura     = (1 << 10),
-    hot = (1 << 11),
-    leap = (1 << 12),
-    coward = (1 << 13),
-    antimagic = (1 << 14),
-    healaura = (1 << 15)
+    hot           = (1 << 11),
+    leap          = (1 << 12),
+    coward        = (1 << 13),
+    antimagic     = (1 << 14),
+    healaura      = (1 << 15),
+    interdimensional= (1 << 16),
 };
 DEF_BITFIELD(areaprops, areaprop);
 
@@ -841,6 +842,11 @@ bool actor::heated() const
 {
     return ::heated(pos());
 }
+
+
+/////////////
+// Leaping region/Coward region (mantis)
+
 bool leaped(const coord_def& p)
 {
     if (!map_bounds(p))
@@ -857,6 +863,10 @@ bool cowarded(const coord_def& p)
         _update_agrid();
     return _check_agrid_flag(p, areaprop::coward);
 }
+
+
+/////////////
+// Antimagic Halos
 
 bool actor::antimagic_haloed() const
 {
@@ -896,6 +906,9 @@ int monster::antimagic_radius() const
     return -1;
 }
 
+/////////////
+// Heal aura
+
 bool actor::within_healaura() const
 {
     return ::within_healaura(pos());
@@ -928,4 +941,34 @@ int monster::healaura_radius() const
     }
 
     return -1;
+}
+
+/////////////
+// Dissolving field
+
+bool actor::within_interdim_crosspoint() const
+{
+    return ::interdim_crosspoint(pos());
+}
+
+bool interdim_crosspoint(const coord_def& p)
+{
+    if (!map_bounds(p))
+        return false;
+    if (!_agrid_valid)
+        _update_agrid();
+    return _check_agrid_flag(p, areaprop::interdim);
+}
+
+// There is no player spell yet
+int player::dissolving_radius() const
+{
+    int size = -1;
+    return size; 
+}
+
+// Very small region
+int monster::dissolving_radius() const
+{
+    return 3;
 }

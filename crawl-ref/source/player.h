@@ -179,6 +179,7 @@ public:
 
     FixedVector<int8_t, NUM_EQUIP> equip;
     FixedBitVector<NUM_EQUIP> melded;
+    FixedBitVector<NUM_EQUIP> interdim_melded;
     // Whether these are unrands that we should run the _*_world_reacts func for
     FixedBitVector<NUM_EQUIP> unrand_reacts;
 
@@ -840,6 +841,9 @@ public:
     int heat_radius() const override;
     int antimagic_radius() const override;
     int healaura_radius() const override;
+    int dissolving_radius() const override;
+    void dissolve_equip() const override;
+    void undissolve_equip() const override;
     bool petrifying() const override;
     bool petrified() const override;
     bool liquefied_ground() const override;
