@@ -1130,7 +1130,8 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         invalidate_agrid(true);
     if (mg.cls == MONS_SILENT_SPECTRE
         || mg.cls == MONS_PROFANE_SERVITOR
-        || mg.cls == MONS_FALLEN)
+        || mg.cls == MONS_FALLEN
+        || mg.cls == MONS_INTERDIMENSIONAL_GRAPE)
         invalidate_agrid(true);
 
     // If the caller requested a specific colour for this monster, apply

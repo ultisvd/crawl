@@ -676,6 +676,9 @@ monster_info::monster_info(const monster* m, int milev)
     if (type == MONS_SILENT_SPECTRE)
         mb.set(MB_SILENCING);
 
+    if (type == MONS_INTERDIMENSIONAL_GRAPE)
+        mb.set(MB_INTERDIMENSIONAL_CROSSPOINT);
+
     if (you.beheld_by(*m))
         mb.set(MB_MESMERIZING);
 

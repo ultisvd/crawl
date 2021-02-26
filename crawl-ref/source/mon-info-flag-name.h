@@ -133,4 +133,5 @@ static const vector<monster_info_flag_name> monster_info_flag_names = {
     { MB_VIRIDITAS, "", "infused by restorative essence of Viriditas", ""},
     { MB_HOLD_POSITION, "", "holding position", ""},
     { MB_ERINGYAS_ROOTSPIKE, "", "constricted by eringyas rootspike", ""},
+    { MB_INTERDIMENSIONAL_CROSSPOINT, "", "be dessolved in the interdimensional crosspoint", ""},
 };

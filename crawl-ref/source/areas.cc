@@ -183,6 +183,16 @@ static void _actor_areas(actor *a)
             _set_agrid_flag(*ri, areaprop::healaura);
         no_areas = false;
     }
+
+    if (a->type == MONS_SINGULARITY)
+    {
+        r = a->dissolving_radius();
+        _agrid_centres.emplace_back(area_centre_type::interdimensional, a->pos(), r);
+
+        for (radius_iterator ri(a->pos(), r, C_SQUARE, LOS_DEFAULT); ri; ++ri)
+            _set_agrid_flag(*ri, areaprop::interdimensional);
+        no_areas = false;
+    }
 }
 
 /**
@@ -946,18 +956,18 @@ int monster::healaura_radius() const
 /////////////
 // Dissolving field
 
-bool actor::within_interdim_crosspoint() const
-{
-    return ::interdim_crosspoint(pos());
-}
-
 bool interdim_crosspoint(const coord_def& p)
 {
     if (!map_bounds(p))
         return false;
     if (!_agrid_valid)
         _update_agrid();
-    return _check_agrid_flag(p, areaprop::interdim);
+    return _check_agrid_flag(p, areaprop::interdimensional);
+}
+
+bool actor::within_interdim_crosspoint() const
+{
+    return ::interdim_crosspoint(pos());
 }
 
 // There is no player spell yet

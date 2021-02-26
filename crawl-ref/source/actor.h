@@ -395,9 +395,8 @@ public:
     virtual int healaura_radius() const = 0;
 
     // Being dissolved in the interdimensional crosspoint?
-    virtual bool dissolved() const;
     virtual bool within_interdim_crosspoint() const;
-    virtual void dissolve_equip() const;
+    virtual void dissolve_equip() const = 0;
     // Dissolution field radius
     virtual int dissolving_radius() const = 0;
 

@@ -719,6 +719,7 @@ effect/antimagic ANTIMAGIC_AURA
 effect/healaura0 HEALAURA
 effect/healaura1 
 effect/healaura2
+effect/interdim_crosspoint INTERDIMENSIONAL_CROSSPOINT
 %shrink 0
 %sdir mon/tentacles/kraken_corners
 kraken_corner_NW KRAKEN_OVERLAY_NW

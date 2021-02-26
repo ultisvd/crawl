@@ -1,6 +1,5 @@
 /**
  * @file
- * @brief Gametime related functions.
 **/
 
 #include "AppHdr.h"

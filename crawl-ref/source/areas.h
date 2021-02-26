@@ -68,4 +68,4 @@ bool antimagic_haloed(const coord_def& p);
 bool within_healaura(const coord_def& p);
 
 // is the crosspoint of interdimensional intersection?
-bool dissolved(const coord_def& p);
+bool interdim_crosspoint(const coord_def& p);

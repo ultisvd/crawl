@@ -1492,6 +1492,9 @@ void tile_apply_properties(const coord_def &gc, packed_cell &cell)
     if (mc.flags & MAP_HEALAURA)
         cell.healaura = 1 + random2(2);
 
+    if (mc.flags & MAP_INTERDIMENSIONAL)
+        cell.interdim_crosspoint = true;
+
     if (mc.flags & MAP_QUAD_HALOED)
         cell.quad_glow = true;
 

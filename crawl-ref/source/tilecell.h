@@ -45,6 +45,7 @@ struct packed_cell
     uint8_t coward_point;
     uint8_t antimagic_aura;
     uint8_t healaura;
+    bool interdim_crosspoint;
 
     bool operator ==(const packed_cell &other) const;
     bool operator !=(const packed_cell &other) const { return !(*this == other); }
