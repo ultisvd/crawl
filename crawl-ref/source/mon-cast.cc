@@ -148,7 +148,7 @@ static bool _worth_hexing(const monster &caster, spell_type spell);
 static bool _torment_vulnerable(actor* victim);
 static function<bool(const monster&)> _should_selfench(enchant_type ench);
 static void _cast_grasping_roots(monster &caster, mon_spell_slot, bolt&);
-static bool _nightmare_of_cubus(monster &caster, mon_spell_slot, bolt&);
+static bool _allure_of_cubus(monster &caster, mon_spell_slot, bolt&);
 
 enum spell_logic_flag
 {
@@ -344,7 +344,7 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
     } },
     { SPELL_STILL_WINDS, { _should_still_winds, _cast_still_winds } },
     { SPELL_SMITING, { _caster_has_foe, _cast_smiting, } },
-    { SPELL_NIGHTMARE_OF_CUBUS, { _caster_sees_foe, _nightmare_of_cubus, } },
+    { SPELL_ALLURE_OF_CUBUS, { _caster_sees_foe, _allure_of_cubus, } },
     { SPELL_RESONANCE_STRIKE, { _caster_has_foe, _cast_resonance_strike, } },
     { SPELL_FLAY, {
         [](const monster &caster) {
@@ -516,6 +516,12 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
         nullptr,
         MSPELL_NO_AUTO_NOISE,
     } },
+    { SPELL_DISARM, _hex_logic(SPELL_DISARM, [](const monster &caster) {
+        const actor* foe = caster.get_foe();
+        return foe && (!foe->is_player() || !foe->weapon() && !foe->as_player()->second_weapon()) 
+                   && (!foe->is_monster() || true);
+    }, 16) },
+
 };
 
 /// Is the 'monster' actually a proxy for the player?
@@ -1883,7 +1889,7 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_SUMMON_HORRIBLE_THINGS:
     case SPELL_MALIGN_GATEWAY:
     case SPELL_SYMBOL_OF_TORMENT:
-    case SPELL_NIGHTMARE_OF_CUBUS:
+    case SPELL_ALLURE_OF_CUBUS:
     case SPELL_CAUSE_FEAR:
     case SPELL_MESMERISE:
     case SPELL_SUMMON_GREATER_DEMON:
@@ -8198,7 +8204,7 @@ if (!_can_takeoff_armour(item))
 
     return true;
 */
-static bool _nightmare_of_cubus(monster &caster, mon_spell_slot, bolt&)
+static bool _allure_of_cubus(monster &caster, mon_spell_slot, bolt&)
 {
     actor* foe = caster.get_foe();
     ASSERT(foe);
@@ -8212,7 +8218,7 @@ static bool _nightmare_of_cubus(monster &caster, mon_spell_slot, bolt&)
         mpr("It is groaning with anger.");
         return false;
     }
-    mpr("You are fallen down into the nightmare of cubus. Cubus charmingly approaches to you and whisper.");
+    mpr("You are fallen down into the allure of cubus. Cubus charmingly approaches to you and whisper.");
     if (foe->is_player())
     {   
         
@@ -8458,7 +8464,7 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
 
     // Don't use unless our foe is close to us and there are no allies already
     // between the two of us
-    case SPELL_NIGHTMARE_OF_CUBUS:
+    case SPELL_ALLURE_OF_CUBUS:
     case SPELL_WIND_BLAST:
         if (foe && foe->pos().distance_from(mon->pos()) < 4)
         {

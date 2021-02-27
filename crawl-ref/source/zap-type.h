@@ -110,5 +110,6 @@ enum zap_type
     ZAP_ELECTRICAL_BOLT,
     ZAP_FLAMING_CLOUD,
     ZAP_SWORD_BEAM,
+    ZAP_DISARM,
     NUM_ZAPS
 };

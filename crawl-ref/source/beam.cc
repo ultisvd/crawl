@@ -3844,6 +3844,11 @@ void bolt::affect_player_enchantment(bool resistible)
         _unravelling_explode(*this);
         obvious_effect = true;
         break;
+    
+    case BEAM_DISARM:
+    //  unwield(sth, ...);
+        obvious_effect = true;
+        break;
 
     default:
         // _All_ enchantments should be enumerated here!
@@ -6997,6 +7002,7 @@ static string _beam_type_name(beam_type type)
     case BEAM_ROD_FIRE:              return "fire";
     case BEAM_ROD_COLD:              return "cold";
     case BEAM_ROD_ELEC:              return "electricity";
+    case BEAM_DISARM:                return "disarm";
     case BEAM_ROD_POISON:            return "poison";
 
     case NUM_BEAMS:                  die("invalid beam type");
