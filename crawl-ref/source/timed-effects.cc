@@ -23,6 +23,7 @@
 #include "fprop.h"
 #include "god-passive.h"
 #include "items.h"
+#include "item-use.h"
 #include "libutil.h"
 #include "mapmark.h"
 #include "message.h"
@@ -35,6 +36,7 @@
 #include "mon-project.h"
 #include "mutation.h"
 #include "player.h"
+#include "player-equip.h"   // _dissolve
 #include "player-stats.h"
 #include "random.h"
 #include "rot.h"
@@ -50,6 +52,7 @@
 #include "tileview.h"
 #include "throw.h"
 #include "travel.h"
+#include "transform.h"      // _dissolve
 #include "viewchar.h"
 #include "unwind.h"
 
@@ -455,6 +458,36 @@ static void _agraphede_poison_passaive(int /*time_delta*/)
     }
 }
 
+// NOTICE : this timer-effect makes your equippment un-meld, too.
+static void _dissolve(int /*time_delta*/)
+{
+
+    if (you.within_interdim_crosspoint())
+    {
+        vector<equipment_type> arm = current_armour_types();
+        equipment_type slot= *random_iterator(arm);
+        if (you.equip[slot] != -1 && !you.melded[slot] && !you.interdim_melded[slot])
+        {
+            you.interdim_melded.set(slot, true);
+            remove_one_equip(slot, true, false);
+        }
+    }
+    else
+    {
+        vector<equipment_type> arm = current_armour_types();
+        equipment_type slot= *random_iterator(arm);
+        if (get_form()->slot_available(slot) && you.equip[slot] != -1
+                                             && you.interdim_melded[slot])
+        {
+            you.interdim_melded.set(slot, false);
+            if (you.melded[slot])
+            {
+                unmeld_one_equip(slot);
+            }
+        }
+    }
+    // for (monster_iterator mi; mi; ++mi)
+}
 
 // Get around C++ dividing integers towards 0.
 static int _div(int num, int denom)
@@ -502,6 +535,7 @@ static struct timed_effect timed_effects[] =
     { nullptr,                         0,     0, false },
 #endif
     { _agraphede_poison_passaive,    200,   300, false },
+    { _dissolve,                     100,   300, false },
 };
 
 // Do various time related actions...

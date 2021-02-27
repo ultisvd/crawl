@@ -27,5 +27,6 @@ enum timed_effect_type
     TIMER_BRIBE_TIMEOUT,
 #endif
     TIMER_AGRAPHEDE_POISON_TIMEOUT,
+    TIMER_DISSOLUTION,
     NUM_TIMERS,
 };
