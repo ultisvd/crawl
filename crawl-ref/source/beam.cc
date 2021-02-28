@@ -33,6 +33,7 @@
 #include "dungeon.h"
 #include "english.h"
 #include "exercise.h"
+#include "equipment-type.h"
 #include "fight.h"
 #include "food.h"
 #include "god-abil.h"
@@ -3846,9 +3847,26 @@ void bolt::affect_player_enchantment(bool resistible)
         break;
     
     case BEAM_DISARM:
-    //  unwield(sth, ...);
+    {
+        equipment_type slot = (equipment_type)random_range(-1, 1+you.species != SP_TWO_HEADED_OGRE);
+        if (slot == EQ_NONE)
+            break;
+        else if (slot == EQ_WEAPON)
+        {
+            if (!you.weapon())
+                break;
+            wield_weapon(false, slot, false, false, false, false, false);
+        }
+        else if (slot == EQ_SECOND_WEAPON)
+        {
+            if (!you.second_weapon())
+                break;
+            wield_weapon(false, slot, false, false, false, false, true);
+
+        }
         obvious_effect = true;
         break;
+    }
 
     default:
         // _All_ enchantments should be enumerated here!
@@ -5564,6 +5582,10 @@ bool ench_flavour_affects_monster(beam_type flavour, const monster* mon,
 
     case BEAM_VILE_CLUTCH:
         rc = !mons_aligned(&you, mon) && you.can_constrict(mon, false);
+        break;
+
+    case BEAM_DISARM:
+    //  weapon/second_weapon
         break;
 
     default:

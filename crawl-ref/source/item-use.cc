@@ -4312,14 +4312,12 @@ void read_scroll(item_def& scroll)
 
 }
 
-vector<equipment_type> current_equip_types()
+vector<equipment_type> current_jewellery_types()
 {
-    vector<equipment_type> weap_ret = _current_weapon_types();
     vector<equipment_type> ret = _current_ring_types();
     vector<equipment_type> amulet_ret = _current_amulet_types();
-    weap_ret.insert(weap_ret.begin(), ret.begin(), ret.end());
-    weap_ret.insert(weap_ret.begin(), amulet_ret.begin(), amulet_ret.end());
-    return weap_ret;
+    ret.insert(ret.begin(), amulet_ret.begin(), amulet_ret.end());
+    return ret;
 }
 
 vector<equipment_type> current_armour_types()

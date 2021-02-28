@@ -344,7 +344,13 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
     } },
     { SPELL_STILL_WINDS, { _should_still_winds, _cast_still_winds } },
     { SPELL_SMITING, { _caster_has_foe, _cast_smiting, } },
-    { SPELL_ALLURE_OF_CUBUS, { _caster_sees_foe, _allure_of_cubus, } },
+    { SPELL_ALLURE_OF_CUBUS, { 
+        [](const monster &caster){
+            const actor* foe = caster.get_foe();
+            if (foe && (foe->undead_or_demonic() || foe->is_nonliving() || foe->is_holy()))
+                return false;
+            return foe && _caster_sees_foe(caster);
+            }, _allure_of_cubus, } },
     { SPELL_RESONANCE_STRIKE, { _caster_has_foe, _cast_resonance_strike, } },
     { SPELL_FLAY, {
         [](const monster &caster) {
@@ -8208,56 +8214,21 @@ static bool _allure_of_cubus(monster &caster, mon_spell_slot, bolt&)
 {
     actor* foe = caster.get_foe();
     ASSERT(foe);
-    vector<equipment_type> ret = current_equip_types();
+    vector<equipment_type> ret = current_jewellery_types();
 
-    const int mrs = foe->res_magic() + random2(60) - 30;
-
-    if (!(mrs < 200))
-    {
-        mpr("It is groaning with anger.");
-        return false;
-    }
-    mpr("You are fallen down into the allure of cubus. Cubus charmingly approaches to you and whisper.");
     if (foe->is_player())
     {   
-        
-        //forced remove your weapon
+        //forced remove your jewellery
         if (coinflip() && !ret.empty())
         {
             equipment_type slot= *random_iterator(ret);
-        if (you.equip[slot] != -1 && !you.melded[slot])
-        {   
-            ASSERT_RANGE(slot, EQ_FIRST_EQUIP, NUM_EQUIP);
-            int item_slot = you.equip[slot];
-            if (item_slot == -1)
-                return false;
-            if (is_unrandom_artefact(you.inv[item_slot], UNRAND_FINGER_AMULET)
-                && you.equip[EQ_RING_AMULET] != -1)
-                    item_slot = you.equip[EQ_RING_AMULET];
-            item_def item = you.inv[item_slot];
+            unwield_item(false, slot);
 
-            mprf(MSGCH_TALK, "\"Take off your %s..\"", item.name(DESC_YOUR).c_str());
-            ASSERT(!you.melded[slot] || you.equip[slot] != -1);
-            mprf("You wake up and suddenly realize that you took it off yourself.");
-            
-            if (!item.cursed())
-            {
-                you.equip[slot] = -1;
-
-                unequip_effect(slot, item_slot, false, true);
-                ash_check_bondage();
-                you.last_unequip = item_slot;
-                return true;
-            }
-            }
         }
     }
     else if (foe->is_monster())
     {
         monster &foe_monster = *foe->as_monster();
-        mpr("It giggles with a lascivious laughter.");
-        mprf("Poor %s falls into a daydream.", foe_monster.name(DESC_A).c_str());
-        foe_monster.add_ench(mon_enchant(ENCH_UNSH_ARMOUR, 0, &caster, 5*BASELINE_DELAY));
         return true;
     }
     else

@@ -82,7 +82,8 @@ enum beam_type                  // bolt::flavour
     BEAM_CIGOTUVIS_PLAGUE,
     BEAM_AGONY,
     BEAM_VILE_CLUTCH,
-    BEAM_LAST_ENCHANTMENT = BEAM_VILE_CLUTCH,
+    BEAM_DISARM,
+    BEAM_LAST_ENCHANTMENT = BEAM_DISARM,
 
     BEAM_MEPHITIC,
     BEAM_POTION_POISON,
@@ -103,8 +104,7 @@ enum beam_type                  // bolt::flavour
     BEAM_ENSNARE,
     BEAM_CRYSTAL,
     BEAM_DEATH_RATTLE,
-    BEAM_DISARM,
-    BEAM_LAST_REAL = BEAM_DISARM,
+    BEAM_LAST_REAL = BEAM_DEATH_RATTLE,
 
     // For getting the visual effect of a beam.
     BEAM_VISUAL,

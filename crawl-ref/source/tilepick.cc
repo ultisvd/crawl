@@ -2064,8 +2064,6 @@ tileidx_t tileidx_monster(const monster_info& mons)
     // Should petrify show the '?' symbol?
     else if (mons.is(MB_DISTRACTED) && !mons.is(MB_PETRIFYING))
         ch |= TILE_FLAG_MAY_STAB;
-    //else if (mons.type == MONS_CUBUS)
-    //    ch |= TILE_FLAG_CUBUS_AURA;
     mon_dam_level_type damage_level = mons.dam;
 
     switch (damage_level)
