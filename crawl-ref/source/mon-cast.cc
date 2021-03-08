@@ -524,8 +524,8 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
     } },
     { SPELL_DISARM, _hex_logic(SPELL_DISARM, [](const monster &caster) {
         const actor* foe = caster.get_foe();
-        return foe && (!foe->is_player() || !foe->weapon() && !foe->as_player()->second_weapon()) 
-                   && (!foe->is_monster() || true);
+        return foe && (!foe->is_player() || foe->as_player()->weapon() || foe->as_player()->second_weapon()) 
+                   && (!foe->is_monster());
     }, 16) },
 
 };
@@ -8222,8 +8222,11 @@ static bool _allure_of_cubus(monster &caster, mon_spell_slot, bolt&)
         if (coinflip() && !ret.empty())
         {
             equipment_type slot= *random_iterator(ret);
-            unwield_item(false, slot);
-
+            if (you.equip[slot] != -1)
+            {
+                mprf(MSGCH_WARN, "You suddenly replace your %s.", you.inv[you.equip[slot]].name(DESC_THE).c_str());
+                unequip_item(slot, false);
+            }
         }
     }
     else if (foe->is_monster())

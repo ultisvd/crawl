@@ -465,6 +465,8 @@ static void _dissolve(int /*time_delta*/)
     if (you.within_interdim_crosspoint())
     {
         vector<equipment_type> arm = current_armour_types();
+        if (arm.empty())
+            return;
         equipment_type slot= *random_iterator(arm);
         if (you.equip[slot] != -1 && !you.melded[slot] && !you.interdim_melded[slot])
         {
@@ -475,11 +477,14 @@ static void _dissolve(int /*time_delta*/)
     else
     {
         vector<equipment_type> arm = current_armour_types();
+        if (arm.empty())
+            return;
         equipment_type slot= *random_iterator(arm);
         if (get_form()->slot_available(slot) && you.equip[slot] != -1
-                                             && you.interdim_melded[slot])
+                                             && you.melded[slot])
         {
-            you.interdim_melded.set(slot, false);
+            if (you.interdim_melded[slot])
+                you.interdim_melded.set(slot, false);
             if (you.melded[slot])
             {
                 unmeld_one_equip(slot);

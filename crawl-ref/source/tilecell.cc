@@ -47,6 +47,7 @@ void packed_cell::clear()
     coward_point     = 0;
     antimagic_aura   = 0;
     healaura         = 0;
+    interdim_crosspoint = false;
 }
 
 bool packed_cell::operator ==(const packed_cell &other) const

@@ -94,7 +94,7 @@ void areas_actor_moved(const actor* act, const coord_def& oldpos)
          || act->halo_radius() > -1 || act->silence_radius() > -1
          || act->liquefying_radius() > -1 || act->umbra_radius() > -1
          || act->heat_radius() > -1 || act->antimagic_radius() > -1
-		 || act->healaura_radius() > -1))
+		 || act->healaura_radius() > -1 || act->dissolving_radius() > -1))
     {
         // Not necessarily new, but certainly potentially interesting.
         invalidate_agrid(true);
@@ -184,7 +184,7 @@ static void _actor_areas(actor *a)
         no_areas = false;
     }
 
-    if (a->type == MONS_SINGULARITY)
+    if (a->type == MONS_INTERDIMENSIONAL_GRAPE)
     {
         r = a->dissolving_radius();
         _agrid_centres.emplace_back(area_centre_type::interdimensional, a->pos(), r);
@@ -980,5 +980,5 @@ int player::dissolving_radius() const
 // Very small region
 int monster::dissolving_radius() const
 {
-    return 3;
+    return 2;
 }

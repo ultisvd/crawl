@@ -3095,6 +3095,7 @@ monster_type random_demon_by_tier(int tier)
                              MONS_REAPER,
                              MONS_LOROCYPROCA,
                              MONS_TORMENTOR,
+                             MONS_CUBUS,
                              MONS_SHADOW_DEMON);
     case 1:
         return random_choose(MONS_BRIMSTONE_FIEND,

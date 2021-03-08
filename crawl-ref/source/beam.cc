@@ -3848,23 +3848,32 @@ void bolt::affect_player_enchantment(bool resistible)
     
     case BEAM_DISARM:
     {
-        equipment_type slot = (equipment_type)random_range(-1, 1+you.species != SP_TWO_HEADED_OGRE);
+        equipment_type slot = (equipment_type)random_range(-1, 1+(you.species != SP_TWO_HEADED_OGRE));
+        bool succ = false;
         if (slot == EQ_NONE)
             break;
         else if (slot == EQ_WEAPON)
         {
             if (!you.weapon())
                 break;
-            wield_weapon(false, slot, false, false, false, false, false);
+            succ = wield_weapon(true, -2, false, false, false, false, false);
+            you.turn_is_over = false;
+            you.time_taken = 0;
         }
         else if (slot == EQ_SECOND_WEAPON)
         {
             if (!you.second_weapon())
                 break;
-            wield_weapon(false, slot, false, false, false, false, true);
-
+            mprf(MSGCH_WARN, "You are disarmed.");
+            succ = wield_weapon(true, -2, false, false, false, false, true);
+            you.turn_is_over = false;
+            you.time_taken = 0;
         }
-        obvious_effect = true;
+        if (succ)
+        {
+            mprf(MSGCH_WARN, "You are disarmed.");
+            obvious_effect = true;
+        }
         break;
     }
 
