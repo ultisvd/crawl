@@ -1275,7 +1275,7 @@ static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
         return make_unique<targeter_beam>(&you, range, ZAP_ICEBLAST, pow,
                                           1, 1);
     case SPELL_HURL_DAMNATION:
-        return make_unique<targeter_beam>(&you, range, ZAP_DAMNATION, pow,
+        return make_unique<targeter_beam>(&you, range, ZAP_HURL_DAMNATION, pow,
                                           1, 1);
     case SPELL_EVAPORATE:
     case SPELL_MEPHITIC_CLOUD:
@@ -2517,11 +2517,6 @@ static int _spell_power(spell_type spell, bool rod)
     return power;
 }
 
-static int _spell_power_bars(spell_type spell, bool rod)
-{
-    return power_to_barcount(_spell_power(spell, rod));
-}
-
 #ifdef WIZARD
 static string _wizard_spell_power_numeric_string(spell_type spell, bool rod)
 {
@@ -2597,6 +2592,9 @@ string spell_damage_string(spell_type spell, bool evoked)
         break;
     case SPELL_STARBURST:
         mult = "8x";
+        break;
+    case SPELL_OLGREBS_LAST_MERCY:
+        mult = "(poison)x";
         break;
     default:
         break;

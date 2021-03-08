@@ -1946,16 +1946,9 @@ spret cast_ignition(const actor *agent, int pow, bool fail)
 
         // Used to deal damage; invisible
         bolt beam_actual;
+        zappy(ZAP_IGNITION, pow, false, beam_actual);
         beam_actual.set_agent(agent);
-        beam_actual.flavour       = BEAM_FIRE;
-        beam_actual.real_flavour  = BEAM_FIRE;
-        beam_actual.glyph         = 0;
-        beam_actual.damage        = calc_dice(3, 10 + pow/3); // less than fireball
-        beam_actual.name          = "fireball";
-        beam_actual.colour        = RED;
         beam_actual.ex_size       = 0;
-        beam_actual.is_explosion  = true;
-        beam_actual.loudness      = 0;
         beam_actual.origin_spell  = SPELL_IGNITION;
         beam_actual.apply_beam_conducts();
 
@@ -3380,13 +3373,13 @@ spret cast_eringyas_rootspike(int splpow, const dist& beam, bool fail)
 
     noisy(spell_effect_noise(SPELL_ERINGYAS_ROOTSPIKE), beam.target);
 
-    int damage = 9 + random2(3 + div_rand_round(splpow, 4));
 
     bolt pbeam;
-    pbeam.name = "poisonous roots";
-    pbeam.flavour = BEAM_POISON_ERINYA;
-    pbeam.glyph = dchar_glyph(DCHAR_FIRED_ZAP);
-    pbeam.colour = LIGHTGREEN;
+    zappy(ZAP_ERINYA_ROOT_SPIKE, splpow, false, pbeam);
+
+    int damage = pbeam.damage.roll();
+    // old: 9 + random2(3 + div_rand_round(splpow, 4));
+    // new: 2d(10+sp/8)
 #ifdef USE_TILE
     pbeam.tile_beam = -1;
 #endif
@@ -3429,20 +3422,17 @@ spret cast_olgrebs_last_mercy(int pow, const dist& dist, bool fail)
         canned_msg(MSG_SPELL_FIZZLES);
         return spret::success;
     }
-    
-    // poison currently does roughly 6 damage per degree (over its duration)
-    // do roughly 3x to 4x that much, scaling with spellpower
-    const dice_def dam_dice(pois_str * 3, 12 + div_rand_round(pow * 6, 100));
 
     bolt mbeam;
-    mbeam.flavour = BEAM_MMISSILE;
-    mbeam.glyph = dchar_glyph(DCHAR_FIRED_ZAP);
-    mbeam.colour = LIGHTGREEN;
+    zappy(ZAP_OLGREB_LAST_MERCY, pow, false, mbeam);
 #ifdef USE_TILE
     mbeam.tile_beam = -1;
 #endif
     mbeam.draw_delay = 0;
-    const int base_dam = dam_dice.roll();
+    int base_dam = 0;
+    for (int i = 0; i < pois_str; i++) {
+        base_dam += mbeam.damage.roll();
+    }
     const int damage = mons_adjust_flavoured(mon, mbeam, base_dam, false);
 
     const int max_hp = mon->max_hit_points;
@@ -3969,21 +3959,16 @@ dice_def ramparts_damage(int pow, bool random)
 static void _hailstorm_cell(coord_def where, int pow, actor* agent)
 {
     bolt beam;
-    beam.flavour = BEAM_ICE;
+    zappy(ZAP_HAILSTORM, pow, agent->is_monster(), beam);
     beam.thrower = agent->is_player() ? KILL_YOU : KILL_MON;
     beam.source_id = agent->mid;
     beam.attitude = agent->temp_attitude();
-    beam.glyph = dchar_glyph(DCHAR_FIRED_BURST);
-    beam.colour = ETC_ICE;
 #ifdef USE_TILE
     beam.tile_beam = -1;
 #endif
     beam.draw_delay = 10;
     beam.source = where;
     beam.target = where;
-    beam.damage = calc_dice(3, 10 + pow / 2);
-    beam.hit = 18 + pow / 6;
-    beam.name = "hail";
     beam.hit_verb = "pelts";
 
     monster* mons = monster_at(where);
