@@ -103,7 +103,7 @@ class targeter;
 vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
                                    targeter* hitfunc);
 spret your_spells(spell_type spell, int powc = 0, bool allow_fail = true,
-                  const item_def* const evoked_item = nullptr);
+                  const item_def* const evoked_item = nullptr, coord_def auto_target = coord_def(-1, -1));
 
 extern const char *fail_severity_adjs[];
 
@@ -127,5 +127,8 @@ string spell_failure_rate_string(spell_type spell);
 string spell_noise_string(spell_type spell, int chop_wiz_display_width = 0);
 
 void spell_skills(spell_type spell, set<skill_type> &skills);
+void majin_speak(spell_type spell);
+bool majin_charge_hp();
 
-bool spell_removed(spell_type spell);
+bool spell_removed(spell_type spell); 
+unique_ptr<targeter> spell_targeter(spell_type spell, int pow, int range);

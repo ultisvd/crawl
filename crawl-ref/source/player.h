@@ -70,6 +70,7 @@
 #define COMBAT_MANA_KEY "combat_mana"
 #define CARAVAN_MERCENARY "caravan_mercenary"
 #define PALENTONGA_CURL_KEY "palentonga_curl"
+#define AUTO_SPELL_COOLDOWN_KEY "auto_spell_cooldown_key"
 
 // display/messaging breakpoints for penalties from Ru's MUT_HORROR
 #define HORROR_LVL_EXTREME  3
@@ -448,6 +449,7 @@ public:
     bool redraw_hit_points;
     bool redraw_magic_points;
     bool redraw_temperature;
+    bool redraw_heat_gauge;
     FixedVector<bool, NUM_STATS> redraw_stats;
     bool redraw_experience;
     bool redraw_armour_class;
@@ -952,6 +954,11 @@ public:
 
     vector<item_def* > bag() const;
 
+    bool is_auto_spell();
+
+    bool auto_cast(const coord_def& target, int delay, bool escape);
+    void init_auto_cast_vector();
+
 protected:
     void _removed_beholder(bool quiet = false);
     bool _possible_beholder(const monster* mon) const;
@@ -1270,6 +1277,8 @@ bool temperature_effect(int which);
 int temperature_colour(int temp);
 string temperature_string(int temp);
 string temperature_text(int temp);
+
+int heat();
 
 bool has_mercenaries();
 bool can_call_friends();

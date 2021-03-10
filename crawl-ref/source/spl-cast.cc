@@ -744,7 +744,7 @@ void do_cast_spell_cmd(bool force)
  *
  * @param spell     The spell just successfully cast.
  */
-static void _majin_speak(spell_type spell)
+void majin_speak(spell_type spell)
 {
     // since this isn't obviously mental communication, let it be silenced
     if (silenced(you.pos()))
@@ -757,7 +757,7 @@ static void _majin_speak(spell_type spell)
     mprf(MSGCH_TALK, "%s", msg.c_str());
 }
 
-static bool _majin_charge_hp()
+bool majin_charge_hp()
 {
     return player_equip_unrand(UNRAND_MAJIN) && !you.duration[DUR_DEATHS_DOOR];
 }
@@ -773,6 +773,13 @@ static bool _majin_charge_hp()
  **/
 bool cast_a_spell(bool check_range, spell_type spell)
 {
+    if (you.is_auto_spell())
+    {
+        mprf("You have no mouth for casting spells. (See spell describe with <w>%s</w> key.)",
+            command_to_string(CMD_DISPLAY_SPELLS).c_str());
+        return false;
+    }
+
     if (!can_cast_spells())
     {
         crawl_state.zero_turns_taken();
@@ -947,7 +954,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     you.last_cast_spell = spell;
     // Silently take MP before the spell.
     dec_mp(cost, true);
-    if (_majin_charge_hp())
+    if (majin_charge_hp())
         dec_hp(hp_cost, false);
 
     const spret cast_result = your_spells(spell, 0, !you.divine_exegesis,
@@ -957,7 +964,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
         crawl_state.zero_turns_taken();
         // Return the MP since the spell is aborted.
         inc_mp(cost, true);
-        if (_majin_charge_hp())
+        if (majin_charge_hp())
             inc_hp(hp_cost);
         redraw_screen();
         return false;
@@ -967,7 +974,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     if (cast_result == spret::success)
     {
         if (player_equip_unrand(UNRAND_MAJIN) && one_chance_in(500))
-            _majin_speak(spell);
+            majin_speak(spell);
         did_god_conduct(DID_SPELL_CASTING, 1 + random2(5));
         count_action(CACT_CAST, spell);
     }
@@ -1172,7 +1179,7 @@ static int _setup_evaporate_cast()
 
 
 static spret _do_cast(spell_type spell, int powc, const dist& spd,
-                           bolt& beam, god_type god, int potion, bool fail);
+                           bolt& beam, god_type god, int potion, bool fail, bool auto_spell);
 
 /**
  * Should this spell be aborted before casting properly starts, either because
@@ -1263,7 +1270,7 @@ static bool _spellcasting_aborted(spell_type spell, bool fake_spell)
     return false;
 }
 
-static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
+unique_ptr<targeter> spell_targeter(spell_type spell, int pow,
                                               int range)
 {
     switch (spell)
@@ -1463,8 +1470,9 @@ vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
  * the casting.
  **/
 spret your_spells(spell_type spell, int powc, bool allow_fail,
-                       const item_def* const evoked_item)
+                       const item_def* const evoked_item, coord_def auto_target)
 {
+    bool is_auto_target = auto_target != coord_def(-1, -1);
     ASSERT(!crawl_state.game_is_arena());
     if (evoked_item)
     {
@@ -1480,7 +1488,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
 
     // [dshaligram] Any action that depends on the spellcasting attempt to have
     // succeeded must be performed after the switch.
-    if (!wiz_cast && _spellcasting_aborted(spell, !allow_fail))
+    if (!is_auto_target && !wiz_cast && _spellcasting_aborted(spell, !allow_fail))
         return spret::abort;
 
     const spell_flags flags = get_spell_flags(spell);
@@ -1510,14 +1518,17 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
                                               DIR_NONE;
 
         const char *prompt = get_spell_target_prompt(spell);
-        if (spell == SPELL_EVAPORATE)
+        if (!is_auto_target)
         {
-            potion = _setup_evaporate_cast();
-            if (potion == -1)
-                return spret::abort;
+            if (spell == SPELL_EVAPORATE)
+            {
+                potion = _setup_evaporate_cast();
+                if (potion == -1)
+                    return spret::abort;
+            }
+            else if (dir == DIR_DIR)
+                mprf(MSGCH_PROMPT, "%s", prompt ? prompt : "Which direction?");
         }
-        else if (dir == DIR_DIR)
-            mprf(MSGCH_PROMPT, "%s", prompt ? prompt : "Which direction?");
 
         const bool needs_path = !testbits(flags, spflag::target)
                                 // Apportation must be spflag::target, since a
@@ -1527,7 +1538,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
 
         const int range = calc_spell_range(spell, powc, allow_fail);
 
-        unique_ptr<targeter> hitfunc = _spell_targeter(spell, powc, range);
+        unique_ptr<targeter> hitfunc = spell_targeter(spell, powc, range);
 
         // Add success chance to targeted spells checking monster MR
         const bool mr_check = testbits(flags, spflag::MR_check)
@@ -1559,6 +1570,10 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
         args.needs_path = needs_path;
         args.target_prefix = prompt;
         args.top_prompt = title;
+        if(is_auto_target) {
+            args.auto_click = true;
+            args.default_place = auto_target;
+        }
         if (hitfunc && hitfunc->can_affect_walls())
         {
             args.show_floor_desc = true;
@@ -1709,7 +1724,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
 
     const bool old_target = actor_at(beam.target);
 
-    spret cast_result = _do_cast(spell, powc, spd, beam, god, potion, fail);
+    spret cast_result = _do_cast(spell, powc, spd, beam, god, potion, fail, is_auto_target);
 
     switch (cast_result)
     {
@@ -1792,7 +1807,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
 // Returns spret::success, spret::abort, spret::fail
 // or spret::none (not a player spell).
 static spret _do_cast(spell_type spell, int powc, const dist& spd,
-                           bolt& beam, god_type god, int potion, bool fail)
+                           bolt& beam, god_type god, int potion, bool fail, bool auto_spell)
 {
     const coord_def target = spd.isTarget ? beam.target : you.pos() + spd.delta;
     if (spell == SPELL_FREEZE || spell == SPELL_VAMPIRIC_DRAINING)
@@ -2286,7 +2301,7 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
     zap_type zap = spell_to_zap(spell);
     if (zap != NUM_ZAPS)
     {
-        return zapping(zap, spell_zap_power(spell, powc), beam, true, nullptr,
+        return zapping(zap, spell_zap_power(spell, powc), beam, !auto_spell, nullptr,
                        fail);
     }
 
