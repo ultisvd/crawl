@@ -112,6 +112,10 @@ body {
     background-color: #5c3566;
 }
 
+#stats[data-species="Magic Golem"] #stats_mpline {
+    display:none;
+    visibility:hidden;
+}
 #stats_mp_bar {
     background-color: #555753; /* darkgray */
 }
@@ -138,7 +142,7 @@ body {
     display:block;
     visibility:visible;
 }
- #stats_heat_bar {
+#stats_heat_bar {
     background-color: #555753; /* darkgray */
 }
 #stats_heat_bar_full {
@@ -148,6 +152,29 @@ body {
     background-color: #729fcf; /* lightblue */
 }
 #stats_heat_bar_increase {
+    background-color: #ee4f45; /* lightred */
+}
+
+/* Temperature bar, hidden normally */
+#stats_gheatline {
+    display:none;
+    visibility:hidden;
+}
+ /* Visible for Magic Golem */
+#stats[data-species="Magic Golem"] #stats_gheatline {
+    display:block;
+    visibility:visible;
+}
+#stats_gheat_bar {
+    background-color: #555753; /* darkgray */
+}
+#stats_gheat_bar_full {
+    background-color: #a40000; /* red */
+}
+#stats_gheat_bar_decrease {
+    background-color: #729fcf; /* lightblue */
+}
+#stats_gheat_bar_increase {
     background-color: #ee4f45; /* lightred */
 }
 
