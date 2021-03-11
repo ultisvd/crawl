@@ -1729,7 +1729,7 @@ spret cast_ignite_poison(actor* agent, int pow, bool fail, bool tracer)
 
     if (agent->is_player())
     {
-        if (maybe_abort_ignite())
+        if (!you.is_auto_spell() && maybe_abort_ignite())
         {
             canned_msg(MSG_OK);
             return spret::abort;

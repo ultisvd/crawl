@@ -1208,7 +1208,6 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         case SPELL_TELEPORT_OTHER:
         case SPELL_PASSWALL:
         case SPELL_RECALL:
-        case SPELL_INSULATION:
         case SPELL_FULSOME_DISTILLATION:
         case SPELL_EVAPORATE:
         case SPELL_WILL_OF_EARTH:
@@ -1810,14 +1809,14 @@ const vector<spell_type> *soh_breath_spells(spell_type spell)
     return map_find(soh_breaths, spell);
 }
 
-bool can_auto_cast_spell(spell_type spell, const coord_def& target, bool escape)
+bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_phase phase)
 {
     const int range = calc_spell_range(spell, 0, true);
     const int targetRange = grid_distance(you.pos(), target);
     const int minRange = get_dist_to_nearest_monster();
     const int powc = calc_spell_power(spell, true);
     monster* mons = monster_at(target);
-    if (invalid_monster(mons) && target != you.pos() && !escape)
+    if (invalid_monster(mons) && target != you.pos() && phase != AS_PHASE_ESCAPE)
         return false;
 
     switch (spell) {
@@ -2007,7 +2006,13 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, bool escape)
             return false;
         break;
     }
-
+    case SPELL_INSULATION:
+    {
+        if (you.duration[DUR_INSULATION]
+            || you.res_elec() > 0)
+            return false;
+        break;
+    }
 
     //debuf spell
     case SPELL_STICKY_FLAME:
@@ -2281,7 +2286,7 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, bool escape)
     return true;
 }
 
-bool is_auto_emergency_spell(spell_type spell) 
+bool is_currect_phase_auto_spell(spell_type spell, auto_spell_phase phase)
 {
     switch(spell)
     {
@@ -2289,13 +2294,19 @@ bool is_auto_emergency_spell(spell_type spell)
     case SPELL_CAUSE_FEAR:
     case SPELL_BLINK:
     case SPELL_GOLUBRIAS_PASSAGE:
-    case SPELL_DISCORD:
+    case SPELL_DISJUNCTION:
     case SPELL_DISPERSAL:
     case SPELL_SUMMON_BUTTERFLIES:
     case SPELL_CONTROLLED_BLINK:
     case SPELL_BARRIER:
-        return true;
+        return phase == AS_PHASE_ESCAPE;
+    case SPELL_HASTE:
+        return phase == AS_PHASE_ESCAPE || phase == AS_PHASE_MELEE || phase == AS_PHASE_RANGE;
+    case SPELL_PORTAL_PROJECTILE:
+        return phase == AS_PHASE_RANGE;
+    case SPELL_INVISIBILITY:
+        return phase == AS_PHASE_ENCOUNT || phase == AS_PHASE_MELEE || phase == AS_PHASE_RANGE;
     default:
-        return false;
+        return phase == AS_PHASE_MELEE || phase == AS_PHASE_RANGE;
     }
 }

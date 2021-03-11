@@ -1177,7 +1177,7 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
         && you.is_auto_spell() 
         && targ_monst 
         && targ_monst->alive()) {
-        you.auto_cast(thr.target, you.time_taken, false);
+        you.auto_cast(thr.target, you.time_taken, AS_PHASE_RANGE);
     }
     return hit;
 }

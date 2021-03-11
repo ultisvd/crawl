@@ -4599,6 +4599,10 @@ void contaminate_player(int change, bool controlled, bool msg)
 {
     ASSERT(!crawl_state.game_is_arena());
 
+    if (you.species == SP_AUTOMATON) {
+        return;
+    }
+
     int old_amount = you.magic_contamination;
     int old_level  = get_contamination_level();
     bool was_glowing = player_severe_contamination();
@@ -9556,7 +9560,7 @@ bool player::is_auto_spell()
 /**
  * for magic golem
  */
-bool player::auto_cast(const coord_def& target, int delay, bool escape)
+bool player::auto_cast(const coord_def& target, int delay, auto_spell_phase phase)
 {
     you.duration[DUR_HEAT] = 5 * BASELINE_DELAY; //heat 5turn
 
@@ -9570,14 +9574,14 @@ bool player::auto_cast(const coord_def& target, int delay, bool escape)
         const spell_flags flags = get_spell_flags(spl);
 
         if (spell_cooldown[i].get_int() > 0) {
-            if(!escape)
+            if(phase == AS_PHASE_MELEE || phase == AS_PHASE_RANGE)
                 spell_cooldown[i].get_int() -= delay;
             if(spell_cooldown[i].get_int() > 0) {
                 continue;
             }
         }
 
-        if (is_auto_emergency_spell(spl) != escape)
+        if (!is_currect_phase_auto_spell(spl, phase))
             continue;
 
         int cost = spell_mana(spl);
@@ -9586,7 +9590,7 @@ bool player::auto_cast(const coord_def& target, int delay, bool escape)
             continue;
         }
 
-        if (!can_auto_cast_spell(spl, (flags & spflag::selfench) ? you.pos() : target, escape))
+        if (!can_auto_cast_spell(spl, (flags & spflag::selfench) ? you.pos() : target, phase))
         {
             continue;
         }

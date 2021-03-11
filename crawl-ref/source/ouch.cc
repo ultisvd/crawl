@@ -1106,7 +1106,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
                   && you.hp <= (you.hp_max * 25) / 100
                   && death_type != KILLED_BY_POISON)
             {
-                you.auto_cast(you.pos(), you.time_taken, true);
+                you.auto_cast(you.pos(), you.time_taken, AS_PHASE_ESCAPE);
             }
 
             hints_healing_check();

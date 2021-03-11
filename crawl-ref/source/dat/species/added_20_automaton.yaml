@@ -19,8 +19,8 @@ aptitudes:
   bows: -3
   crossbows: -3
   throwing: -3
-  armour: -1
-  dodging: -1
+  armour: 0
+  dodging: 0
   stealth: -2
   shields: -2
   unarmed_combat: -1
@@ -30,8 +30,8 @@ aptitudes:
   charms: 0
   summoning: 0
   necromancy: false
-  translocations: -1
-  transmutations: -1
+  translocations: 0
+  transmutations: -3
   fire_magic: 0
   ice_magic: 0
   air_magic: 0
@@ -49,17 +49,15 @@ levelup_stats:
 mutations:
   1:
     MUT_ROT_IMMUNITY: 1
-    MUT_NEGATIVE_ENERGY_RESISTANCE: 1
-    MUT_PETRIFICATION_RESISTANCE: 1
     MUT_POISON_RESISTANCE: 1
     MUT_UNBREATHING: 1
-    MUT_TOUGH_SKIN: 1
     MUT_IRON_FIST: 1
 fake_mutations:
   - long: You can't cast spell directly, instead use spell automatically.
     short: auto spell
   - long: You use heat instead of mp.
   - long: "You need no food."
+  - long: "You completely resist mutation and magic contamination."
 recommended_jobs:
   - JOB_WIZARD
   - JOB_CONJURER

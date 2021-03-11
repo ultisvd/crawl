@@ -1631,7 +1631,8 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
     if (undead_mutation_rot()
         || you.species == SP_HOMUNCULUS 
         || you.species == SP_ADAPTION_HOMUNCULUS
-        || you.species == SP_ANGEL)
+        || you.species == SP_ANGEL
+        || you.species == SP_AUTOMATON)
     {
         switch (mutclass)
         {

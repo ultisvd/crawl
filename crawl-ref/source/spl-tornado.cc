@@ -131,7 +131,8 @@ spret cast_tornado(int /*powc*/, bool fail)
         }
     }
 
-    if (friendlies
+    if (!you.is_auto_spell()
+        && friendlies
         && !yesno("There are friendlies around, are you sure you want to hurt them?",
                   true, 'n'))
     {

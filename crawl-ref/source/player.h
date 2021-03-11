@@ -113,6 +113,14 @@ enum training_status
     TRAINING_INACTIVE, ///< enabled but not used (in auto mode)
 };
 
+enum auto_spell_phase
+{
+    AS_PHASE_MELEE,
+    AS_PHASE_RANGE,
+    AS_PHASE_ESCAPE,
+    AS_PHASE_ENCOUNT,
+};
+
 // needed for assert in is_player()
 #ifdef DEBUG_GLOBALS
 #define you (*real_you)
@@ -956,7 +964,7 @@ public:
 
     bool is_auto_spell();
 
-    bool auto_cast(const coord_def& target, int delay, bool escape);
+    bool auto_cast(const coord_def& target, int delay, auto_spell_phase phase);
     void init_auto_cast_vector();
 
 protected:
