@@ -57,7 +57,9 @@ mutations:
     MUT_TOUGH_SKIN: 1
     MUT_CLAWS: 1
 fake_mutations:
-  - long: You can't use magic directly, instead you can remember it in your body.
+  - long: You can't cast spell directly, instead use spell automatically.
+    short: auto spell
+  - long: You use heat instead of mp.
   - long: "You need no food."
 recommended_jobs:
   - JOB_WIZARD
@@ -68,7 +70,6 @@ recommended_jobs:
   - JOB_AIR_ELEMENTALIST
   - JOB_EARTH_ELEMENTALIST
   - JOB_VENOM_MAGE
-  - JOB_WARPER
   - JOB_SKALD
   - JOB_ENCHANTER
   - JOB_CRUSADER

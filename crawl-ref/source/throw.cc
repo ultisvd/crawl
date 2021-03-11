@@ -856,6 +856,7 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
     const launch_retval projected = is_launched(&you, you.weapon(), thrown);
     bool is_imus_throw = is_imus_throwable(thrown);
     bool is_non_waste = is_imus_throw;
+    monster* targ_monst = monster_at(thr.target);
 
     if (is_imus_throw && !enough_mp(1, true)) {
         mpr("You don't have enough magic to bring the imitation from illusion.");
@@ -1156,7 +1157,7 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
     {
         dithmenos_shadow_throw(thr, item);
     }
- if (projected != launch_retval::FUMBLED
+    if (projected != launch_retval::FUMBLED
         && you.props.exists("imus_mirror")
         && thrown.sub_type != MI_DART)
     {
@@ -1171,6 +1172,12 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
         
         aim_battlesphere(&you, SPELL_NO_SPELL, 200, pbolt, true);
         trigger_battlesphere(&you, pbolt, true);
+    }
+    if(projected != launch_retval::FUMBLED
+        && you.is_auto_spell() 
+        && targ_monst 
+        && targ_monst->alive()) {
+        you.auto_cast(thr.target, you.time_taken, false);
     }
     return hit;
 }
