@@ -139,7 +139,7 @@ bool you_foodless(bool temp, bool can_eat)
         || you.undead_state(temp) == US_SEMI_UNDEAD
         || (you.species == SP_ANGEL && !can_eat)
         || (you.species == SP_DJINNI && !can_eat)
-        || (you.species == SP_MAGIC_GOLEM && !can_eat);
+        || (you.species == SP_AUTOMATON && !can_eat);
 }
 
 bool prompt_eat_item(int slot)
@@ -175,7 +175,7 @@ static bool _eat_check(bool check_hunger = true, bool silent = false,
         return false;
     }
 
-    if (you.species == SP_DJINNI || you.species == SP_ANGEL || you.species == SP_MAGIC_GOLEM)
+    if (you.species == SP_DJINNI || you.species == SP_ANGEL || you.species == SP_AUTOMATON)
     {
         if (!silent)
         {

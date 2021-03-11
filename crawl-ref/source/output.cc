@@ -1556,9 +1556,9 @@ void print_stats()
 
     if (HP_Bar.wants_redraw())
         you.redraw_hit_points = true;
-    if (MP_Bar.wants_redraw() && you.species != SP_MAGIC_GOLEM)
+    if (MP_Bar.wants_redraw() && you.species != SP_AUTOMATON)
         you.redraw_magic_points = true;
-    if (Heat_Bar.wants_redraw() && you.species == SP_MAGIC_GOLEM)
+    if (Heat_Bar.wants_redraw() && you.species == SP_AUTOMATON)
         you.redraw_heat_gauge = true;
     if (Temp_Bar.wants_redraw() && you.species == SP_LAVA_ORC)
         you.redraw_temperature = true;
@@ -1782,9 +1782,9 @@ void redraw_console_sidebar()
 
     you.redraw_title        = true;
     you.redraw_hit_points   = true;
-    if (you.species != SP_MAGIC_GOLEM)
+    if (you.species != SP_AUTOMATON)
         you.redraw_magic_points = true;
-    if (you.species == SP_MAGIC_GOLEM)
+    if (you.species == SP_AUTOMATON)
         you.redraw_heat_gauge = true;
     if (you.species == SP_LAVA_ORC)
         you.redraw_temperature = true;
@@ -1829,7 +1829,7 @@ void redraw_screen(bool show_updates)
 
     you.redraw_title        = true;
     you.redraw_hit_points   = true;
-    if(you.species != SP_MAGIC_GOLEM)
+    if(you.species != SP_AUTOMATON)
         you.redraw_magic_points = true;
     else
         you.redraw_heat_gauge = true;
@@ -2542,7 +2542,7 @@ static vector<formatted_string> _get_overview_stats()
     entry.clear();
 
     entry.textcolour(HUD_CAPTION_COLOUR);
-    if(you.species != SP_MAGIC_GOLEM )
+    if(you.species != SP_AUTOMATON )
     {
         if (player_rotted())
             entry.cprintf("MP:   ");

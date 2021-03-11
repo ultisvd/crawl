@@ -1493,7 +1493,7 @@ LUAFN(_crawl_redraw_stats)
     you.redraw_title         = true;
     you.redraw_quiver        = true;
     you.redraw_hit_points    = true;
-    if(you.species != SP_MAGIC_GOLEM)
+    if(you.species != SP_AUTOMATON)
         you.redraw_magic_points  = true;
     else     
         you.redraw_heat_gauge   = true;

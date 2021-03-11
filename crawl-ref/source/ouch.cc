@@ -938,7 +938,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
     _consider_curling(death_type);
 
-    if(you.species == SP_MAGIC_GOLEM)
+    if(you.species == SP_AUTOMATON)
     {
         you.duration[DUR_HEAT] = 5 * BASELINE_DELAY;
     }

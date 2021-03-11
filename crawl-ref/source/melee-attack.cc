@@ -4218,8 +4218,17 @@ bool melee_attack::_extra_aux_attack(unarmed_attack_type atk)
                    && x_chance_in_y(2, 5);
 
     case UNAT_PUNCH:
-        return player_gets_aux_punch();
 
+        if (you.get_mutation_level(MUT_IRON_FIST) &&
+            get_form()->can_offhand_punch())
+        {
+            //many punch with automaton
+            return x_chance_in_y(3, 5);
+
+        }
+        else {
+            return player_gets_aux_punch();
+        }
     default:
         return false;
     }

@@ -1337,7 +1337,7 @@ int player_mp_regen()
     if (you.props[MANA_REGEN_AMULET_ACTIVE].get_int() == 1)
         regen_amount += 25;
 
-    if (you.species == SP_MAGIC_GOLEM)
+    if (you.species == SP_AUTOMATON)
     {
         if(you.duration[DUR_BERSERK])
             return 0;
@@ -4124,7 +4124,7 @@ void calc_mp()
     }
     you.max_magic_points = get_real_mp(true);
     you.magic_points = min(you.magic_points, you.max_magic_points);
-    if(you.species == SP_MAGIC_GOLEM)
+    if(you.species == SP_AUTOMATON)
         you.redraw_heat_gauge = true;
     else
         you.redraw_magic_points = true;
@@ -4140,7 +4140,7 @@ void flush_mp()
     }
 
     take_note(Note(NOTE_MP_CHANGE, you.magic_points, you.max_magic_points));
-    if(you.species == SP_MAGIC_GOLEM)
+    if(you.species == SP_AUTOMATON)
         you.redraw_heat_gauge = true;
     else
         you.redraw_magic_points = true;
@@ -4271,7 +4271,7 @@ void inc_mp(int mp_gain, bool silent)
     {
         if (_should_stop_resting(you.magic_points, you.max_magic_points))
             interrupt_activity(activity_interrupt::full_mp);
-        if(you.species == SP_MAGIC_GOLEM)
+        if(you.species == SP_AUTOMATON)
             you.redraw_heat_gauge = true;
         else
             you.redraw_magic_points = true;
@@ -4303,7 +4303,7 @@ void rot_hp(int hp_loss)
 {
     if (!player_rotted() && hp_loss > 0)
     {
-        if(you.species == SP_MAGIC_GOLEM)
+        if(you.species == SP_AUTOMATON)
             you.redraw_heat_gauge = true;
         else
             you.redraw_magic_points = true;
@@ -4339,7 +4339,7 @@ int unrot_hp(int hp_recovered)
     you.redraw_hit_points = true;
     if (!player_rotted())
     {
-        if(you.species == SP_MAGIC_GOLEM)
+        if(you.species == SP_AUTOMATON)
             you.redraw_heat_gauge = true;
         else
             you.redraw_magic_points = true;
@@ -4357,7 +4357,7 @@ void rot_mp(int mp_loss)
     you.mp_max_adj -= mp_loss;
     calc_mp();
 
-    if(you.species == SP_MAGIC_GOLEM)
+    if(you.species == SP_AUTOMATON)
         you.redraw_heat_gauge = true;
     else
         you.redraw_magic_points = true;
@@ -4407,7 +4407,7 @@ void set_mp(int new_amount)
     take_note(Note(NOTE_MP_CHANGE, you.magic_points, you.max_magic_points));
 
     // Must remain outside conditional, given code usage. {dlb}
-    if(you.species == SP_MAGIC_GOLEM)
+    if(you.species == SP_AUTOMATON)
         you.redraw_heat_gauge = true;
     else
         you.redraw_magic_points = true;
@@ -9550,7 +9550,7 @@ vector<item_def* > player::bag() const
 
 bool player::is_auto_spell()
 {
-    return species == SP_MAGIC_GOLEM;
+    return species == SP_AUTOMATON;
 }
 
 /**

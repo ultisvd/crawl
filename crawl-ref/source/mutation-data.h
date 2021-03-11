@@ -2053,6 +2053,15 @@ static const mutation_def mut_data[] =
    "Your sharp scales recede somewhat.",
    "Your sharp scales recede somewhat."},
 },
+
+{ MUT_IRON_FIST, 0, 1, mutflag::good, true,
+  "iron fist",
+
+  {"Your fist is made of iron.", "", ""},
+  {"Your fist is covered with iron.", "", ""},
+  {"The iron in your fist is starting to melt.", "", ""},
+},
+
 };
 
 static const mutation_category_def category_mut_data[] =

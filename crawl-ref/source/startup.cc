@@ -318,14 +318,14 @@ static void _post_init(bool newc)
 
     you.redraw_stats.init(true);
     you.redraw_hit_points   = true;
-    if (you.species != SP_MAGIC_GOLEM)
+    if (you.species != SP_AUTOMATON)
       you.redraw_magic_points = true;
     you.redraw_armour_class = true;
     you.redraw_evasion      = true;
     you.redraw_experience   = true;
     if (you.species == SP_LAVA_ORC)
         you.redraw_temperature = true;
-    if (you.species == SP_MAGIC_GOLEM)
+    if (you.species == SP_AUTOMATON)
         you.redraw_heat_gauge = true;
     you.redraw_quiver       = true;
     you.wield_change        = true;

@@ -735,8 +735,8 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_WIGHT;
     case SP_SPARKBORN:
         return TILEP_BASE_SPARKBORN;
-    case SP_MAGIC_GOLEM:
-        return TILEP_BASE_MAGIC_GOLEM;
+    case SP_AUTOMATON:
+        return TILEP_BASE_AUTOMATON;
     default:
         return TILEP_BASE_HUMAN;
     }

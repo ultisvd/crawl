@@ -1428,6 +1428,11 @@ bool physiology_mutation_conflict(mutation_type mutat)
         return true;
     }
 
+    //Automaton has iron fist
+    if (you.species == SP_AUTOMATON && mutat == MUT_CLAWS) {
+        return true;
+    }
+
     // Merfolk have no feet in the natural form, and we never allow mutations
     // that show up only in a certain transformation.
     if (you.species == SP_MERFOLK

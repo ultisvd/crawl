@@ -1197,7 +1197,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "you're a holy being.";
     }
 
-    if (you.species == SP_MAGIC_GOLEM)
+    if (you.species == SP_AUTOMATON)
     {
         switch (spell)
         {
@@ -1296,7 +1296,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "your current blood level is not sufficient.";
         if (you.species == SP_ADAPTION_HOMUNCULUS)
             return "you're an artificial being.";
-        if (you.species == SP_MAGIC_GOLEM)
+        if (you.species == SP_AUTOMATON)
             return "you're an artificial being.";
         break;
 
@@ -1312,7 +1312,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "your current blood level is not sufficient.";
         if (you.species == SP_ADAPTION_HOMUNCULUS)
             return "you're an artificial being.";
-        if (you.species == SP_MAGIC_GOLEM)
+        if (you.species == SP_AUTOMATON)
             return "you're an artificial being.";
         break;
         
@@ -1328,7 +1328,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "your current blood level is not sufficient.";
         if (you.species == SP_ADAPTION_HOMUNCULUS)
             return "you're an artificial being.";
-        if (you.species == SP_MAGIC_GOLEM)
+        if (you.species == SP_AUTOMATON)
             return "you're an artificial being.";
         break;
         
@@ -1415,7 +1415,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             || you.species == SP_WIGHT
             || you.species == SP_DJINNI
             || you.species ==  SP_ADAPTION_HOMUNCULUS
-            || you.species == SP_MAGIC_GOLEM
+            || you.species == SP_AUTOMATON
             || (temp && !form_can_bleed(you.form)))
         {
             return "you have no blood to sublime.";

@@ -103,7 +103,7 @@ homunculus_adaption ADAPTION_HOMUNCULUS
 meliai MELIAI
 wight WIGHT
 sparkborn SPARKBORN
-golem MAGIC_GOLEM
+golem AUTOMATON
 
 # draconians
 draconian_f DRACONIAN DRACONIAN_FIRST
