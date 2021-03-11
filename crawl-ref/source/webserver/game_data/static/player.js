@@ -450,7 +450,7 @@ function ($, comm, enums, map_knowledge, messages, options) {
         for (var i = 0; i < simple_stats.length; ++i)
             $("#stats_" + simple_stats[i]).text(player[simple_stats[i]]);
 
-        if (player.species == "Magic Golem")
+        if (player.species == "Automaton")
         {
             $("#stats_gheat").text(player["mp_max"]-player["mp"]);
             $("#stats_gheat_max").text(player["mp_max"]);
@@ -484,13 +484,13 @@ function ($, comm, enums, map_knowledge, messages, options) {
             $("#stats_dd_real_mp_max").text("");
 
         percentage_color("hp");
-	percentage_color("mp");
+        percentage_color("mp");
         update_bar("hp");
         if (do_contam)
             update_bar_contam();
-	else if(player.species == "Magic Golem")
-	    update_bar("gheat", "mp");
-	else
+        else if(player.species == "Automaton")
+            update_bar("gheat", "mp");
+        else
             update_bar("mp");
         if (do_temperature)
             update_bar_heat();

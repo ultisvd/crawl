@@ -112,7 +112,7 @@ body {
     background-color: #5c3566;
 }
 
-#stats[data-species="Magic Golem"] #stats_mpline {
+#stats[data-species="Automaton"] #stats_mpline {
     display:none;
     visibility:hidden;
 }
