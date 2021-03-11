@@ -9570,11 +9570,15 @@ bool player::auto_cast(const coord_def& target, int delay, bool escape)
         const spell_flags flags = get_spell_flags(spl);
 
         if (spell_cooldown[i].get_int() > 0) {
-            spell_cooldown[i].get_int() -= delay;
+            if(!escape)
+                spell_cooldown[i].get_int() -= delay;
             if(spell_cooldown[i].get_int() > 0) {
                 continue;
             }
         }
+
+        if (is_auto_emergency_spell(spl) != escape)
+            continue;
 
         int cost = spell_mana(spl);
         if (!enough_mp(cost, true))

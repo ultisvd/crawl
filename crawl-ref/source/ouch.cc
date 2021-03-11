@@ -1102,6 +1102,13 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
                 dungeon_events.fire_event(DET_HP_WARNING);
             }
 
+            if (you.is_auto_spell() 
+                  && you.hp <= (you.hp_max * 25) / 100
+                  && death_type != KILLED_BY_POISON)
+            {
+                you.auto_cast(you.pos(), you.time_taken, true);
+            }
+
             hints_healing_check();
 
             _xom_checks_damage(death_type, dam, source);

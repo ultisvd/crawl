@@ -2070,7 +2070,7 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, bool escape)
         {
             return false;
         }
-        return true;
+        break;
     }
     case SPELL_DISCORD:
     {
@@ -2088,7 +2088,7 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, bool escape)
         {
             return false;
         }
-        return true;
+        break;
     }
     case SPELL_PETRIFY:
     {
@@ -2116,7 +2116,7 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, bool escape)
         {
             return false;
         }
-        return true;
+        break;
     }
     case SPELL_ERINGYAS_ROOTSPIKE:
     {
@@ -2165,16 +2165,26 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, bool escape)
         if (!setup_fragmentation_beam(tempbeam, powc, &you, target, true, nullptr, temp,
             temp))
             return false;
+        break;    
     }
-    break;    
     case SPELL_IGNITE_POISON:
-        return cast_ignite_poison(&you, -1, false, true) == spret::abort;
-    case SPELL_CONVERT_POISON:
-        return cast_convert_poison(&you, -1, false, true) == spret::abort;
+    {
+        if(cast_ignite_poison(&you, -1, false, true) == spret::abort)
+            return false;
+        break;
+    }
     case SPELL_HAILSTORM:
-        return cast_hailstorm(-1, false, true) == spret::abort;
+    {
+        if(cast_hailstorm(-1, false, true) == spret::abort)
+            return false;
+        break;
+    }
     case SPELL_STARBURST:
-        return cast_starburst(-1, false, true) == spret::abort;
+    {
+        if(cast_starburst(-1, false, true) == spret::abort)
+            return false;
+        break;    
+    }
     case SPELL_BECKONING:
     {
         if (minRange > 1) {
@@ -2214,7 +2224,9 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, bool escape)
             if (mons->is_summoned(&duration))
                 affected = true;
         }
-        return affected;
+        if(!affected)
+            return false;
+        break;
     }
     case SPELL_VIOLENT_UNRAVELLING:
     {
@@ -2235,12 +2247,26 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, bool escape)
             return false;
         break;
     }
+    case SPELL_DISPERSAL:
+    {
+        if (apply_monsters_around_square([] (monster& /*mon*/) {
+            return 1;
+        }, you.pos()) <= 0)
+            return false;
+        break;
+    }
     default:
         break;
     }
 
     if (range != -1 && range < targetRange)
         return false;
+
+    if (summons_are_capped(spell)
+        && count_summons(&you, spell) >= summons_limit(spell))
+    {
+        return false;
+    }
 
     if (spell_to_zap(spell) != NUM_ZAPS)
     {
@@ -2253,5 +2279,23 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, bool escape)
     }
 
     return true;
+}
 
+bool is_auto_emergency_spell(spell_type spell) 
+{
+    switch(spell)
+    {
+    case SPELL_SWIFTNESS:
+    case SPELL_CAUSE_FEAR:
+    case SPELL_BLINK:
+    case SPELL_GOLUBRIAS_PASSAGE:
+    case SPELL_DISCORD:
+    case SPELL_DISPERSAL:
+    case SPELL_SUMMON_BUTTERFLIES:
+    case SPELL_CONTROLLED_BLINK:
+    case SPELL_BARRIER:
+        return true;
+    default:
+        return false;
+    }
 }
