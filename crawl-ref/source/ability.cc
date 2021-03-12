@@ -367,6 +367,8 @@ static const ability_def Ability_List[] =
 
     { ABIL_ROLLING_CHARGE, "Rolling Charge", 0, 0, 0, 0, {}, abflag::none },
 
+    { ABIL_AUTOMATON_FORGET_SPELL, "Delete Spell", 0, 0, 0, 0, {}, abflag::starve_ok | abflag::skill_drain },
+
     // EVOKE abilities use Evocations and come from items.
     // Teleportation and Blink can also come from mutations
     // so we have to distinguish them (see above). The off items
@@ -959,8 +961,13 @@ const string make_cost_description(ability_type ability)
     }
     else
     {
-        if (abil.mp_cost)
-            ret += make_stringf(", %d MP", abil.mp_cost);
+        if (abil.mp_cost) {
+            if (you.species == SP_AUTOMATON)
+                ret += make_stringf(", %d Heat", abil.mp_cost);
+            else
+                ret += make_stringf(", %d MP", abil.mp_cost);
+
+        }
         if (ability == ABIL_TRAN_BAT)
         {
             ret += make_stringf(", Stat Drain (%d each)",
@@ -970,7 +977,12 @@ const string make_cost_description(ability_type ability)
         if (ability == ABIL_REVIVIFY)
             ret += ", Frailty";
         if (abil.flags & abflag::variable_mp)
-            ret += ", MP";
+        {
+            if (you.species == SP_AUTOMATON)
+                ret += ", Heat";
+            else
+                ret += ", MP";
+        }
 
         if (ability == ABIL_HEAL_WOUNDS)
             ret += ", Permanent MP";
@@ -2055,6 +2067,15 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
     case ABIL_AGRAPHEDE_SUMMON_SPIDER:
         return you.duration[DUR_POISONING] > 0;
 
+    case ABIL_AUTOMATON_FORGET_SPELL:
+        if (you.spell_no == 0)
+        {
+            if (!quiet)
+                canned_msg(MSG_NO_SPELLS);
+            return false;
+        }
+        return true;
+
     default:
         return true;
     }
@@ -2509,6 +2530,16 @@ static spret _do_ability(const ability_def& abil, bool fail)
             return spret::abort;
     }
     break;
+
+    case ABIL_AUTOMATON_FORGET_SPELL:
+        fail_check();
+        if (cast_selective_amnesia() <= 0)
+        {
+            canned_msg(MSG_OK);
+            return spret::abort;
+        }
+        drain_player(200, false, true);
+        break;
 
     case ABIL_SPIT_POISON:      // Naga poison spit
     {
@@ -5022,6 +5053,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
 
     if (you.get_mutation_level(MUT_ROLL))
         _add_talent(talents, ABIL_ROLLING_CHARGE, check_confused);
+
+    if (you.species == SP_AUTOMATON)
+        _add_talent(talents, ABIL_AUTOMATON_FORGET_SPELL, check_confused);    
 
     // Spit Poison, possibly upgraded to Breathe Poison.
     if (you.get_mutation_level(MUT_SPIT_POISON) == 2)

@@ -6811,7 +6811,7 @@ mon_holy_type player::holiness(bool temp) const
     // Alive Vampires are MH_NATURAL
     if (is_lifeless_undead(temp))
         holi = MH_UNDEAD;
-    else if (species == SP_GARGOYLE)
+    else if (species == SP_GARGOYLE || species == SP_AUTOMATON)
         holi = MH_NONLIVING;
     else
         holi = MH_NATURAL;
@@ -9567,7 +9567,8 @@ bool player::is_auto_spell()
  */
 bool player::auto_cast(const coord_def& target, int delay, auto_spell_phase phase)
 {
-    you.duration[DUR_HEAT] = 5 * BASELINE_DELAY; //heat 5turn
+    if(phase == AS_PHASE_MELEE || phase == AS_PHASE_RANGE)
+        you.duration[DUR_HEAT] = 5 * BASELINE_DELAY; //heat 5turn
 
     init_auto_cast_vector();
     CrawlVector& spell_cooldown = you.props[AUTO_SPELL_COOLDOWN_KEY].get_vector();

@@ -3412,6 +3412,15 @@ bool player_can_join_god(god_type which_god)
         }
     }
 
+    if (you.species == SP_AUTOMATON) {
+        if (which_god == GOD_BEOGH ||
+            which_god == GOD_TROG ||
+            which_god == GOD_YREDELEMNUL ||
+            which_god == GOD_KIKUBAAQUDGHA) {
+            return false;
+        }
+    }
+
     if (you.species == SP_MUMMY || you.species == SP_LICH || you.species == SP_WIGHT) {
         if (which_god == GOD_WYRM) {
             return false;

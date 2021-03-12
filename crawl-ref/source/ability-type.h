@@ -74,7 +74,9 @@ enum ability_type
     ABIL_MELIAI_SMITE,
     // Palentongas
     ABIL_ROLLING_CHARGE,
-    ABIL_MAX_INTRINSIC = ABIL_ROLLING_CHARGE,
+    // Automaton
+    ABIL_AUTOMATON_FORGET_SPELL,
+    ABIL_MAX_INTRINSIC = ABIL_AUTOMATON_FORGET_SPELL,
 
     // Evoking items.
     ABIL_EVOKE_BERSERK = 100,

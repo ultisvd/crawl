@@ -3600,6 +3600,8 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_BURIALIZE;
     case ABIL_MELIAI_SMITE:
         return TILEG_ABILITY_MELIAI_SMITE;
+    case ABIL_AUTOMATON_FORGET_SPELL:
+        return TILEG_ABILITY_AUTOMATON_FORGET_SPELL;
 
     // Divine abilities
     // Zin
