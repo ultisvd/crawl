@@ -234,7 +234,7 @@ public:
                                   bool allow_corrosion = true,
                                   const char* hurt_msg = nullptr) = 0;
     virtual bool corrode_equipment(const char* corrosion_source = "the acid",
-                                   int degree = 1) = 0;
+                                   int degree = 1, bool force = false) = 0;
 
     virtual bool can_hibernate(bool holi_only = false,
                                bool intrinsic_only = false) const;

@@ -4450,7 +4450,7 @@ bool monster::rot(actor *agent, int amount, bool quiet, bool no_cleanup)
     return true;
 }
 
-bool monster::corrode_equipment(const char* corrosion_source, int degree)
+bool monster::corrode_equipment(const char* corrosion_source, int degree, bool force)
 {
     // Don't corrode spectral weapons or temporary items.
     if (mons_is_avatar(type) || type == MONS_PLAYER_SHADOW)
@@ -4460,7 +4460,7 @@ bool monster::corrode_equipment(const char* corrosion_source, int degree)
     // As long as degree is at least 1, we'll apply the status once, because
     // it doesn't look to me like applying it more times does anything.
     // If I'm wrong, we should fix that.
-    if (res_corr())
+    if (res_corr() && !force)
     {
         degree = binomial(degree, 50);
         if (!degree)

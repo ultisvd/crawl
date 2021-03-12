@@ -4599,9 +4599,6 @@ void contaminate_player(int change, bool controlled, bool msg)
 {
     ASSERT(!crawl_state.game_is_arena());
 
-    if (you.species == SP_AUTOMATON) {
-        return;
-    }
 
     int old_amount = you.magic_contamination;
     int old_level  = get_contamination_level();
@@ -4610,6 +4607,14 @@ void contaminate_player(int change, bool controlled, bool msg)
 
     if (change > 0 && player_equip_unrand(UNRAND_ETHERIC_CAGE))
         change *= 2;
+
+    if (you.species == SP_AUTOMATON) {
+        while (x_chance_in_y(change, 7000)) {
+            you.corrode_equipment("Magic contamination", 1, true);
+            change -= 7000;
+        }
+        return;
+    }
 
     you.magic_contamination = max(0, min(250000,
                                          you.magic_contamination + change));
@@ -7520,10 +7525,10 @@ bool player::crustacean_rot(actor */*who*/, int amount, bool quiet, bool /*no_cl
     return true;
 }
 
-bool player::corrode_equipment(const char* corrosion_source, int degree)
+bool player::corrode_equipment(const char* corrosion_source, int degree, bool force)
 {
     // rCorr protects against 50% of corrosion.
-    if (res_corr())
+    if (res_corr() && !force)
     {
         degree = binomial(degree, 50);
         if (!degree)

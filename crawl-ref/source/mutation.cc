@@ -1627,12 +1627,33 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
         }
     }
 
+    //Automaton don't mutate, they corroded
+    if (you.species == SP_AUTOMATON)
+    {
+        switch (mutclass)
+        {
+        case MUTCLASS_TEMPORARY:
+            if (coinflip())
+                return false;
+            // fallthrough to normal mut
+        case MUTCLASS_NORMAL:
+            you.corrode_equipment("Mutation", 1, true);
+            return true;
+        case MUTCLASS_INNATE:
+            // You can't miss out on innate mutations just because you're
+            // temporarily undead.
+            break;
+        default:
+            die("bad fall through");
+            return false;
+        }
+    }
+
     // Undead bodies don't mutate, they fall apart. -- bwr
     if (undead_mutation_rot()
         || you.species == SP_HOMUNCULUS 
         || you.species == SP_ADAPTION_HOMUNCULUS
-        || you.species == SP_ANGEL
-        || you.species == SP_AUTOMATON)
+        || you.species == SP_ANGEL)
     {
         switch (mutclass)
         {

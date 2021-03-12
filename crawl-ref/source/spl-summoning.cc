@@ -96,7 +96,7 @@ static mgen_data _pal_data(monster_type pal, int dur, god_type god,
 
 spret cast_summon_butterflies(int pow, god_type god, bool fail)
 {
-    if (otr_stop_summoning_prompt())
+    if (!you.is_auto_spell() && otr_stop_summoning_prompt())
         return spret::abort;
 
     fail_check();
@@ -121,7 +121,7 @@ spret cast_summon_butterflies(int pow, god_type god, bool fail)
 
 spret cast_summon_small_mammal(int pow, god_type god, bool fail)
 {
-    if (otr_stop_summoning_prompt())
+    if (!you.is_auto_spell() && otr_stop_summoning_prompt())
         return spret::abort;
 
     fail_check();
@@ -150,7 +150,7 @@ spret cast_sticks_to_snakes(int pow, god_type god, bool fail)
     int num_sticks = 0;
     for (item_def& i : you.inv)
         if (i.is_type(OBJ_MISSILES, MI_ARROW)
-            && check_warning_inscriptions(i, OPER_DESTROY))
+            && (you.is_auto_spell() || check_warning_inscriptions(i, OPER_DESTROY)))
         {
             // If the player has bow skill, assume that they
             // would prefer that their regular ammo would be
@@ -168,7 +168,7 @@ spret cast_sticks_to_snakes(int pow, god_type god, bool fail)
         return spret::abort;
     }
 
-    if (otr_stop_summoning_prompt("create snakes"))
+    if (!you.is_auto_spell() && otr_stop_summoning_prompt("create snakes"))
         return spret::abort;
 
     // Sort by the quantity if the player has no bow skill; this will
@@ -241,7 +241,7 @@ spret cast_sticks_to_snakes(int pow, god_type god, bool fail)
 
 spret cast_call_canine_familiar(int pow, god_type god, bool fail)
 {
-    if (otr_stop_summoning_prompt())
+    if (!you.is_auto_spell() && otr_stop_summoning_prompt())
         return spret::abort;
 
     fail_check();
@@ -329,7 +329,7 @@ static monster_type _feature_to_elemental(const coord_def& where)
 //              anyway).
 spret cast_summon_elemental(int pow, god_type god, bool fail)
 {
-   if (otr_stop_summoning_prompt())
+   if (!you.is_auto_spell() && otr_stop_summoning_prompt())
         return spret::abort;
     
     fail_check();
@@ -470,7 +470,7 @@ spret cast_summon_ice_beast(int pow, god_type god, bool fail)
 
 spret cast_monstrous_menagerie(actor* caster, int pow, god_type god, bool fail)
 {
-    if (caster->is_player() && otr_stop_summoning_prompt())
+    if (caster->is_player() && !you.is_auto_spell() && otr_stop_summoning_prompt())
         return spret::abort;
 
     fail_check();
@@ -589,7 +589,7 @@ spret cast_dragon_call(int pow, bool fail)
         return spret::abort;
     }
 
-    if (otr_stop_summoning_prompt("call dragons"))
+    if (!you.is_auto_spell() && otr_stop_summoning_prompt("call dragons"))
         return spret::abort;
 
     fail_check();
@@ -1376,7 +1376,7 @@ bool summon_demon_type(monster_type mon, int pow, god_type god,
 spret cast_summon_demon(int pow, god_type god, bool fail)
 {
     // Chaos spawn, orange demons and sixfirhies are not rPois
-    if (otr_stop_summoning_prompt())
+    if (!you.is_auto_spell() && otr_stop_summoning_prompt())
         return spret::abort;
 
     fail_check();
@@ -1390,7 +1390,7 @@ spret cast_summon_demon(int pow, god_type god, bool fail)
 
 spret cast_summon_greater_demon(int pow, god_type god, bool fail)
 {
-    if (otr_stop_summoning_prompt())
+    if (!you.is_auto_spell() && otr_stop_summoning_prompt())
         return spret::abort;
 
     fail_check();
@@ -1405,7 +1405,7 @@ spret cast_summon_greater_demon(int pow, god_type god, bool fail)
 spret cast_shadow_creatures(int st, god_type god, level_id place,
                                  bool fail)
 {
-    if (otr_stop_summoning_prompt("summon"))
+    if (!you.is_auto_spell() && otr_stop_summoning_prompt("summon"))
         return spret::abort;
 
     fail_check();
@@ -1646,7 +1646,7 @@ spret cast_summon_forest(actor* caster, int pow, god_type god, bool fail)
 
     if (success)
     {
-        if (otr_stop_summoning_prompt("summon a forest"))
+        if (!you.is_auto_spell() && otr_stop_summoning_prompt("summon a forest"))
             return spret::abort;
 
         fail_check();
@@ -2477,7 +2477,7 @@ spret cast_haunt(int pow, const coord_def& where, god_type god, bool fail)
     int mi = m->mindex();
     ASSERT(!invalid_monster_index(mi));
 
-    if (stop_attack_prompt(m, false, you.pos()))
+    if (!you.is_auto_spell() && stop_attack_prompt(m, false, you.pos()))
         return spret::abort;
 
     fail_check();
@@ -4150,7 +4150,7 @@ spret cast_pakellas_summon(int pow, god_type god, bool fail)
         mprf("You cannot use it if you do not believe pakellas.");
         return spret::success;
     }
-    if (otr_stop_summoning_prompt())
+    if (!you.is_auto_spell() && otr_stop_summoning_prompt())
         return spret::abort;
 
     fail_check();
@@ -4309,7 +4309,7 @@ spret fragmentation(int power)
 
 spret cast_summon_hooded_malice(int pow, bool fail)
 {
-    if (otr_stop_summoning_prompt())
+    if (!you.is_auto_spell() && otr_stop_summoning_prompt())
         return spret::abort;
 
     fail_check();

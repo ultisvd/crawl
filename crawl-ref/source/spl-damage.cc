@@ -646,7 +646,7 @@ static spret _cast_los_attack_spell(spell_type spell, int pow,
         // Singing Sword's spell shouldn't give a prompt at this time.
         if (spell != SPELL_SONIC_WAVE)
         {
-            if (stop_attack_prompt(hitfunc, prompt_verb, vul_hitfunc))
+            if (!you.is_auto_spell() && stop_attack_prompt(hitfunc, prompt_verb, vul_hitfunc))
                 return spret::abort;
 
             fail_check();
@@ -780,7 +780,7 @@ spret vampiric_drain(int pow, monster* mons, bool fail)
         return spret::abort;
     }
 
-    if (stop_attack_prompt(mons, false, you.pos()))
+    if (!you.is_auto_spell() && stop_attack_prompt(mons, false, you.pos()))
     {
         canned_msg(MSG_OK);
         return spret::abort;
@@ -840,7 +840,7 @@ spret cast_freeze(int pow, monster* mons, bool fail)
         return spret::success;
     }
 
-    if (stop_attack_prompt(mons, false, you.pos()))
+    if (!you.is_auto_spell() && stop_attack_prompt(mons, false, you.pos()))
     {
         canned_msg(MSG_OK);
         return spret::abort;
@@ -888,7 +888,8 @@ spret cast_airstrike(int pow, const dist &beam, bool fail)
         return spret::success; // still losing a turn
     }
 
-    if (!(have_passive(passive_t::shoot_through_plants)
+    if (!you.is_auto_spell() && 
+        !(have_passive(passive_t::shoot_through_plants)
           && fedhas_protects(*mons))
         && stop_attack_prompt(mons, false, you.pos()))
     {
@@ -1124,7 +1125,7 @@ spret cast_shatter(int pow, bool fail)
                     && fedhas_protects(*act->as_monster()))
                && _shatterable(act);
     };
-    if (stop_attack_prompt(hitfunc, "attack", vulnerable))
+    if (!you.is_auto_spell() && stop_attack_prompt(hitfunc, "attack", vulnerable))
         return spret::abort;
 
     fail_check();
@@ -1361,7 +1362,7 @@ spret cast_irradiate(int powc, actor* who, bool fail)
                     && fedhas_protects(*act->as_monster()));
     };
 
-    if (stop_attack_prompt(hitfunc, "irradiate", vulnerable))
+    if (!you.is_auto_spell() && stop_attack_prompt(hitfunc, "irradiate", vulnerable))
         return spret::abort;
 
     fail_check();
@@ -2108,7 +2109,7 @@ bool safe_discharge(coord_def where, vector<const actor *> &exclude)
                     continue;
                 }
 
-                if (stop_attack_prompt(act->as_monster(), false, where))
+                if (!you.is_auto_spell() && stop_attack_prompt(act->as_monster(), false, where))
                     return false;
             }
             // Don't prompt for the player, but always continue arcing.
@@ -2553,7 +2554,8 @@ spret cast_thunderbolt(actor *caster, int pow, coord_def aim, bool fail)
                                  prev);
     hitfunc.set_aim(aim);
 
-    if (caster->is_player()
+    if (!you.is_auto_spell()
+        && caster->is_player()
         && stop_attack_prompt(hitfunc, "zap", _elec_not_immune))
     {
         return spret::abort;
@@ -2843,7 +2845,7 @@ spret cast_dazzling_spray(int pow, coord_def aim, bool fail)
 
     targeter_spray hitfunc(&you, range, ZAP_DAZZLING_SPRAY);
     hitfunc.set_aim(aim);
-    if (stop_attack_prompt(hitfunc, "fire towards", _dazzle_can_hit))
+    if (!you.is_auto_spell() && stop_attack_prompt(hitfunc, "fire towards", _dazzle_can_hit))
         return spret::abort;
 
     fail_check();
@@ -2878,7 +2880,7 @@ spret cast_toxic_radiance(actor *agent, int pow, bool fail, bool mon_tracer)
     {
         targeter_radius hitfunc(&you, LOS_NO_TRANS);
         {
-            if (stop_attack_prompt(hitfunc, "poison", toxic_can_affect))
+            if (!you.is_auto_spell() && stop_attack_prompt(hitfunc, "poison", toxic_can_affect))
                 return spret::abort;
         }
         fail_check();
@@ -3128,6 +3130,7 @@ spret cast_glaciate(actor *caster, int pow, coord_def aim, bool fail)
     hitfunc.set_aim(aim);
 
     if (caster->is_player()
+        && !you.is_auto_spell()
         && stop_attack_prompt(hitfunc, "glaciate", _player_glaciate_affects))
     {
         return spret::abort;
@@ -3245,7 +3248,7 @@ spret cast_scattershot(const actor *caster, int pow, const coord_def &pos,
 
     if (caster->is_player())
     {
-        if (stop_attack_prompt(hitfunc, "scattershot"))
+        if (!you.is_auto_spell() && stop_attack_prompt(hitfunc, "scattershot"))
             return spret::abort;
     }
 
@@ -3360,7 +3363,8 @@ spret cast_eringyas_rootspike(int splpow, const dist& beam, bool fail)
         return spret::success; // still losing a turn
     }
 
-    if (!(have_passive(passive_t::shoot_through_plants)
+    if (!you.is_auto_spell() 
+        && !(have_passive(passive_t::shoot_through_plants)
           && fedhas_protects(*mons))
         && stop_attack_prompt(mons, false, you.pos()))
     {
@@ -4021,7 +4025,7 @@ spret cast_hailstorm(int pow, bool fail, bool tracer)
         return spret::abort;
     }
 
-    if (stop_attack_prompt(hitfunc, "hailstorm", vulnerable))
+    if (!you.is_auto_spell() && stop_attack_prompt(hitfunc, "hailstorm", vulnerable))
         return spret::abort;
 
     fail_check();

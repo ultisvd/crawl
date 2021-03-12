@@ -57,7 +57,7 @@ fake_mutations:
     short: auto spell
   - long: You use heat instead of mp.
   - long: "You need no food."
-  - long: "You completely resist mutation and magic contamination."
+  - long: "You corrode instead of getting mutation and magic contamination."
 recommended_jobs:
   - JOB_WIZARD
   - JOB_CONJURER

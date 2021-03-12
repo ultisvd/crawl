@@ -1295,8 +1295,6 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "your current blood level is not sufficient.";
         if (you.species == SP_ADAPTION_HOMUNCULUS)
             return "you're an artificial being.";
-        if (you.species == SP_AUTOMATON)
-            return "you're an artificial being.";
         break;
 
     case SPELL_BLADE_HANDS:
@@ -1311,8 +1309,6 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "your current blood level is not sufficient.";
         if (you.species == SP_ADAPTION_HOMUNCULUS)
             return "you're an artificial being.";
-        if (you.species == SP_AUTOMATON)
-            return "you're an artificial being.";
         break;
         
     case SPELL_HYDRA_FORM:
@@ -1326,8 +1322,6 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         if (temp && you.is_lifeless_undead())
             return "your current blood level is not sufficient.";
         if (you.species == SP_ADAPTION_HOMUNCULUS)
-            return "you're an artificial being.";
-        if (you.species == SP_AUTOMATON)
             return "you're an artificial being.";
         break;
         
@@ -1951,12 +1945,6 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_p
             return false;
         break;
     }
-    case SPELL_STONESKIN:
-    {
-        if (you.duration[DUR_STONESKIN])
-            return false;
-        break;
-    }
     case SPELL_REPEL_MISSILES:
     {
         if (you.duration[DUR_REPEL_MISSILES])
@@ -2010,6 +1998,28 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_p
     {
         if (you.duration[DUR_INSULATION]
             || you.res_elec() > 0)
+            return false;
+        break;
+    }
+    case SPELL_STONESKIN:
+    {
+        if (you.form != transformation::none
+            && you.form != transformation::appendage
+            && you.form != transformation::statue
+            && you.form != transformation::blade_hands)
+            return false;
+
+        if (you.duration[DUR_ICY_ARMOUR])
+            return false;
+        if (you.duration[DUR_STONESKIN])
+            return false;
+        if (you.attribute[ATTR_BONE_ARMOUR] > 0)
+            return false;
+        break;
+    }
+    case SPELL_REGENERATION:
+    {
+        if (you.hp*100/you.hp_max > 70 || you.duration[DUR_REGENERATION])
             return false;
         break;
     }
@@ -2260,6 +2270,54 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_p
             return false;
         break;
     }
+    case SPELL_IRRADIATE:
+    {
+        if (apply_monsters_around_square([](monster& /*mon*/) {
+            return 1;
+            }, you.pos()) <= 0)
+            return false;
+        break;
+    }
+    case SPELL_STICKS_TO_SNAKES:
+    {
+        list<item_def*> valid_sticks;
+        int num_sticks = 0;
+        for (item_def& i : you.inv)
+            if (i.is_type(OBJ_MISSILES, MI_ARROW))
+            {
+                // If the player has bow skill, assume that they
+                // would prefer that their regular ammo would be
+                // used first
+                if (get_ammo_brand(i) == SPMSL_NORMAL)
+                    valid_sticks.push_front(&i);
+                else
+                    valid_sticks.push_back(&i);
+                num_sticks += i.quantity;
+            }
+
+        if (valid_sticks.empty())
+        {
+            return false;
+        }
+        break;
+    }
+
+    //form
+    case SPELL_BEASTLY_APPENDAGE:
+    case SPELL_BLADE_HANDS:
+    case SPELL_DRAGON_FORM:
+    case SPELL_HYDRA_FORM:
+    case SPELL_ICE_FORM:
+    case SPELL_SPIDER_FORM:
+    case SPELL_STATUE_FORM:
+    case SPELL_NECROMUTATION:
+    case SPELL_ELDRITCH_FORM:
+    {
+        if (you.form != transformation::none)
+            return false;
+        break;
+    }
+
     default:
         break;
     }
@@ -2290,6 +2348,20 @@ bool is_currect_phase_auto_spell(spell_type spell, auto_spell_phase phase)
 {
     switch(spell)
     {
+    case SPELL_INFUSION:
+    case SPELL_SPECTRAL_WEAPON:
+    case SPELL_EXCRUCIATING_WOUNDS:
+    case SPELL_FLAME_STRIKE:
+    case SPELL_BEASTLY_APPENDAGE:
+    case SPELL_BLADE_HANDS:
+    case SPELL_DRAGON_FORM:
+    case SPELL_HYDRA_FORM:
+    case SPELL_ICE_FORM:
+    case SPELL_SPIDER_FORM:
+    case SPELL_ELDRITCH_FORM:
+        return phase == AS_PHASE_MELEE;
+    case SPELL_PORTAL_PROJECTILE:
+        return phase == AS_PHASE_RANGE;
     case SPELL_SWIFTNESS:
     case SPELL_CAUSE_FEAR:
     case SPELL_BLINK:
@@ -2302,8 +2374,6 @@ bool is_currect_phase_auto_spell(spell_type spell, auto_spell_phase phase)
         return phase == AS_PHASE_ESCAPE;
     case SPELL_HASTE:
         return phase == AS_PHASE_ESCAPE || phase == AS_PHASE_MELEE || phase == AS_PHASE_RANGE;
-    case SPELL_PORTAL_PROJECTILE:
-        return phase == AS_PHASE_RANGE;
     case SPELL_INVISIBILITY:
         return phase == AS_PHASE_ENCOUNT || phase == AS_PHASE_MELEE || phase == AS_PHASE_RANGE;
     default:

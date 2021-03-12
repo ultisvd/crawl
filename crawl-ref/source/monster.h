@@ -490,7 +490,7 @@ public:
                           bool /*allow_corrosion*/ = true,
                           const char* /*hurt_msg*/ = nullptr) override;
     bool corrode_equipment(const char* corrosion_source = "the acid",
-                           int degree = 1) override;
+                           int degree = 1, bool force = false) override;
     int hurt(const actor *attacker, int amount,
              beam_type flavour = BEAM_MISSILE,
              kill_method_type kill_type = KILLED_BY_MONSTER,

@@ -140,7 +140,7 @@ spret cast_poisonous_vapours(int pow, const dist &beam, bool fail)
         return spret::abort;
     }
 
-    if (stop_attack_prompt(mons, false, you.pos()))
+    if (!you.is_auto_spell() && stop_attack_prompt(mons, false, you.pos()))
         return spret::abort;
 
     cloud_struct* cloud = cloud_at(beam.target);
@@ -695,7 +695,7 @@ spret cast_cloud_cone(const actor *caster, int pow, const coord_def &pos,
 
     if (caster->is_player())
     {
-        if (stop_attack_prompt(hitfunc, "cloud"))
+        if (!you.is_auto_spell() && stop_attack_prompt(hitfunc, "cloud"))
             return spret::abort;
     }
 
