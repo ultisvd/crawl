@@ -7,14 +7,105 @@
 
 ## [Unreleased]
 ### Added
+- 새로운 종족 오토마톤 추가. 마법으로 움직이는 자동 기계로, 마법을 직접 시전할 순 없지만 자신의 몸에 마법을 새겨서 전투중에 자동으로 사용한다. [상세설명](https://github.com/kimjoy2002/crawl/wiki/automaton)
+  - Added automaton(playable), automatic machine that moves and acts on its own by magic. They cannot use spell directly, but they can engrave spell on their bodies and use them in battle.
+
+- 슬럿지엘프 복구
+  - rollback sludge elf
+
+- 미니포탈 하이브 추가
+  - add miniportal hive
+
+- 아티팩트 +6 레후딥의 수정창 {return, throwable Int+3} 복구. 베이스 무기가 수정창으로 바뀌었고, 근접이나 투척으로 둘다 사용할 수 있다. (베이스 데미지 14)
+  - Rollback artefact, the +6 Lehudib's crystal spear {return, throwable Int+3}. The base weapon has been changed to a crystal spear, and can be used both by melee weapon and projectile. (base damage 14)
+
+- 아티팩트 링 stone of krohman {conj+ +Blink MP+18 \*Curse} 추가
+  - Add artefact ring, stone of krohman {conj+ +Blink MP+18 \*Curse}
+
+- 아티팩트 장갑 -2 pair of gauntlets of Distotion {Distotion, \*Blink EV+4 \*Curse} 추가. 모든 공격(근접, 원거리포함)에 왜곡 속성을 붙임. 피격시 일정 확률로 강제 블링크가 발생함 
+  - Add artefact gauntlet, 2 pair of gauntlets of Distotion {Distotion, \*Blink EV+4 \*Curse}. Gauntlets with a distortion brand in all attacks when worn. Instead, It may blink you when you take damage
+
+- 냉기 구름은 가끔 얕은 물이나 깊은 물을 얼림
+ - Ice clouds can occasionally freeze shallow water or deepen it
+
+- 볼더비틀이 다시 추가됨. 0.19버전 이전에서 굴러다니는 버전으로
+ - Add Boulder Beatle again. From version 0.19 version
 
 ### Changed
+- 이머스테하 리워크 Rework Imus thea
+  - 0*: 양손 패널티 삭제
+    - 0*: remove two-handed penalty 
+  - 1*: 들고 있는 무기를 투사체처럼 발사 가능 (1마나)
+    - 1*: weapons can be fired like projectiles (1 mana)
+  - 2*: 모든 투사체가 벽에 반사됨
+    - 2*: all projectiles are reflected off the wall
+  - 3*: 스펙트럼: 투사체가 다즐링 스프레이와 같이 분산가능해짐
+    - 3*: Spectrum: Projectiles are dispersed like Dazzling spray
+  - 5*: 분산: 더 이상 사용시 체력을 깎지않고 투사체에 반응하여 똑같은 투사체를 발사하도록 리워크
+    - 5*: Fragmentation. Rework to follow projectile firing and without losing health.
+    
+- 멜리아이에게 스마이트 능력 부여
+  - Gives meliai the smite ability
+  
+- 특이점은 이제 피아식별을 하지않고 근처의 모든 것을 느리게 한다
+  - Singularity now hits allies and slow down all thing near it.
+  
+- 지옥 계단은 이제 한번에 1~3칸씩 내려감
+  - Hell stairs now go down one~three floors at a time
+  
+- 용갑옷을 입고 용폼을 사용하면 해당 갑옷의 저항을 획득함
+  - Get resistance bonuses from dragon scale in dragon form.
 
+- 레서리치의 마나변이 레벨이 3까지 증가, 더 이상 리치폼이 되었을때도 사라지지않음
+  - Lesserich's combet mana regeneration mutation increase level to 3 level, and no longer disappears when it's lich form.
+
+- 수정창(창 상위티어)의 드랍율 감소
+  - Decrease drop rate of crystal spear
+
+- 스프린트에서 새로운 신들을 믿을 수 있도록 수정
+  - Modified to be able to believe in a new god in the sprint.
+
+- 지니에게 뎀네이션 면역을 줌
+  - give rDamnation to djinni
+
+- 아그라피드는 더 이상 mp를 쓰지않음. 큐어링 포션을 금지하지 않는 대신 독을 치유할 수 없게 함
+  - remove mp cost of all agraphede power. agraphede doesn't hate cursing foam anymore, but can't cure poison. 
+ 
+- 천사는 더 이상 신의 징벌로 변이가 발생하지 않음
+  - Angels no longer mutate as wrath from God.
+
+- 호문클루스의 파이팅, 스펠캐스팅 교차수련이 체력과 마나의 최대치를 늘림
+  - Allow blossom homunculus closs training boosts to adjust max hp, mp 
+
+### 0.26 Featrue
+- 데몬스폰변이 - Demonspawn Mut
+- 에링야독늪지리워크 - E'NB rework
+- 애니메이트가까운시체 - Animate skeleton
+- 데미지명중률인터페이스표시 - Showing Damage/Accuracy
+- 팔렌통가 - Palentonga 
+- 램패이징 - Rampage
+- 쉐도우스카프 - Scarf of shadow
+- 뱀피릭드레인제한삭제 - Vampiric Drain heal cap removal
+- 소드오브파워변경 - Sword of power
+- 스펙트럴에고 - Spectral Ego
+- 콘댄서베인 - Condensor vane
+- 가드글레이브변경 - Glaive of the guard
+- 스펠파워퍼센티지 - Spellpower shown as %
+- 조사원 - Delver
+- 빔관통사거리유지 - Beam type projectile with no range reduce upon hit
+- 팬텀미러,짐승상자XP기반 - Phantom mirror and box of beast charge with XP
+- 마진보변경 - Majin-bo change
+- 저항의방패변경 - Shield of resistance change
+- 짐승적부속지머리신발 - Beastly Appendage melding hat/boot
+- 어트랙션포션 - pots of Attraction
+- 판데로드강화 - Enhancing Panlords
 
 ### Removed
+- maybe not
 
 
-## [kimchi-1.2.3] - ~2020-11-08
+## [kimchi-1.2.5] - ~2020-12-18
+
 ### Bug Fixed
 - 획득스크롤을 R키로 리롤가능한 버그 수정
   - Fixed bug where acqscrolls can be re-rollable with R keys
@@ -54,35 +145,9 @@
   
 - 구름 면역 스카프가 힐링클라우드를 막도록 수정
   - Fixed cloud Immune scarf to prevent healing cloud. 
- 
-### Added
-- 아티팩트 +6 레후딥의 수정창 {return, throwable Int+3} 복구. 베이스 무기가 수정창으로 바뀌었고, 근접이나 투척으로 둘다 사용할 수 있다. (베이스 데미지 14)
-  - Rollback artefact, the +6 Lehudib's crystal spear {return, throwable Int+3}. The base weapon has been changed to a crystal spear, and can be used both by melee weapon and projectile. (base damage 14)
 
-### Changed
-- 이머스테하 리워크. 아직 미완성임 Rework Imus thea, but It is still unfinished.
-  - 0*: 양손 패널티 삭제
-    - 0*: remove two-handed penalty 
-  - 1*: 들고 있는 무기를 투사체처럼 발사 가능 (1마나)
-    - 1*: weapons can be fired like projectiles (1 mana)
-  - 2*: 모든 투사체가 벽에 반사됨
-    - 2*: all projectiles are reflected off the wall
-  - 3*: 스펙트럼: 투사체가 다즐링 스프레이와 같이 분산가능해짐
-    - 3*: Spectrum: Projectiles are dispersed like Dazzling spray
-  - 5*: 분산: 더 이상 사용시 체력을 깎지않고 투사체에 반응하여 똑같은 투사체를 발사하도록 리워크
-    - 5*: Fragmentation. Rework to follow projectile firing and without losing health.
-    
-- 멜리아이에게 스마이트 능력 부여
-  - Gives meliai the smite ability
-  
-- 특이점은 이제 피아식별을 하지않고 근처의 모든 것을 느리게 한다
-  - Singularity now hits allies and slow down all thing near it.
-  
-- 지옥 계단은 이제 한번에 1~3칸씩 내려감
-  - Hell stairs now go down one~three floors at a time
-  
-- 용갑옷을 입고 용폼을 사용하면 해당 갑옷의 저항을 획득함
-  - Get resistance bonuses from dragon scale in dragon form.
+- 레후딥의 수정창과 관련된 크래쉬 수정
+  - fixed lehudip crash bug
 
 ## [kimchi-1.2] - ~2020-10-04
 ### Added
