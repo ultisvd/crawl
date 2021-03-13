@@ -1070,10 +1070,13 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
         pbolt.use_target_as_pos = true;
         pbolt.affect_cell();
         pbolt.affect_endpoint();
-        if (!did_return)
+        if (!did_return && !is_imus_throw)
             pbolt.drop_object();
         // Costs 1 MP per shot.
         dec_mp(1);
+        if (is_imus_throw) {
+            dec_mp(1);
+        }
     }
     else
     {
