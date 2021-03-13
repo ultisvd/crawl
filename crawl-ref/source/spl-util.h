@@ -48,6 +48,7 @@ enum spell_highlight_colours
     COL_INAPPLICABLE = COL_USELESS, // ability cannot be meanifully applied (eg, no targets)
     COL_FORBIDDEN    = LIGHTRED,    // The player's god hates this ability
     COL_DANGEROUS    = LIGHTRED,    // ability/spell use could be dangerous
+    COL_WARNING      = MAGENTA,     // ability/spell warning
 };
 
 bool is_valid_spell(spell_type spell);
@@ -141,3 +142,4 @@ const vector<spell_type> *soh_breath_spells(spell_type spell);
 
 bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_phase phase);
 bool is_currect_phase_auto_spell(spell_type spell, auto_spell_phase phase);
+bool is_dangerous_auto_spell(spell_type spell);

@@ -2380,3 +2380,22 @@ bool is_currect_phase_auto_spell(spell_type spell, auto_spell_phase phase)
         return phase == AS_PHASE_MELEE || phase == AS_PHASE_RANGE;
     }
 }
+
+bool is_dangerous_auto_spell(spell_type spell)
+{
+    switch (spell)
+    {
+    case SPELL_FIREBALL:
+    case SPELL_FIRE_STORM:
+    case SPELL_CONJURE_BALL_LIGHTNING:
+    case SPELL_LIGHTNING_BOLT:
+    case SPELL_FREEZING_CLOUD:
+    case SPELL_LRD:
+    case SPELL_VIOLENT_UNRAVELLING:
+    case SPELL_OLGREBS_LAST_MERCY:
+        return true;
+    default:
+        return false;
+    }
+
+}

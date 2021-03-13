@@ -823,11 +823,27 @@ private:
     colour_t entry_colour(const sortable_spell& entry)
     {
         if (vehumet_is_offering(entry.spell))
-            return LIGHTBLUE;
+        {
+            if (you.is_auto_spell() && is_dangerous_auto_spell(entry.spell))
+            {
+                return COL_WARNING;
+            }
+            else
+                return LIGHTBLUE;
+        }
         else
         {
-            return spell_highlight_by_utility(entry.spell, COL_UNKNOWN, false,
+            colour_t colour_ = spell_highlight_by_utility(entry.spell, COL_UNKNOWN, false,
                     you.divine_exegesis ? false : true);
+            if (colour_ == COL_UNKNOWN)
+            {
+                if (you.is_auto_spell() && is_dangerous_auto_spell(entry.spell))
+                {
+                    return COL_WARNING; //colour for only memorize..
+                }
+                else
+                    return colour_;
+            }
         }
     }
 
