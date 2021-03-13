@@ -219,6 +219,9 @@ spret cast_big_c(int pow, spell_type spl, const actor *caster, bolt &beam,
     beam.is_tracer         = true;
     beam.use_target_as_pos = true;
     beam.origin_spell      = spl;
+    if (you.is_auto_spell()) {
+        beam.dont_stop_player = true;
+    }
     beam.affect_endpoint();
     if (beam.beam_cancelled)
         return spret::abort;
