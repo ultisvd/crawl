@@ -246,6 +246,11 @@ Costs your memories of battle, causing drain yourself. Curse a weapon you wield
 and enchant it. This enchantment is based on the base damage of weapon.
 This is one of ways to over-enchant, and the only way to enchant artefacts.
 %%%%
+#Automaton
+Delete Spell ability
+
+Deletes a known spell from the body, so as to free memory to engrave others.
+%%%%
 # Zin
 Recite ability
 

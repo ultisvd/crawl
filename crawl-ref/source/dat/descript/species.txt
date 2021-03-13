@@ -225,3 +225,9 @@ Sometimes their bodies burst into living lightning when damaged, and they
 move to a nearby chosen spot then deal damage to anything on the path. Suppressing
 Blink-Bolt will cause contamination.
 %%%%
+Automaton
+
+Automatons are an automatic machine that moves and acts on its own by magic. 
+They cannot use spell directly, but they can engrave spell on their bodies
+and use them in battle.
+%%%%
