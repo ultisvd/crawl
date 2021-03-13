@@ -9580,7 +9580,7 @@ bool player::auto_cast(const coord_def& target, int delay, auto_spell_phase phas
         const spell_flags flags = get_spell_flags(spl);
 
         if (spell_cooldown[i].get_int() > 0) {
-            if(phase == AS_PHASE_MELEE || phase == AS_PHASE_RANGE)
+            if(phase == AS_PHASE_MELEE || phase == AS_PHASE_RANGE || phase == AS_PHASE_ENCOUNT)
                 spell_cooldown[i].get_int() -= delay;
             if(spell_cooldown[i].get_int() > 0) {
                 continue;
@@ -9596,7 +9596,9 @@ bool player::auto_cast(const coord_def& target, int delay, auto_spell_phase phas
             continue;
         }
 
-        if (!can_auto_cast_spell(spl, (flags & spflag::selfench) ? you.pos() : target, phase))
+        if (!can_auto_cast_spell(spl,
+            (flags & spflag::selfench && spl != SPELL_INVISIBILITY) //more comflex case in invisible
+            ? you.pos() : target, phase))
         {
             continue;
         }

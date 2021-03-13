@@ -828,8 +828,7 @@ private:
             {
                 return COL_WARNING;
             }
-            else
-                return LIGHTBLUE;
+            return LIGHTBLUE;
         }
         else
         {
@@ -841,9 +840,8 @@ private:
                 {
                     return COL_WARNING; //colour for only memorize..
                 }
-                else
-                    return colour_;
             }
+            return colour_;
         }
     }
 

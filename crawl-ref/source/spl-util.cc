@@ -1963,6 +1963,16 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_p
             return false;
         break;
     }
+    case SPELL_INVISIBILITY:
+    {
+        if (you.duration[DUR_INVIS])
+            return false;
+        if (mons->can_see_invisible())
+            return false;
+        mons = nullptr; //for self beam check
+        break;
+    }
+
     case SPELL_ELENENTAL_WEAPON:
     {
         item_def* wpn = you.weapon();

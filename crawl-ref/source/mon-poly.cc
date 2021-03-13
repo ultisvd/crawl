@@ -696,4 +696,9 @@ void seen_monster(monster* mons)
 
     if (mons_allows_beogh(*mons))
         env.level_state |= LSTATE_BEOGH;
+
+    if (you.is_auto_spell())
+    {
+        you.auto_cast(mons->pos(), BASELINE_DELAY, AS_PHASE_ENCOUNT);
+    }
 }
