@@ -48,6 +48,7 @@ void init_pandemonium()
         env.mons_alloc[pc] = random_choose_weighted(5, MONS_SMOKE_DEMON,
                                                     5, MONS_YNOXINUL,
                                                     5, MONS_ABOMINATION_LARGE,
+                                                    2, MONS_INTERDIMENSIONAL_GRAPE,
                                                     5, MONS_SOUL_EATER,
                                                     5, MONS_DEMONIC_CRAWLER,
                                                     5, MONS_SUN_DEMON,
@@ -57,6 +58,7 @@ void init_pandemonium()
                                                     1, MONS_LOROCYPROCA,
                                                     1, MONS_HELLION,
                                                     1, MONS_TORMENTOR,
+                                                    1, MONS_CUBUS,
                                                     1, MONS_REAPER);
 
         // The last three slots have a good chance of big badasses.

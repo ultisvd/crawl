@@ -1130,7 +1130,8 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         invalidate_agrid(true);
     if (mg.cls == MONS_SILENT_SPECTRE
         || mg.cls == MONS_PROFANE_SERVITOR
-        || mg.cls == MONS_FALLEN)
+        || mg.cls == MONS_FALLEN
+        || mg.cls == MONS_INTERDIMENSIONAL_GRAPE)
         invalidate_agrid(true);
 
     // If the caller requested a specific colour for this monster, apply
@@ -3094,6 +3095,7 @@ monster_type random_demon_by_tier(int tier)
                              MONS_REAPER,
                              MONS_LOROCYPROCA,
                              MONS_TORMENTOR,
+                             MONS_CUBUS,
                              MONS_SHADOW_DEMON);
     case 1:
         return random_choose(MONS_BRIMSTONE_FIEND,

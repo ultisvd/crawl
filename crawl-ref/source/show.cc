@@ -155,6 +155,9 @@ static void _update_feat_at(const coord_def &gp)
     if (within_healaura(gp))
         env.map_knowledge(gp).flags |= MAP_HEALAURA;
 
+    if (interdim_crosspoint(gp))
+        env.map_knowledge(gp).flags |= MAP_INTERDIMENSIONAL;
+        
     if (is_sanctuary(gp))
     {
         if (testbits(env.pgrid(gp), FPROP_SANCTUARY_1))

@@ -33,6 +33,7 @@
 #include "dungeon.h"
 #include "english.h"
 #include "exercise.h"
+#include "equipment-type.h"
 #include "fight.h"
 #include "food.h"
 #include "god-abil.h"
@@ -3842,6 +3843,37 @@ void bolt::affect_player_enchantment(bool resistible)
         _unravelling_explode(*this);
         obvious_effect = true;
         break;
+    
+    case BEAM_DISARM:
+    {
+        equipment_type slot = (equipment_type)random_range(-1, 1+(you.species != SP_TWO_HEADED_OGRE));
+        bool succ = false;
+        if (slot == EQ_NONE)
+            break;
+        else if (slot == EQ_WEAPON)
+        {
+            if (!you.weapon())
+                break;
+            succ = wield_weapon(true, -2, false, false, false, false, false);
+            you.turn_is_over = false;
+            you.time_taken = 0;
+        }
+        else if (slot == EQ_SECOND_WEAPON)
+        {
+            if (!you.second_weapon())
+                break;
+            mprf(MSGCH_WARN, "You are disarmed.");
+            succ = wield_weapon(true, -2, false, false, false, false, true);
+            you.turn_is_over = false;
+            you.time_taken = 0;
+        }
+        if (succ)
+        {
+            mprf(MSGCH_WARN, "You are disarmed.");
+            obvious_effect = true;
+        }
+        break;
+    }
 
     default:
         // _All_ enchantments should be enumerated here!
@@ -5559,6 +5591,10 @@ bool ench_flavour_affects_monster(beam_type flavour, const monster* mon,
         rc = !mons_aligned(&you, mon) && you.can_constrict(mon, false);
         break;
 
+    case BEAM_DISARM:
+    //  weapon/second_weapon
+        break;
+
     default:
         break;
     }
@@ -6995,6 +7031,7 @@ static string _beam_type_name(beam_type type)
     case BEAM_ROD_FIRE:              return "fire";
     case BEAM_ROD_COLD:              return "cold";
     case BEAM_ROD_ELEC:              return "electricity";
+    case BEAM_DISARM:                return "disarm";
     case BEAM_ROD_POISON:            return "poison";
 
     case NUM_BEAMS:                  die("invalid beam type");

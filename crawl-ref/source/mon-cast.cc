@@ -148,7 +148,7 @@ static bool _worth_hexing(const monster &caster, spell_type spell);
 static bool _torment_vulnerable(actor* victim);
 static function<bool(const monster&)> _should_selfench(enchant_type ench);
 static void _cast_grasping_roots(monster &caster, mon_spell_slot, bolt&);
-static bool _nightmare_of_cubus(monster &caster, mon_spell_slot, bolt&);
+static bool _allure_of_cubus(monster &caster, mon_spell_slot, bolt&);
 
 enum spell_logic_flag
 {
@@ -344,7 +344,13 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
     } },
     { SPELL_STILL_WINDS, { _should_still_winds, _cast_still_winds } },
     { SPELL_SMITING, { _caster_has_foe, _cast_smiting, } },
-    { SPELL_NIGHTMARE_OF_CUBUS, { _caster_sees_foe, _nightmare_of_cubus, } },
+    { SPELL_ALLURE_OF_CUBUS, { 
+        [](const monster &caster){
+            const actor* foe = caster.get_foe();
+            if (foe && (foe->undead_or_demonic() || foe->is_nonliving() || foe->is_holy()))
+                return false;
+            return foe && _caster_sees_foe(caster);
+            }, _allure_of_cubus, } },
     { SPELL_RESONANCE_STRIKE, { _caster_has_foe, _cast_resonance_strike, } },
     { SPELL_FLAY, {
         [](const monster &caster) {
@@ -516,6 +522,12 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
         nullptr,
         MSPELL_NO_AUTO_NOISE,
     } },
+    { SPELL_DISARM, _hex_logic(SPELL_DISARM, [](const monster &caster) {
+        const actor* foe = caster.get_foe();
+        return foe && (!foe->is_player() || foe->as_player()->weapon() || foe->as_player()->second_weapon()) 
+                   && (!foe->is_monster());
+    }, 16) },
+
 };
 
 /// Is the 'monster' actually a proxy for the player?
@@ -1778,7 +1790,7 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_SUMMON_HORRIBLE_THINGS:
     case SPELL_MALIGN_GATEWAY:
     case SPELL_SYMBOL_OF_TORMENT:
-    case SPELL_NIGHTMARE_OF_CUBUS:
+    case SPELL_ALLURE_OF_CUBUS:
     case SPELL_CAUSE_FEAR:
     case SPELL_MESMERISE:
     case SPELL_SUMMON_GREATER_DEMON:
@@ -8093,83 +8105,28 @@ if (!_can_takeoff_armour(item))
 
     return true;
 */
-static bool _nightmare_of_cubus(monster &caster, mon_spell_slot, bolt&)
+static bool _allure_of_cubus(monster &caster, mon_spell_slot, bolt&)
 {
     actor* foe = caster.get_foe();
     ASSERT(foe);
-    vector<equipment_type> ret = current_equip_types();
-    vector<equipment_type> arm = current_armour_types();
+    vector<equipment_type> ret = current_jewellery_types();
 
-    const int mrs = foe->res_magic() + random2(60) - 30;
-
-    if (!(mrs < 200))
-    {
-        mpr("It is groaning with anger.");
-        return false;
-    }
-    mpr("You are fallen down into the nightmare of cubus. Cubus charmingly approaches to you and whisper.");
     if (foe->is_player())
     {   
-        
-        //forced remove your weapon
+        //forced remove your jewellery
         if (coinflip() && !ret.empty())
         {
             equipment_type slot= *random_iterator(ret);
-        if (you.equip[slot] != -1 && !you.melded[slot])
-        {   
-            ASSERT_RANGE(slot, EQ_FIRST_EQUIP, NUM_EQUIP);
-            int item_slot = you.equip[slot];
-            if (item_slot == -1)
-                return false;
-            if (is_unrandom_artefact(you.inv[item_slot], UNRAND_FINGER_AMULET)
-                && you.equip[EQ_RING_AMULET] != -1)
-                    item_slot = you.equip[EQ_RING_AMULET];
-            item_def item = you.inv[item_slot];
-
-            mprf(MSGCH_TALK, "\"Take off your %s..\"", item.name(DESC_YOUR).c_str());
-            ASSERT(!you.melded[slot] || you.equip[slot] != -1);
-            mprf("You wake up and suddenly realize that you took it off yourself.");
-            
-            if (!item.cursed())
+            if (you.equip[slot] != -1)
             {
-                you.equip[slot] = -1;
-
-                unequip_effect(slot, item_slot, false, true);
-                ash_check_bondage();
-                you.last_unequip = item_slot;
-                return true;
+                mprf(MSGCH_WARN, "You suddenly replace your %s.", you.inv[you.equip[slot]].name(DESC_THE).c_str());
+                unequip_item(slot, false);
             }
-            }
-        }
-        else if(!arm.empty())
-        {
-            
-            equipment_type slot2 = *random_iterator(arm);
-            if (you.equip[slot2] != -1 && !you.melded[slot2])
-            {
-                mprf(MSGCH_TALK, "\"Unshelve your %s..\"", you.inv[you.equip[slot2]].name(DESC_YOUR).c_str());
-                duration_type dur = (duration_type)((int)DUR_UNSH_CLOAK + (int)(slot2 - EQ_CLOAK));
-                you.set_duration(dur, 5);
-                you.redraw_armour_class = true;
-                const int item_slot = you.equip[slot2];
-                item_def item = you.inv[item_slot];
-                if (!item.cursed())
-                {
-                    unequip_effect(slot2, item_slot, false, true);
-                    return true;
-                }
-                mprf("You wake up and suddenly realize that you unshelve it yourself.");
-                return true;
-            }
-
         }
     }
     else if (foe->is_monster())
     {
         monster &foe_monster = *foe->as_monster();
-        mpr("It giggles with a lascivious laughter.");
-        mprf("Poor %s falls into a daydream.", foe_monster.name(DESC_A).c_str());
-        foe_monster.add_ench(mon_enchant(ENCH_UNSH_ARMOUR, 0, &caster, 5*BASELINE_DELAY));
         return true;
     }
     else
@@ -8353,7 +8310,7 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
 
     // Don't use unless our foe is close to us and there are no allies already
     // between the two of us
-    case SPELL_NIGHTMARE_OF_CUBUS:
+    case SPELL_ALLURE_OF_CUBUS:
     case SPELL_WIND_BLAST:
         if (foe && foe->pos().distance_from(mon->pos()) < 4)
         {

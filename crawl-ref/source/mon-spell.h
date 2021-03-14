@@ -1530,7 +1530,8 @@ static const mon_spellbook mspell_list[] =
 
     { MST_CUBUS,
       {
-        { SPELL_NIGHTMARE_OF_CUBUS, 29, MON_SPELL_MAGICAL },
+        { SPELL_ALLURE_OF_CUBUS, 29, MON_SPELL_MAGICAL },
+        { SPELL_DISARM, 29, MON_SPELL_MAGICAL }
       }
     },
 

@@ -360,6 +360,8 @@ void DungeonCellBuffer::pack_background(int x, int y, const packed_cell &cell)
                 m_buf_feat.add(TILE_ANTIMAGIC_AURA, x, y);
             if (cell.healaura)
                 m_buf_feat.add(TILE_HEALAURA + cell.healaura - 1, x, y);
+            if (cell.interdim_crosspoint)
+                m_buf_feat.add(TILE_INTERDIMENSIONAL_CROSSPOINT, x, y);
 
             if (cell.is_silenced)
                 m_buf_feat.add(TILE_SILENCED, x, y);
@@ -368,7 +370,7 @@ void DungeonCellBuffer::pack_background(int x, int y, const packed_cell &cell)
             if (cell.halo == HALO_UMBRA)
                 m_buf_feat.add(TILE_UMBRA + random2(4), x, y);
             
-                            const tileidx_t threat_flag = cell.fg & TILE_FLAG_THREAT_MASK;
+            const tileidx_t threat_flag = cell.fg & TILE_FLAG_THREAT_MASK;
                 if (threat_flag == TILE_FLAG_TRIVIAL)
                     m_buf_feat.add(TILE_THREAT_TRIVIAL, x, y);
                 else if (threat_flag == TILE_FLAG_EASY)

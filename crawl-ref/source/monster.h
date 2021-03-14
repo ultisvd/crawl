@@ -441,6 +441,8 @@ public:
     int heat_radius() const override;
     int antimagic_radius() const override;
     int healaura_radius() const override;
+    int dissolving_radius() const override;
+    void dissolve_equip() const override { return; };// nothing to do, yet.
     bool petrified() const override;
     bool petrifying() const override;
     bool liquefied_ground() const override;

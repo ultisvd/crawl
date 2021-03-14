@@ -37,6 +37,7 @@
 #define MAP_COWARD        0x40000000
 #define MAP_ANTIMAGIC     0x80000000
 #define MAP_HEALAURA     0x100000000
+#define MAP_INTERDIMENSIONAL 0x200000000
 
 struct cloud_info
 {

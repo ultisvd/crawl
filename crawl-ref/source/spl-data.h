@@ -1260,14 +1260,14 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_NIGHTMARE_OF_CUBUS, "Nightmare of Cubus",
+    SPELL_ALLURE_OF_CUBUS, "Nightmare of Cubus",
     spschool::hexes,
-    spflag::target | spflag::not_self | spflag::monster,
+    spflag::target | spflag::not_self | spflag::unholy | spflag::monster,
     6,
     0,
     LOS_RADIUS, LOS_RADIUS,
     0, 0,
-    TILEG_DEATH_CHANNEL,
+    TILEG_ERROR,
 },
 
 {
@@ -4440,6 +4440,18 @@ static const struct spell_desc spelldata[] =
     6, 0,
     TILEG_BARRIER,
 },
+
+{
+    SPELL_DISARM, "Disarm",
+    spschool::hexes,
+    spflag::dir_or_target | spflag::needs_tracer| spflag::not_self | spflag::MR_check | spflag::monster,
+    5,
+    200,
+    LOS_RADIUS, LOS_RADIUS,
+    4, 0,
+    TILEG_PORKALATOR,
+},
+
 {
     SPELL_NO_SPELL, "nonexistent spell",
     spschool::none,

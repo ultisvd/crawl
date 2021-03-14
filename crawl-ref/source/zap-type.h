@@ -127,5 +127,6 @@ enum zap_type
     ZAP_HAILSTORM,
     ZAP_ERINYA_ROOT_SPIKE,
     ZAP_OLGREB_LAST_MERCY,
+    ZAP_DISARM,
     NUM_ZAPS
 };

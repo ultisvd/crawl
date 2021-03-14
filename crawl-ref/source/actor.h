@@ -369,22 +369,36 @@ public:
     virtual bool umbra() const = 0;
     // Within any actor's halo?
     virtual bool haloed() const;
+    // Halo radius
+    virtual int halo_radius() const = 0;
     // Within an umbra?
     virtual bool umbraed() const;
+    // Umbra radius
+    virtual int umbra_radius() const = 0;
     // Being heated by a heat aura?
     virtual bool heated() const;
-    virtual bool antimagic_haloed() const;
     virtual bool within_healaura() const;
-    // Halo radius.
-    virtual int halo_radius() const = 0;
-    // Silence radius.
-    virtual int silence_radius() const = 0;
-    // Liquefying radius.
-    virtual int liquefying_radius() const = 0;
-    virtual int umbra_radius() const = 0;
+    // Heat radius
     virtual int heat_radius() const = 0;
+
+    // Liquefying radius
+    virtual int liquefying_radius() const = 0;
+
+    // Silence radius
+    virtual int silence_radius() const = 0;
+    
+    // Within any actor's antimagic halo?
+    virtual bool antimagic_haloed() const;
     virtual int antimagic_radius() const = 0;
+
+    // Heal aura radius
     virtual int healaura_radius() const = 0;
+
+    // Being dissolved in the interdimensional crosspoint?
+    virtual bool within_interdim_crosspoint() const;
+    virtual void dissolve_equip() const = 0;
+    // Dissolution field radius
+    virtual int dissolving_radius() const = 0;
 
     virtual bool petrifying() const = 0;
     virtual bool petrified() const = 0;

@@ -676,6 +676,9 @@ monster_info::monster_info(const monster* m, int milev)
     if (type == MONS_SILENT_SPECTRE)
         mb.set(MB_SILENCING);
 
+    if (type == MONS_INTERDIMENSIONAL_GRAPE)
+        mb.set(MB_INTERDIMENSIONAL_CROSSPOINT);
+
     if (you.beheld_by(*m))
         mb.set(MB_MESMERIZING);
 
@@ -825,8 +828,9 @@ monster_info::monster_info(const monster* m, int milev)
 
     if (type == MONS_CUBUS)
     {
-        if (is(MB_FLEEING) || is(MB_STABBABLE) || is(MB_SLEEPING)
-             || is(MB_DORMANT)  || is(MB_DISTRACTED) && !is(MB_PETRIFYING))
+        if ((is(MB_FLEEING) || is(MB_STABBABLE) || is(MB_SLEEPING)
+             || is(MB_DORMANT)  || is(MB_DISTRACTED) || is(MB_PETRIFYING))
+             || (you.undead_or_demonic() || you.is_nonliving() || you.is_holy()))
             number = 0;
         else
             number = 1;
