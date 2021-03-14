@@ -687,8 +687,8 @@ static bool _setup_missile_beam(const actor *agent, bolt &beam, item_def &item,
 
         beam.damage = dice_def(1, damage); 
         beam.hit = hit;
-        beam.name = "illusory weapon";
-        ammo_name = "illusory weapon";
+        beam.name = "illusory " + you.weapon()->name(DESC_BASENAME);
+        ammo_name = "illusory " + you.weapon()->name(DESC_BASENAME);
     }
     else {
         beam.name = item.name(DESC_PLAIN, false, false, false);
