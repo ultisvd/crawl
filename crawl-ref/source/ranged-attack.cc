@@ -268,7 +268,7 @@ bool ranged_attack::handle_phase_dodged()
                 const int imus_sh = max(1, you.piety/10);
                 if (x_chance_in_y(imus_sh, 25)) // 10% ~ 80%
                 {
-                    mprf("Mirror of Imus Thea reflects %s.", projectile->name(DESC_THE).c_str());
+                    mprf("You reflects %s.", projectile->name(DESC_THE).c_str());
                     reflected = true;
                     return true;
                 }
@@ -297,7 +297,7 @@ bool ranged_attack::handle_phase_dodged()
         const int imus_sh = max(1, you.piety/10);
         if (x_chance_in_y(imus_sh, 25)) // 10% ~ 80%
         {
-            mprf("Mirror of Imus Thea reflects %s.", projectile->name(DESC_THE).c_str());
+            mprf("You reflects %s.", projectile->name(DESC_THE).c_str());
             reflected = true;
             return true;
         }
@@ -314,7 +314,7 @@ bool ranged_attack::handle_phase_hit()
         const int imus_sh = max(1, you.piety/10);
         if (x_chance_in_y(imus_sh, 25)) // 10% ~ 80%
         {
-            mprf("Mirror of Imus Thea reflects %s.", projectile->name(DESC_THE).c_str());
+            mprf("You reflects %s.", projectile->name(DESC_THE).c_str());
             reflected = true;
             return true;
         }
