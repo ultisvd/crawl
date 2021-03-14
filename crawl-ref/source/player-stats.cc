@@ -143,7 +143,13 @@ bool attribute_increase()
 #endif
     mouse_control mc(MOUSE_MODE_PROMPT);
 
-    const int statgain = you.species == SP_DEMIGOD ? 2 : 1;
+    int demigod_bonus = 0;
+    for (int i = 1; i < NUM_GODS; i++)
+        demigod_bonus += (int)(you.penance[(god_type)i] > 0);
+
+    demigod_bonus = (int)(log(demigod_bonus + 1)/log(2));
+
+    const int statgain = you.species == SP_DEMIGOD ? 2 + demigod_bonus : 1;
 
     bool tried_lua = false;
     int keyin;

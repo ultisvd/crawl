@@ -815,6 +815,12 @@ void pray()
     if (you.religion == GOD_NO_GOD)
     {
         const mon_holy_type holi = you.holiness();
+        
+        if (you.species == SP_DEMIGOD && demigod_perish_altar())
+        {
+            you.turn_is_over = true;
+            return;
+        }
 
         mprf(
             "You spend a moment contemplating the meaning of %s.",

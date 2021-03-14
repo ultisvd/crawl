@@ -4458,6 +4458,27 @@ static void _handle_angel_time()
     }
 }
 
+// "p" for perish
+bool demigod_perish_altar()
+{
+    const god_type god = feat_altar_god(grd(you.pos()));
+    if (feat_is_altar(grd(you.pos())))
+    {
+        string prompt = "Do you really want the altar to be perished? It makes you suffer an endless wrath of the god.";
+        if (!yes_or_no("%s", prompt.c_str()))
+        {
+            canned_msg(MSG_OK);
+            return false;
+        }
+        grd(you.pos()) = DNGN_FLOOR; 
+        you.penance[god] = (uint8_t)MAX_PENANCE;
+        god_speaks(god,
+                       "\"Thou will pay for your arrogance!\"");
+        return true;
+    }
+    return false;
+}
+
 void handle_god_time(int /*time_delta*/)
 {
     if (you.species == SP_ANGEL) {
@@ -4481,7 +4502,7 @@ void handle_god_time(int /*time_delta*/)
         }
         you.attribute[ATTR_GOD_WRATH_COUNT]--;
     }
-
+    
     // Update the god's opinion of the player.
     if (!you_worship(GOD_NO_GOD))
     {
