@@ -678,6 +678,9 @@ void dec_penance(god_type god, int val)
         god != GOD_SHINING_ONE) //NEVER MOLLIFY!
         return;
 
+    if (you.species == SP_DEMIGOD) //ENDLESS WRATH
+        return;
+
     if (val <= 0 || you.penance[god] <= 0)
         return;
 
@@ -4471,9 +4474,13 @@ bool demigod_perish_altar()
             return false;
         }
         grd(you.pos()) = DNGN_FLOOR; 
-        you.penance[god] = (uint8_t)MAX_PENANCE;
-        god_speaks(god,
-                       "\"Thou will pay for your arrogance!\"");
+        you.penance[god] = (uint8_t)(log(you.experience_level)/log(3) * 50 + random_range(0, 50));
+        if (god != GOD_RU)
+        {
+            const string wrath_message
+            = make_stringf(" says: \"Thou will pay for your arrogance!\"");
+            simple_god_message(wrath_message.c_str(), god);
+        }
         return true;
     }
     return false;

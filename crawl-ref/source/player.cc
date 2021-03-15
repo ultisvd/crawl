@@ -3424,6 +3424,17 @@ void level_change(bool skip_attribute_increase)
                 {
                     mprf(MSGCH_INTRINSIC_GAIN, "You're ready to read the scroll of wish.");
                 }
+                if (you.experience_level)
+                {
+                    for (int i = 0; i <NUM_GODS; i++)
+                    {
+                        god_type god = (god_type)i;
+                        if (you.penance[god])
+                            you.penance[god] += (uint8_t)(50 * (log(you.experience_level) - log(you.experience_level-1))/log(3));
+                            if (you.penance[god] > MAX_PENANCE)
+                                you.penance[god] = (uint8_t)MAX_PENANCE;
+                    }
+                }
                 break;
             default:
                 break;
