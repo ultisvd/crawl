@@ -22,6 +22,7 @@
 #include "attitude-change.h"
 #include "branch.h"
 #include "chardump.h"
+#include "cloud.h"
 #include "coordit.h"
 #include "dactions.h"
 #include "database.h"
@@ -4461,26 +4462,57 @@ static void _handle_angel_time()
     }
 }
 
-// "p" for perish
-bool demigod_perish_altar()
+void _perish_effect(god_type god)
 {
-    const god_type god = feat_altar_god(grd(you.pos()));
-    if (feat_is_altar(grd(you.pos())))
+    //altar effect part
+    switch(god)
+    {
+        case GOD_QAZLAL:
+            if (you.penance[god] < 100)
+                check_place_cloud(CLOUD_STORM, you.pos(), 200, nullptr, 1);
+            else
+                qazlal_upheaval(coord_def(), false, false);
+            break;
+
+        default: 
+            check_place_cloud(CLOUD_DUST, you.pos(), 5, nullptr, 1);    
+            break;
+    }
+
+    string wrath_message
+                = make_stringf(" says: \"Thou will pay for your arrogance!\"");
+
+    //god_speak part
+    switch(god)
+    {
+        case GOD_RU: // Ru will accept your choice.
+            wrath_message ="";
+            break;
+
+        default:
+            break;
+    }
+
+    simple_god_message(wrath_message.c_str(), god);
+    return;
+}
+
+// "p" for perish
+bool demigod_perish_altar(coord_def pos)
+{
+    const god_type god = feat_altar_god(grd(pos));
+    if (feat_is_altar(grd(pos)))
     {
         string prompt = "Do you really want the altar to be perished? It makes you suffer an endless wrath of the god.";
-        if (!yes_or_no("%s", prompt.c_str()))
+        if (!you.penance[god] && !yes_or_no("%s", prompt.c_str()))
         {
             canned_msg(MSG_OK);
             return false;
         }
-        grd(you.pos()) = DNGN_FLOOR; 
-        you.penance[god] = (uint8_t)(log(you.experience_level)/log(3) * 50 + random_range(0, 50));
-        if (god != GOD_RU)
-        {
-            const string wrath_message
-            = make_stringf(" says: \"Thou will pay for your arrogance!\"");
-            simple_god_message(wrath_message.c_str(), god);
-        }
+        grd(pos) = DNGN_FLOOR;
+        you.penance[god] += (uint8_t)(log(you.experience_level)/log(3) * 10 + random_range(0, 10));
+        you.penance[god] = min((uint8_t)MAX_PENANCE, you.penance[god]);
+        _perish_effect(god);
         return true;
     }
     return false;

@@ -26,7 +26,7 @@ enum class lifesaving_chance
     always,
 };
 
-bool demigod_perish_altar();
+bool demigod_perish_altar(coord_def pos = you.pos());
 
 bool is_evil_god(god_type god);
 bool is_good_god(god_type god);

@@ -346,6 +346,22 @@ static void _apply_daction(daction_type act)
         if (!companion_is_elsewhere(hepliaklqana_ancestor()))
             upgrade_hepliaklqana_ancestor(true);
         break;
+    case DACT_PERISH_ALTAR:
+    {
+        for (int i = 0; i < NUM_GODS; i++)
+        {
+            god_type god = (god_type)i;
+            if (you.species == SP_DEMIGOD && you.penance[god])
+            {
+
+                for (rectangle_iterator ri(1); ri; ++ri)
+                {
+                    demigod_perish_altar(*ri);
+                }
+                
+            }
+        }
+    }
 #if TAG_MAJOR_VERSION == 34
     case DACT_END_SPIRIT_HOWL:
     case DACT_ALLY_SACRIFICE_LOVE:
