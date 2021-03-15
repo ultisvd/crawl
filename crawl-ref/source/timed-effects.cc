@@ -480,15 +480,12 @@ static void _dissolve(int /*time_delta*/)
         if (arm.empty())
             return;
         equipment_type slot= *random_iterator(arm);
-        if (get_form()->slot_available(slot) && you.equip[slot] != -1
-                                             && you.melded[slot])
+        if (get_form()->slot_available(slot) && you.equip[slot] != -1)
         {
             if (you.interdim_melded[slot])
                 you.interdim_melded.set(slot, false);
             if (you.melded[slot])
-            {
                 unmeld_one_equip(slot);
-            }
         }
     }
     // for (monster_iterator mi; mi; ++mi)
