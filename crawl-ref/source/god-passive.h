@@ -297,6 +297,8 @@ enum class passive_t
     imus_bounce_wall,
     // can fire an illusory replication of weapon
     imus_fire_illusory_weapon,
+    // support illusory ammuition
+    imus_illusory_ammo,
 };
 
 enum ru_interference

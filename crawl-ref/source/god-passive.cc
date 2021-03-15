@@ -428,8 +428,9 @@ static const vector<god_passive> god_passives[] =
 
     // Imus Thea
     {
-        { 2, passive_t::imus_bounce_wall, "reflect any projectile on the wall." },
+        { 2, passive_t::imus_bounce_wall, "can reflect any projectile on the wall." },
         { 2, passive_t::imus_fire_illusory_weapon, "can fire a illusory replication of weapon." },
+        { 2, passive_t::imus_illusory_ammo, "can fire a illusory replication of ammunition."}
     },
 
     // Legion from beyond

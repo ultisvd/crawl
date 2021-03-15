@@ -855,6 +855,8 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
     // Figure out if we're thrown or launched.
     const launch_retval projected = is_launched(&you, you.weapon(), thrown);
     bool is_imus_throw = is_imus_throwable(thrown);
+    bool is_imus_ammo = have_passive(passive_t::imus_illusory_ammo) && one_chance_in((int)(400/you.piety))
+                        && thrown.base_type == OBJ_MISSILES;
     bool is_non_waste = is_imus_throw;
     monster* targ_monst = monster_at(thr.target);
 
@@ -1070,7 +1072,7 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
         pbolt.use_target_as_pos = true;
         pbolt.affect_cell();
         pbolt.affect_endpoint();
-        if (!did_return && !is_imus_throw)
+        if (!did_return && !is_imus_throw && !is_imus_ammo)
             pbolt.drop_object();
         // Costs 1 MP per shot.
         dec_mp(1);
@@ -1093,7 +1095,7 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
             for (bolt &beam : hitfunc.beams)
             {
                 _setup_missile_beam(&you, beam, item, ammo_name, returning, is_non_waste);
-                if(first && !returning && !is_non_waste) {
+                if(first && !returning && !is_non_waste && !is_imus_ammo) {
                     beam.drop_item = true;
                     first = false;
                 }
@@ -1102,7 +1104,7 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
 
         } else {
             // Dropping item copy, since the launched item might be different.
-            pbolt.drop_item = !returning && !is_non_waste;
+            pbolt.drop_item = !returning && !is_non_waste && !is_imus_ammo;
             pbolt.fire();
         }
 
@@ -1110,7 +1112,7 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
         hit = !pbolt.hit_verb.empty();
 
         // The item can be destroyed before returning.
-        if (returning && !is_non_waste && thrown_object_destroyed(&item))
+        if (returning && !is_non_waste && !is_imus_ammo && thrown_object_destroyed(&item))
             returning = false;
 
         if(is_imus_throw) {
@@ -1136,7 +1138,9 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
     }
     else if (!is_non_waste)
     {
-        dec_inv_item_quantity(throw_2, 1);
+        if (!is_imus_ammo)
+            dec_inv_item_quantity(throw_2, 1);
+
         if (unwielded)
             canned_msg(MSG_EMPTY_HANDED_NOW);
     }

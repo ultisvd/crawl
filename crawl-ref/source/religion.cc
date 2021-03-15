@@ -442,11 +442,12 @@ const vector<god_power> god_powers[NUM_GODS] =
 
     // Imus Thea
     { { 0, "You are unable to wear heavy armour and all kinds of shield." },
-      { 0, "Imus Thea will reflect ranged attaks, depending on piety.",
-           "Imus Thea will no longer reflect ranged attacks.",
-           "Imus Thea will reflect ranged attacks, depending on piety." },
-      { 1, "Can fire an illusory replication of weapon." },
-      { 2, "All your projectiles and spells are reflected off the wall." },
+      { 0, "You will reflect ranged attaks, depending on piety.",
+           "You will no longer reflect ranged attacks.",
+           "You will reflect ranged attacks, depending on piety." },
+      { 2, "You can fire an illusory replication of weapon." },
+      { 2, "You shot Every projectile and spell are reflected off the wall." },
+      { 2, "You are supported by illusory projectiles." },
       { 3, ABIL_IMUS_PRISMATIC_PRISM,
            "create prismatic prism to blind enemies",
            "create prismatic prism" },
