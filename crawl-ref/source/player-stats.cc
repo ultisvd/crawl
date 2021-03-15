@@ -1,5 +1,7 @@
 #include "AppHdr.h"
 
+#include <math.h>
+
 #include "player-stats.h"
 
 #include "artefact.h"
