@@ -4462,20 +4462,20 @@ static void _handle_angel_time()
     }
 }
 
-void _perish_effect(god_type god)
+void _perish_effect(god_type god, coord_def pos = you.pos())
 {
     //altar effect part
     switch(god)
     {
         case GOD_QAZLAL:
             if (you.penance[god] < 100)
-                check_place_cloud(CLOUD_STORM, you.pos(), 200, nullptr, 1);
+                check_place_cloud(CLOUD_STORM, pos, 200, nullptr, 1);
             else
-                qazlal_upheaval(coord_def(), false, false);
+                qazlal_upheaval(pos, false, false);
             break;
 
         default: 
-            check_place_cloud(CLOUD_DUST, you.pos(), 5, nullptr, 1);    
+            check_place_cloud(CLOUD_DUST, pos, 5, nullptr, 1);    
             break;
     }
 
@@ -4493,7 +4493,8 @@ void _perish_effect(god_type god)
             break;
     }
 
-    simple_god_message(wrath_message.c_str(), god);
+    if (wrath_message != "")
+        simple_god_message(wrath_message.c_str(), god);
     return;
 }
 
@@ -4503,15 +4504,23 @@ bool demigod_perish_altar(coord_def pos)
     const god_type god = feat_altar_god(grd(pos));
     if (feat_is_altar(grd(pos)))
     {
-        string prompt = "Do you really want the altar to be perished? It makes you suffer an endless wrath of the god.";
-        if (!you.penance[god] && !yes_or_no("%s", prompt.c_str()))
+        if (you.penance[god] < 1)
         {
-            canned_msg(MSG_OK);
-            return false;
+            string prompt = "Do you really want the altar to be perished? It makes you suffer an endless wrath of the god.";
+            if (!yes_or_no("%s", prompt.c_str()))
+            {
+                canned_msg(MSG_OK);
+                return false;
+            }
         }
         grd(pos) = DNGN_FLOOR;
-        you.penance[god] += (uint8_t)(log(you.experience_level)/log(3) * 10 + random_range(0, 10));
+        you.penance[god] = 0;
+        you.penance[god] += (uint8_t)(log(you.experience_level)/log(3) * 10 + random_range(1, 10));
         you.penance[god] = min((uint8_t)MAX_PENANCE, you.penance[god]);
+
+        if (!player_under_penance())
+            add_daction(DACT_REMOVE_JIYVA_ALTARS);
+
         _perish_effect(god);
         return true;
     }

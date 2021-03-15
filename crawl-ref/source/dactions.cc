@@ -353,7 +353,6 @@ static void _apply_daction(daction_type act)
             god_type god = (god_type)i;
             if (you.species == SP_DEMIGOD && you.penance[god])
             {
-
                 for (rectangle_iterator ri(1); ri; ++ri)
                 {
                     demigod_perish_altar(*ri);

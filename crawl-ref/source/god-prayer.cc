@@ -816,7 +816,7 @@ void pray()
     {
         const mon_holy_type holi = you.holiness();
         
-        if (you.species == SP_DEMIGOD && demigod_perish_altar())
+        if (you.species == SP_DEMIGOD && demigod_perish_altar(you.pos()))
         {
             you.turn_is_over = true;
             return;
