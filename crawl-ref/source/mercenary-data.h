@@ -15,17 +15,22 @@
 #include "art-enum.h"
 #include "monster.h"
 #include "monster-type.h"
-#include "mon-book.h"
 #include "mon-transit.h"
 #include "externs.h"
 
 struct witchcraft
 {
     monster_type montype;
-    vector<mon_spell_slot> spells;
+    monster_spells spells;
 };
 
-static const map<unrand_type, vector<witchcraft>> urand_staff_to_spell= 
+struct staff_to_witchcraft
+{
+    int type;
+    vector<witchcraft> spellsets;
+};
+
+static const staff_to_witchcraft urand_staff_to_spell[]= 
 {
     
     { UNRAND_MAJIN, {
@@ -143,7 +148,7 @@ static const map<unrand_type, vector<witchcraft>> urand_staff_to_spell=
     }
 };
     
-static const map<stave_type, vector<witchcraft>> staff_to_spell= 
+static const staff_to_witchcraft staff_to_spell[]= 
 {
     { STAFF_FIRE, {
                         { MONS_MERC_WITCH,{

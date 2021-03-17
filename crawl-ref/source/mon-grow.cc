@@ -17,6 +17,7 @@
 #include "mon-place.h"
 #include "monster.h"
 #include "mon-util.h"
+#include "item-status-flag-type.h"
 
 // Base experience required by a monster to reach HD 1.
 const int monster_xp_base       = 15;
@@ -177,13 +178,9 @@ void monster::upgrade_type(monster_type after, bool adjust_hd,
         item_def* weapon = mslot_item(MSLOT_WEAPON);
         if (weapon) {
             const bool staff = weapon->base_type == OBJ_STAVES;
-            if (staff || is_unrandom_artefact(*weapon, UNRAND_MAJIN)
-                || is_unrandom_artefact(*weapon, UNRAND_WUCAD_MU)
-                || is_unrandom_artefact(*weapon, UNRAND_ELEMENTAL_STAFF)
-                || is_unrandom_artefact(*weapon, UNRAND_OLGREB)
-                || is_unrandom_artefact(*weapon, UNRAND_BATTLE))
+            if (staff || (weapon->flags & ISFLAG_UNRANDART))
             {
-                set_spell_witch(this, weapon, true);
+                set_spell_witch(*this, nullptr, true);
             }
         }
     }

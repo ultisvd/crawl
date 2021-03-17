@@ -2774,6 +2774,9 @@ unique_books get_unique_spells(const monster_info &mi,
             }
         }
 
+        // Similary for merc witch
+        if (mons_genus(mi.type))
+
         if (book != MST_GHOST)
             ASSERT(msidx < ARRAYSZ(mspell_list));
         for (const mon_spell_slot &slot : (book == MST_GHOST
