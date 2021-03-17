@@ -295,3 +295,36 @@ static const staff_to_witchcraft staff_to_spell[]=
         }
     }
 };
+
+/*
+TODO : to simplify the checking availability of gift.
+enum merc_job
+{
+    MJ_FIGHTER = 0,
+    MJ_SKALD,
+    MJ_WITCH,
+    MJ_BRIGAND,
+    MJ_SHAMAN,
+}
+/ heavy armour melee: able to lots of equipments
+        && (mons->type == MONS_MERC_FIGHTER
+            || mons->type == MONS_MERC_KNIGHT
+            || mons->type == MONS_MERC_DEATH_KNIGHT
+            || mons->type == MONS_MERC_PALADIN
+        // EV-skald: polearms & light armour
+        || mons->type == MONS_MERC_SKALD
+            || mons->type == MONS_MERC_INFUSER
+            || mons->type == MONS_MERC_TIDEHUNTER
+        // pure-wizard: unable to lots of equipments
+        || mons->type == MONS_MERC_WITCH
+            || mons->type == MONS_MERC_SORCERESS
+            || mons->type == MONS_MERC_ELEMENTALIST
+        // stealth: short blades & light armour
+        || mons->type == MONS_MERC_BRIGAND
+            || mons->type == MONS_MERC_ASSASSIN
+            || mons->type == MONS_MERC_CLEANER
+        // gnoll: able to all equipments after grow
+        || mons->type == MONS_MERC_SHAMAN
+            || mons->type == MONS_MERC_SHAMAN_II
+            || mons->type == MONS_MERC_SHAMAN_III
+*/
