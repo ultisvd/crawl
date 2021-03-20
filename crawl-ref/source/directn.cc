@@ -3586,6 +3586,8 @@ static bool _print_cloud_desc(const coord_def where)
         areas.emplace_back("is shrouded in antimagic");
     if (within_healaura(where))
         areas.emplace_back("is filled by healing energy");
+    if (interdim_crosspoint(where))
+        areas.emplace_back("is filled by dimensional energy");
     if (!areas.empty())
     {
         mprf("This square %s.",

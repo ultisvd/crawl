@@ -471,7 +471,7 @@ static void _dissolve(int /*time_delta*/)
         if (you.equip[slot] != -1 && !you.melded[slot] && !you.interdim_melded[slot])
         {
             you.interdim_melded.set(slot, true);
-            remove_one_equip(slot, true, false);
+            remove_one_equip(slot, true, false, true);
         }
     }
     else

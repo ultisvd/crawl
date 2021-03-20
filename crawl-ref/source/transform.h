@@ -290,7 +290,7 @@ bool transform(int pow, transformation which_trans,
 void untransform(bool skip_move = false);
 
 void remove_one_equip(equipment_type eq, bool meld = true,
-                      bool mutation = false);
+                      bool mutation = false, bool danger = false);
 void unmeld_one_equip(equipment_type eq);
 
 monster_type transform_mons();

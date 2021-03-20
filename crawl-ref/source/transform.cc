@@ -1266,7 +1266,7 @@ _init_equipment_removal(transformation form)
 
 static void _remove_equipment(const set<equipment_type>& removed,
                               transformation form,
-                              bool meld = true, bool mutation = false)
+                              bool meld = true, bool mutation = false, bool danger = false)
 {
     // Meld items into you in (reverse) order. (set is a sorted container)
     for (const equipment_type e : removed)
@@ -1284,7 +1284,7 @@ static void _remove_equipment(const set<equipment_type>& removed,
                 unequip = true;
         }
 
-        mprf("%s %s%s %s", equip->name(DESC_YOUR).c_str(),
+        mprf(danger ? MSGCH_WARN : MSGCH_PLAIN, "%s %s%s %s", equip->name(DESC_YOUR).c_str(),
              unequip ? "fall" : "meld",
              equip->quantity > 1 ? "" : "s",
              unequip ? "away!" : "into your body.");
@@ -1393,14 +1393,14 @@ void unmeld_one_equip(equipment_type eq)
     _unmeld_equipment(e);
 }
 
-void remove_one_equip(equipment_type eq, bool meld, bool mutation)
+void remove_one_equip(equipment_type eq, bool meld, bool mutation, bool danger)
 {
     if (player_equip_unrand(UNRAND_LEAR) && eq >= EQ_HELMET && eq <= EQ_BOOTS)
         eq = EQ_BODY_ARMOUR;
 
     set<equipment_type> r;
     r.insert(eq);
-    _remove_equipment(r, you.form, meld, mutation);
+    _remove_equipment(r, you.form, meld, mutation, danger);
 }
 
 /**

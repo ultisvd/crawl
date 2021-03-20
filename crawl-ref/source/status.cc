@@ -229,6 +229,16 @@ bool fill_status_info(int status, status_info& inf)
         }
         break;
 
+    case STATUS_INTERDIMENSIONAL:
+        if (you.within_interdim_crosspoint())
+        {
+            inf.light_text = "melding";
+            inf.light_colour = RED;
+            inf.short_text = "melding armours";
+            inf.long_text = "Your armours are melding.";
+        }
+        break;
+
     case STATUS_AIRBORNE:
         _describe_airborne(inf);
         break;
