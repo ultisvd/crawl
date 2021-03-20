@@ -1578,13 +1578,13 @@ static bool _can_equip_armour(const item_def &item)
     }
 
     const int ER = -property(item, PARM_EVASION) / 10;
-    if (you_worship(GOD_IMUS) && ER > 4)
+    const equipment_type slot = get_armour_slot(item);
+    if (you_worship(GOD_IMUS) && slot == EQ_BODY_ARMOUR && ER > 4)
     {
         mpr("Your fragile body can't wear heavy armour.");
         return false;
     }
 
-    const equipment_type slot = get_armour_slot(item);
     const int equipped = you.equip[slot];
     if (equipped != -1 && !_can_takeoff_armour(equipped))
         return false;

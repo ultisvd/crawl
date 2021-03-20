@@ -3624,11 +3624,13 @@ bool is_useless_item(const item_def &item, bool temp)
         return false;
 
     case OBJ_ARMOUR:
+    {
         if (!can_wear_armour(item, false, true))
             return true;
 
+        const equipment_type eq_slot = get_armour_slot(item);
         if (you_worship(GOD_IMUS) && (is_shield(item)
-            || !is_effectively_light_armour(&item)))
+            || (eq_slot == EQ_BODY_ARMOUR && !is_effectively_light_armour(&item))))
             return true;
 
         if (is_shield(item) && you.get_mutation_level(MUT_MISSING_HAND))
@@ -3642,11 +3644,12 @@ bool is_useless_item(const item_def &item, bool temp)
             && (get_armour_ego_type(item) == SPARM_SPIRIT_SHIELD
                 && you.spirit_shield(false, false)
                 || get_armour_ego_type(item) == SPARM_CLOUD_IMMUNE
-                   && have_passive(passive_t::cloud_immunity)))
+                && have_passive(passive_t::cloud_immunity)))
         {
             return true;
         }
         return false;
+    }
 
     case OBJ_SCROLLS:
         if (you.species == SP_LAVA_ORC && temperature_effect(LORC_NO_SCROLLS))
