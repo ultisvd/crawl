@@ -388,7 +388,7 @@ static bool _fire_choose_item_and_target(int& slot, dist& target,
         args.hitfunc = hitfunc.get();
         args.range = LOS_RADIUS;
     }
-    else if(will_have_passive(passive_t::imus_bounce_wall)) {
+    else if(have_passive(passive_t::imus_bounce_wall)) {
         hitfunc = make_unique<targeter_beam>(&you, LOS_RADIUS, ZAP_MAGIC_DART, 0, 0, 0);
         args.hitfunc = hitfunc.get();
         args.range = LOS_RADIUS;

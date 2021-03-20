@@ -282,7 +282,6 @@ spret zapping(zap_type ztype, int power, bolt &pbolt,
         targeter_spray hitfunc(&you, range, ZAP_DAZZLING_SPRAY, 5);
         hitfunc.set_aim(pbolt.target);
 
-        bool first = true;
         for (bolt& beam : hitfunc.beams)
         {
             zappy(ztype, power, false, beam);
@@ -2479,7 +2478,11 @@ bool bolt::is_bouncy(dungeon_feature_type feat) const
         return true;
     }
 
-    if(agent() && agent()->is_player() && will_have_passive(passive_t::imus_bounce_wall)) {
+    if(agent() && agent()->is_player() 
+        && have_passive(passive_t::imus_bounce_wall)
+        && feat_is_solid(feat)
+        && !is_spread)
+    {
         return true;
     }
 
@@ -3192,7 +3195,7 @@ bool bolt::harmless_to_player() const
     if (you.cloud_immune() && is_big_cloud())
         return true;
 
-    if (bounces && will_have_passive(passive_t::imus_bounce_wall))
+    if (bounces && have_passive(passive_t::imus_bounce_wall))
     {
         return true;
     }
@@ -4082,7 +4085,7 @@ void bolt::affect_player()
     hit_count[MID_PLAYER]++;
 
     if (bounces &&
-        agent() && agent()->is_player() && will_have_passive(passive_t::imus_bounce_wall))
+        agent() && agent()->is_player() && have_passive(passive_t::imus_bounce_wall))
     {
         return;
     }

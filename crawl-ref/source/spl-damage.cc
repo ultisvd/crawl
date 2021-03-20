@@ -2751,6 +2751,7 @@ vector<bolt> get_spray_rays(const actor *caster, coord_def aim, int range,
     base_beam.range = range;
     base_beam.source = caster->pos();
     base_beam.target = aim;
+    base_beam.is_spread = true;
 
     bolt center_beam = base_beam;
     center_beam.hit = AUTOMATIC_HIT;

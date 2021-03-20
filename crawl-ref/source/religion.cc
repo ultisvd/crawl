@@ -445,7 +445,7 @@ const vector<god_power> god_powers[NUM_GODS] =
       { 0, "You will reflect ranged attaks, depending on piety.",
            "You will no longer reflect ranged attacks.",
            "You will reflect ranged attacks, depending on piety." },
-      { 2, "You can fire an illusory replication of weapon." },
+      { 1, "You can fire an illusory replication of weapon." },
       { 2, "You shot Every projectile and spell are reflected off the wall." },
       { 2, "You are supported by illusory projectiles." },
       { 3, ABIL_IMUS_PRISMATIC_PRISM,
@@ -3439,8 +3439,6 @@ bool player_can_join_god(god_type which_god)
             return false;
         }
     }
-    if (which_god == GOD_IMUS && (you.species == SP_FELID || you.species == SP_HYDRA))
-        return false;
 
     return _transformed_player_can_join_god(which_god);
 }

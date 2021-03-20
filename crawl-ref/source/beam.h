@@ -111,6 +111,7 @@ struct bolt
 #ifdef DEBUG_DIAGNOSTICS
     bool   quiet_debug = false;    // Disable any debug spam.
 #endif
+    bool   is_spread = false;     // is spread beam?
 
     // OUTPUT parameters (tracing, ID)
     bool obvious_effect = false; // is this a non-enchantment, or did it already
