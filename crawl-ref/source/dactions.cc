@@ -75,6 +75,7 @@ static const char *daction_names[] =
 #endif
     "ancestor vanishes",
     "upgrade ancestor",
+    "perish altar"
 };
 #endif
 

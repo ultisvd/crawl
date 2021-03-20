@@ -1469,6 +1469,9 @@ void TilesFramework::_send_cell(const coord_def &gc,
         if (next_pc.healaura != current_pc.healaura)
             json_write_int("healaura", next_pc.healaura);
 
+        if (next_pc.interdim_crosspoint != current_pc.interdim_crosspoint)
+            json_write_bool("interdimensional", next_pc.interdim_crosspoint);
+
         if (_needs_flavour(next_pc) &&
             (next_pc.flv.floor != current_pc.flv.floor
              || next_pc.flv.special != current_pc.flv.special
