@@ -686,7 +686,7 @@ function ($, view_data, main, tileinfo_player, icons, dngn, enums,
                     if (cell.healaura)
                         this.draw_dngn(dngn.HEALAURA, x, y);
                     if (cell.interdimensional)
-                        this.draw_dngn(dngn.INTERDIMENSIONAL, x, y);
+                        this.draw_dngn(dngn.INTERDIMENSIONAL_CROSSPOINT, x, y);
                     if (cell.silenced)
                         this.draw_dngn(dngn.SILENCED, x, y);
                     if (cell.halo == enums.HALO_RANGE)
