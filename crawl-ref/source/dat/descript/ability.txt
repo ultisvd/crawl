@@ -1142,8 +1142,8 @@ yours.
 %%%%
 Spectrum ability
 
-During the duration of the buff, your throwing attack becomes a spread shot and 
-flies to the enemy.
+During the duration of the buff, your beam spell and throwing attack becomes a 
+spread shot and flies to the enemy.
 %%%%
 # The Legion from Beyond
 %%%%

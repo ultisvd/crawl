@@ -4463,7 +4463,7 @@ static void _handle_angel_time()
     }
 }
 
-void _perish_effect(god_type god, coord_def pos = you.pos())
+static void _perish_effect(god_type god, coord_def pos = you.pos())
 {
     //altar effect part
     switch(god)
@@ -4574,6 +4574,7 @@ void handle_god_time(int /*time_delta*/)
         case GOD_JIYVA:
         case GOD_WU_JIAN:
         case GOD_SIF_MUNA:
+        case GOD_IMUS:
         case GOD_LEGION_FROM_BEYOND:
         case GOD_AGRAPHEDE:
             if (one_chance_in(17))
@@ -4588,7 +4589,6 @@ void handle_god_time(int /*time_delta*/)
         case GOD_SHINING_ONE:
         case GOD_NEMELEX_XOBEH:
         case GOD_WYRM:
-        case GOD_IMUS:
             if (one_chance_in(35))
                 lose_piety(1);
             break;

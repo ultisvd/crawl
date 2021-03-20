@@ -246,7 +246,7 @@ static void _ench_animation(int flavour, const monster* mon, bool force)
 // If needs_tracer is true, we need to check the beam path for friendly
 // monsters.
 spret zapping(zap_type ztype, int power, bolt &pbolt,
-                   bool needs_tracer, const char* msg, bool fail)
+                   bool needs_tracer, const char* msg, bool fail, bool spectrum)
 {
     dprf(DIAG_BEAM, "zapping: power=%d", power);
 
@@ -276,7 +276,23 @@ spret zapping(zap_type ztype, int power, bolt &pbolt,
     if (ztype == ZAP_DIG)
         pbolt.aimed_at_spot = false;
 
-    pbolt.fire();
+    if (spectrum) {
+        int range = pbolt.range;
+
+        targeter_spray hitfunc(&you, range, ZAP_DAZZLING_SPRAY, 5);
+        hitfunc.set_aim(pbolt.target);
+
+        bool first = true;
+        for (bolt& beam : hitfunc.beams)
+        {
+            zappy(ztype, power, false, beam);
+            beam.fire();
+        }
+
+    }
+    else {
+        pbolt.fire();
+    }
 
     return spret::success;
 }
@@ -2463,8 +2479,7 @@ bool bolt::is_bouncy(dungeon_feature_type feat) const
         return true;
     }
 
-    if(agent() && agent()->is_player() && will_have_passive(passive_t::imus_bounce_wall)
-        && you.duration[DUR_SPECTRUM] == 0) {
+    if(agent() && agent()->is_player() && will_have_passive(passive_t::imus_bounce_wall)) {
         return true;
     }
 
@@ -3176,6 +3191,11 @@ bool bolt::harmless_to_player() const
 
     if (you.cloud_immune() && is_big_cloud())
         return true;
+
+    if (bounces && will_have_passive(passive_t::imus_bounce_wall))
+    {
+        return true;
+    }
 
     switch (flavour)
     {
@@ -4060,6 +4080,13 @@ static pie_effect _random_pie_effect(const actor &defender)
 void bolt::affect_player()
 {
     hit_count[MID_PLAYER]++;
+
+    if (bounces &&
+        agent() && agent()->is_player() && will_have_passive(passive_t::imus_bounce_wall))
+    {
+        return;
+    }
+
 
     // Explosions only have an effect during their explosion phase.
     // Special cases can be handled here.

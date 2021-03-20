@@ -3430,9 +3430,13 @@ void level_change(bool skip_attribute_increase)
                     {
                         god_type god = (god_type)i;
                         if (you.penance[god])
-                            you.penance[god] += (uint8_t)(50 * (log(you.experience_level) - log(you.experience_level-1))/log(3));
+                        {
+                            you.penance[god] += (uint8_t)(50 * (log(you.experience_level) - log(you.experience_level - 1)) / log(3));
                             if (you.penance[god] > MAX_PENANCE)
+                            {
                                 you.penance[god] = (uint8_t)MAX_PENANCE;
+                            }
+                        }
                     }
                 }
                 break;

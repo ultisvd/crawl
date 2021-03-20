@@ -1290,7 +1290,15 @@ unique_ptr<targeter> spell_targeter(spell_type spell, int pow,
         return make_unique<targeter_beam>(&you, range, ZAP_MEPHITIC, pow,
                                           pow >= 100 ? 1 : 0, 1);
     case SPELL_ISKENDERUNS_MYSTIC_BLAST:
-        return make_unique<targeter_imb>(&you, pow, range);
+        if (you.duration[DUR_SPECTRUM] > 0)
+        {
+            //it can spectrum
+            break;
+        }
+        else
+        {
+            return make_unique<targeter_imb>(&you, pow, range);
+        }
     case SPELL_FIRE_STORM:
         return make_unique<targeter_smite>(&you, range, 2, pow > 76 ? 3 : 2);
     case SPELL_FREEZING_CLOUD:
@@ -1376,8 +1384,13 @@ unique_ptr<targeter> spell_targeter(spell_type spell, int pow,
 
     if (spell_to_zap(spell) != NUM_ZAPS)
     {
-        return make_unique<targeter_beam>(&you, range, spell_to_zap(spell),
-                                          pow, 0, 0);
+        if (you.duration[DUR_SPECTRUM] > 0 && is_can_spectrum(spell)) {
+            return make_unique<targeter_spray>(&you, range, ZAP_DAZZLING_SPRAY, 5);
+        }
+        else {
+            return make_unique<targeter_beam>(&you, range, spell_to_zap(spell),
+                pow, 0, 0);
+        }
     }
 
     return nullptr;
@@ -2302,7 +2315,7 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
     if (zap != NUM_ZAPS)
     {
         return zapping(zap, spell_zap_power(spell, powc), beam, !auto_spell, nullptr,
-                       fail);
+                       fail, you.duration[DUR_SPECTRUM] > 0 && is_can_spectrum(spell));
     }
 
     return spret::none;

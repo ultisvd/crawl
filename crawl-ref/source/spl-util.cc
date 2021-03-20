@@ -2409,3 +2409,23 @@ bool is_dangerous_auto_spell(spell_type spell)
     }
 
 }
+
+bool is_can_spectrum(spell_type spell)
+{
+    //only for zapping spell
+    //all none zapping spell is already can not spectrum
+    const zap_type zap = spell_to_zap(spell);
+    if (zap == NUM_ZAPS)
+        return false;
+    if (zap_explodes(zap) || zap_is_enchantment(zap))
+        return false;
+
+    //special case
+    switch (spell)
+    {
+    case SPELL_DIG:
+        return false;
+    default:
+        return true;
+    }
+}

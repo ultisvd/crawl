@@ -332,7 +332,7 @@ bool imb_can_splash(coord_def origin, coord_def center,
                     vector<coord_def> path_taken, coord_def target);
 spret zapping(zap_type ztype, int power, bolt &pbolt,
                    bool needs_tracer = false, const char* msg = nullptr,
-                   bool fail = false);
+                   bool fail = false, bool spectrum = false);
 bool player_tracer(zap_type ztype, int power, bolt &pbolt, int range = 0);
 
 void create_feat_splash(coord_def center, int radius, int nattempts);
