@@ -884,8 +884,8 @@ static void _consider_curling(kill_method_type death_type)
  *  @param see_source whether the attacker was visible to you
  *  @param death_source_name the attacker's name if it is already dead.
  */
-void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
-          bool see_source, const char *death_source_name)
+void ouch(int dam, kill_method_type death_type, mid_t source, const char* aux,
+    bool see_source, const char* death_source_name)
 {
     ASSERT(!crawl_state.game_is_arena());
     if (you.duration[DUR_TIME_STEP])
@@ -938,21 +938,21 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
     _consider_curling(death_type);
 
-    if(you.species == SP_AUTOMATON)
+    if (you.species == SP_AUTOMATON)
     {
         you.duration[DUR_HEAT] = 5 * BASELINE_DELAY;
     }
 
     const bool non_death = death_type == KILLED_BY_QUITTING
-                        || death_type == KILLED_BY_WINNING
-                        || death_type == KILLED_BY_LEAVING;
+        || death_type == KILLED_BY_WINNING
+        || death_type == KILLED_BY_LEAVING;
 
     // certain effects (e.g. drowned souls) use KILLED_BY_WATER for flavour
     // reasons (morgue messages?), with regrettable consequences if we don't
     // double-check.
     const bool env_death = source == MID_NOBODY
-                           && (death_type == KILLED_BY_LAVA
-                               || death_type == KILLED_BY_WATER);
+        && (death_type == KILLED_BY_LAVA
+            || death_type == KILLED_BY_WATER);
 
     // death's door protects against everything but falling into water/lava,
     // excessive rot, leaving the dungeon, or quitting.
@@ -998,7 +998,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         {
             // round off fairly (important for taking 1 damage at a time)
             int mp = div_rand_round(dam * you.magic_points,
-                                    max(you.hp + you.magic_points, 1));
+                max(you.hp + you.magic_points, 1));
             // but don't kill the player with round-off errors
             mp = max(mp, dam + 1 - you.hp);
             mp = min(mp, you.magic_points);
@@ -1028,13 +1028,13 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             && death_type != KILLED_BY_POISON
             && death_type != KILLED_BY_BARBS
             && !((aux && (strstr(aux, "flay_damage")
-                  || strstr(aux, "Agony")
-                  || strstr(aux, "Symbol of Torment")
-                  || strstr(aux, "sceptre of Torment")
-                  || strstr(aux, "a scroll of torment")
-                  || strstr(aux, "Kikubaaqudgha's torment")
-                  || strstr(aux, "Xom's torment")
-                  || strstr(aux, "by torment")))))
+                || strstr(aux, "Agony")
+                || strstr(aux, "Symbol of Torment")
+                || strstr(aux, "sceptre of Torment")
+                || strstr(aux, "a scroll of torment")
+                || strstr(aux, "Kikubaaqudgha's torment")
+                || strstr(aux, "Xom's torment")
+                || strstr(aux, "by torment")))))
         {
             you.attribute[ATTR_BARRIER] -= dam;
             if (you.attribute[ATTR_BARRIER] <= 0)
@@ -1056,7 +1056,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             else
             {
                 you.redraw_status_lights = true;
-                if (get_real_hp(true, false)/6 <= dam)
+                if (get_real_hp(true, false) / 6 <= dam)
                 {
                     flash_view_delay(UA_PLAYER, YELLOW, 100);
                     mprf(MSGCH_DANGER, "Your barrier struggles to absorb damage!");
@@ -1074,9 +1074,9 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             you.source_damage = 0;
         }
         you.source_damage += dam;
-        
+
         // The Great Wyrm: infused enemy with viriditas will heals you
-        monster * const mons = monster_by_mid(source);
+        monster* const mons = monster_by_mid(source);
         if (mons && mons->has_ench(ENCH_VIRIDITAS))
         {
             mpr("Attacks from the infused with Viriditas, heals you instead of hurts you.");
@@ -1102,9 +1102,9 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
                 dungeon_events.fire_event(DET_HP_WARNING);
             }
 
-            if (you.is_auto_spell() 
-                  && you.hp <= (you.hp_max * 25) / 100
-                  && death_type != KILLED_BY_POISON)
+            if (you.is_auto_spell()
+                && you.hp <= (you.hp_max * 25) / 100
+                && death_type != KILLED_BY_POISON)
             {
                 you.auto_cast(you.pos(), you.time_taken, AS_PHASE_ESCAPE);
             }
@@ -1120,43 +1120,43 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             else
             {
                 damage_desc = scorefile_entry(dam, source,
-                                              death_type, aux, true)
+                    death_type, aux, true)
                     .death_description(scorefile_entry::DDV_TERSE);
             }
 
             take_note(Note(NOTE_HP_CHANGE, you.hp, you.hp_max,
-                           damage_desc.c_str()));
+                damage_desc.c_str()));
 
-            if (you.species == SP_CRUSTACEAN &&(death_type == KILLED_BY_MONSTER
-                                            || death_type == KILLED_BY_CLOUD
-                                            || death_type == KILLED_BY_BEAM
-                                            || death_type == KILLED_BY_LAVA
-                                            || death_type == KILLED_BY_FREEZING
-                                            || death_type == KILLED_BY_BURNING
-                                            || death_type == KILLED_BY_WILD_MAGIC
-                                            || death_type == KILLED_BY_XOM
-                                            || death_type ==KILLED_BY_TARGETING
-                                            || death_type ==KILLED_BY_SPORE
-                                            || death_type ==KILLED_BY_TSO_SMITING
-                                            || death_type ==KILLED_BY_PETRIFICATION
-                                            || death_type ==KILLED_BY_SOMETHING
-                                            || death_type ==KILLED_BY_FALLING_DOWN_STAIRS
-                                            || death_type ==KILLED_BY_ACID
-                                            || death_type ==KILLED_BY_CURARE
-                                            || death_type ==KILLED_BY_BEOGH_SMITING
-                                            || death_type ==KILLED_BY_DIVINE_WRATH
-                                            || death_type ==KILLED_BY_BOUNCE
-                                            || death_type ==KILLED_BY_REFLECTION
-                                            || death_type ==KILLED_BY_SELF_AIMED
-                                            || death_type ==KILLED_BY_FALLING_THROUGH_GATE
-                                            || death_type ==KILLED_BY_DISINT
-                                            || death_type ==KILLED_BY_HEADBUTT
-                                            || death_type ==KILLED_BY_ROLLING
-                                            || death_type ==KILLED_BY_MIRROR_DAMAGE
-                                            || death_type ==KILLED_BY_SPINES
-                                            || death_type ==KILLED_BY_BARBS
-                                            || death_type ==KILLED_BY_BEING_THROWN
-                                            || death_type ==KILLED_BY_COLLISION))
+            if (you.species == SP_CRUSTACEAN && (death_type == KILLED_BY_MONSTER
+                || death_type == KILLED_BY_CLOUD
+                || death_type == KILLED_BY_BEAM
+                || death_type == KILLED_BY_LAVA
+                || death_type == KILLED_BY_FREEZING
+                || death_type == KILLED_BY_BURNING
+                || death_type == KILLED_BY_WILD_MAGIC
+                || death_type == KILLED_BY_XOM
+                || death_type == KILLED_BY_TARGETING
+                || death_type == KILLED_BY_SPORE
+                || death_type == KILLED_BY_TSO_SMITING
+                || death_type == KILLED_BY_PETRIFICATION
+                || death_type == KILLED_BY_SOMETHING
+                || death_type == KILLED_BY_FALLING_DOWN_STAIRS
+                || death_type == KILLED_BY_ACID
+                || death_type == KILLED_BY_CURARE
+                || death_type == KILLED_BY_BEOGH_SMITING
+                || death_type == KILLED_BY_DIVINE_WRATH
+                || death_type == KILLED_BY_BOUNCE
+                || death_type == KILLED_BY_REFLECTION
+                || death_type == KILLED_BY_SELF_AIMED
+                || death_type == KILLED_BY_FALLING_THROUGH_GATE
+                || death_type == KILLED_BY_DISINT
+                || death_type == KILLED_BY_HEADBUTT
+                || death_type == KILLED_BY_ROLLING
+                || death_type == KILLED_BY_MIRROR_DAMAGE
+                || death_type == KILLED_BY_SPINES
+                || death_type == KILLED_BY_BARBS
+                || death_type == KILLED_BY_BEING_THROWN
+                || death_type == KILLED_BY_COLLISION))
                 you.crustacean_rot(nullptr, dam);
             else if (you.species != SP_CRUSTACEAN)
                 _deteriorate(dam);
@@ -1184,7 +1184,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
                 drain_player(drain_amount, true, true);
         }
         if (you.hp > 0)
-          return;
+            return;
     }
 
     // Is the player being killed by a direct act of Xom?
@@ -1193,7 +1193,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         && crawl_state.other_gods_acting().empty())
     {
         you.escaped_death_cause = death_type;
-        you.escaped_death_aux   = aux == nullptr ? "" : aux;
+        you.escaped_death_aux = aux == nullptr ? "" : aux;
 
         // Xom should only kill his worshippers if they're under penance
         // or Xom is bored.
@@ -1205,7 +1205,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
         // Also don't kill wizards testing Xom acts.
         if ((crawl_state.repeat_cmd == CMD_WIZARD
-                || crawl_state.prev_cmd == CMD_WIZARD)
+            || crawl_state.prev_cmd == CMD_WIZARD)
             && !you_worship(GOD_XOM))
         {
             return;
@@ -1239,7 +1239,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
     // Construct scorefile entry.
     scorefile_entry se(dam, source, death_type, aux, false,
-                       death_source_name);
+        death_source_name);
 
 #ifdef WIZARD
     if (!non_death)
@@ -1255,7 +1255,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             {
                 mpr("Thought so.");
                 take_note(Note(NOTE_DEATH, you.hp, you.hp_max,
-                                death_desc.c_str()), true);
+                    death_desc.c_str()), true);
                 _wizard_restore_life();
                 return;
             }
@@ -1274,8 +1274,8 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
     // Okay, so you're dead.
     take_note(Note(NOTE_DEATH, you.hp, you.hp_max,
-                    se.death_description(scorefile_entry::DDV_NORMAL).c_str()),
-              true);
+        se.death_description(scorefile_entry::DDV_NORMAL).c_str()),
+        true);
     if (you.species == SP_FELID && you.lives && !non_death)
     {
         mark_milestone("death", lowercase_first(se.long_kill_message()).c_str());
@@ -1292,10 +1292,33 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             save_game(false);
 
         canned_msg(MSG_YOU_DIE);
-        xom_death_message((kill_method_type) se.get_death_type());
+        xom_death_message((kill_method_type)se.get_death_type());
         more();
 
         _place_player_corpse(death_type == KILLED_BY_DISINT);
+        return;
+    }
+    else if (you_worship(GOD_YREDELEMNUL)
+        && you.props.exists(YREDEREMNUL_RESURRECTION_KEY) 
+        && you.props[YREDEREMNUL_RESURRECTION_KEY].get_int() == 1)
+    {
+        mark_milestone("death", lowercase_first(se.long_kill_message()).c_str());
+
+        you.props[YREDEREMNUL_RESURRECTION_KEY] = 2;
+        you.pending_revival = true;
+
+        stop_delay(true);
+
+        // You wouldn't want to lose this accomplishment to a crash, would you?
+        // Especially if you manage to trigger one via lua somehow...
+        if (!crawl_state.disables[DIS_SAVE_CHECKPOINTS])
+            save_game(false);
+
+        canned_msg(MSG_YOU_DIE);
+        xom_death_message((kill_method_type)se.get_death_type());
+        more();
+
+        //_place_player_corpse(death_type == KILLED_BY_DISINT);
         return;
     }
 

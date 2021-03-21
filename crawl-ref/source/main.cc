@@ -1539,7 +1539,9 @@ static void _experience_check()
         mpr("With the way you've been playing, I'm surprised you got this far.");
     }
 
-    if (you.species == SP_FELID)
+    if (you.species == SP_FELID
+        && (!you.props.exists(YREDEREMNUL_RESURRECTION_KEY)
+        || you.props[YREDEREMNUL_RESURRECTION_KEY].get_int() != 2))
     {
         int xl = you.experience_level;
         // calculate the "real" level

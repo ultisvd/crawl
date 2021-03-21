@@ -4534,6 +4534,24 @@ static spret _do_ability(const ability_def& abil, bool fail)
             return spret::abort;
         }
         fail_check();
+        if (you_worship(GOD_YREDELEMNUL)
+            && you.props.exists(YREDEREMNUL_RESURRECTION_KEY)
+            && you.props[YREDEREMNUL_RESURRECTION_KEY].get_int() == 2)
+        {
+            if (yesno("You can't sustain without yredelemnul's power. really abandon your faith?",
+                false, 'n')
+                && yesno("This will make you lose the game! Are you sure?", false, 'n'))
+            {
+                excommunication(true);
+                break;
+            }
+            else
+            {
+                canned_msg(MSG_OK);
+                return spret::abort;
+            }
+        }
+        
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",
                   false, 'n')
             && yesno("Are you sure?", false, 'n'))

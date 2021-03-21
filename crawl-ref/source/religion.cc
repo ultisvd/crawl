@@ -2649,6 +2649,15 @@ static void _gain_piety_point()
            god_speaks(you.religion,
                       "You may now remember your ancestor's life.");
         }
+        if (you_worship(GOD_YREDELEMNUL)
+            && !you.is_nonliving(false)
+            && species_undead_type(you.species) == US_ALIVE
+            && rank == 6
+            && (!you.props.exists(YREDEREMNUL_RESURRECTION_KEY) || you.props[YREDEREMNUL_RESURRECTION_KEY].get_int() == 0))
+        {
+            simple_god_message(" will bring you back from death to the undead... once..");
+            you.props[YREDEREMNUL_RESURRECTION_KEY] = 1;
+        }
 
         if (have_passive(passive_t::agraphede_poison_regen) &&
            ((rank >= 3 && piety_rank(old_piety) < 3) ||
@@ -3062,6 +3071,11 @@ void excommunication(bool voluntary, god_type new_god)
                                old_god);
             add_daction(DACT_ALLY_YRED_SLAVE);
             remove_all_companions(GOD_YREDELEMNUL);
+        }
+        if (you.props.exists(YREDEREMNUL_RESURRECTION_KEY)
+            && you.props[YREDEREMNUL_RESURRECTION_KEY].get_int() == 2)
+        {
+            ouch(INSTANT_DEATH, KILLED_BY_ROTTING);
         }
         break;
 

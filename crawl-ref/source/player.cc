@@ -2996,6 +2996,10 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain)
 
 bool will_gain_life(int lev)
 {
+    if (you.props.exists(YREDEREMNUL_RESURRECTION_KEY)
+        && you.props[YREDEREMNUL_RESURRECTION_KEY].get_int() == 2)
+        return false; //no more life
+
     if (lev < you.attribute[ATTR_LIFE_GAINED] - 2)
         return false;
 
@@ -7362,6 +7366,10 @@ undead_state_type player::undead_state(bool temp) const
 {
     if (temp && you.form == transformation::lich)
         return US_UNDEAD;
+    if (props.exists(YREDEREMNUL_RESURRECTION_KEY) && props[YREDEREMNUL_RESURRECTION_KEY].get_int() == 2) 
+    {
+        return US_UNDEAD;
+    }
     return species_undead_type(you.species);
 }
 

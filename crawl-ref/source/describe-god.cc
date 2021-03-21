@@ -1044,6 +1044,22 @@ static formatted_string _describe_god_powers(god_type which_god)
                 "", abil_cost.c_str());
     }
 
+    if (which_god == GOD_YREDELEMNUL
+        && !you.is_nonliving(false)
+        && species_undead_type(you.species) == US_ALIVE)
+    {
+        if(you.props.exists(YREDEREMNUL_RESURRECTION_KEY) 
+            && you.props[YREDEREMNUL_RESURRECTION_KEY].get_int() == 1)
+        {
+            desc.textcolour(god_colour(which_god));
+        }
+        else {
+            desc.textcolour(DARKGREY);
+        }
+        desc.cprintf("Yredelemnul will bring you back from death to the undead... once.\n");
+        have_any = true;
+    }
+
     if (!have_any)
         desc.cprintf("None.\n");
 
