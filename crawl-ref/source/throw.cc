@@ -1097,9 +1097,12 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
                 _setup_missile_beam(&you, beam, item, ammo_name, returning, is_non_waste);
                 if(first && !returning && !is_non_waste && !is_imus_ammo) {
                     beam.drop_item = true;
-                    first = false;
                 }
                 beam.fire();
+                if (first) {
+                    pbolt = beam;
+                    first = false;
+                }
             }
 
         } else {
