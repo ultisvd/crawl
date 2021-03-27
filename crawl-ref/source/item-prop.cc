@@ -2136,23 +2136,26 @@ bool is_imus_throwable(const item_def &wpn)
 bool is_throwable(const actor *actor, const item_def &wpn, bool force)
 {
     if (is_unrandom_artefact(wpn, UNRAND_CRYSTAL_SPEAR) ||
-        (actor->is_player() && is_imus_throwable(wpn)))
+        (actor && actor->is_player() && is_imus_throwable(wpn)))
         return true;
 
     if (wpn.base_type != OBJ_MISSILES)
         return false;
 
-    const size_type bodysize = actor->body_size();
-
-    if (!force)
+    if (actor)
     {
-        if (wpn.sub_type == MI_LARGE_ROCK)
-            return actor->can_throw_large_rocks();
+        const size_type bodysize = actor->body_size();
 
-        if (bodysize < SIZE_MEDIUM
-            && wpn.sub_type == MI_JAVELIN)
+        if (!force)
         {
-            return false;
+            if (wpn.sub_type == MI_LARGE_ROCK)
+                return actor->can_throw_large_rocks();
+
+            if (bodysize < SIZE_MEDIUM
+                && wpn.sub_type == MI_JAVELIN)
+            {
+                return false;
+            }
         }
     }
 
