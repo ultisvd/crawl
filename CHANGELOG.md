@@ -28,11 +28,16 @@
 - 냉기 구름은 가끔 얕은 물이나 깊은 물을 얼림
  - Ice clouds can occasionally freeze shallow water or deepen it
 
+- 새로운 몹 Interdimensional grape 추가. 후반 던전에 나오면서 오오라안에 있는 플레이어의 장비를 일시적으로 천천히 녹인다.
+ - Added new monster Interdimensional Grape. Appearing in the late dungeon, the player's equipments in the aura are temporarily slowly melded.
+
 - 볼더비틀이 다시 추가됨. 0.19버전 이전에서 굴러다니는 버전으로
  - Add Boulder Beatle again. From version 0.19 version
 
 ### Changed
 - 이머스테하 리워크 Rework Imus thea
+  - 이제 살해를 통한 신앙심으로 바뀜
+    - now gain piety to killng monster
   - 0*: 양손 패널티 삭제
     - 0*: remove two-handed penalty 
   - 1*: 들고 있는 무기를 투사체처럼 발사 가능 (1마나)
@@ -43,9 +48,33 @@
     - 3*: Spectrum: Projectiles are dispersed like Dazzling spray
   - 5*: 분산: 더 이상 사용시 체력을 깎지않고 투사체에 반응하여 똑같은 투사체를 발사하도록 리워크
     - 5*: Fragmentation. Rework to follow projectile firing and without losing health.
-    
+
+- 아그라피드는 더 이상 mp를 쓰지않음. 큐어링 포션을 금지하지 않는 대신 독을 치유할 수 없게 함
+  - Remove mp cost of all agraphede power. agraphede doesn't hate cursing foam anymore, but can't cure poison. 
+
+- 스프린트에서 새로운 신들을 믿을 수 있도록 수정
+  - Modified to be able to believe in a new god in the sprint.
+
+- 새로운 이레델렘눌의 권능 죽음으로부터 회귀 추가. 6성을 찍게 되면 언데드나 비생명체가 아닌 종족은 단 한번 언데드로 부활 할 수 있게 된다.
+  - Add yrederemnul ablity Return from Death
+
 - 멜리아이에게 스마이트 능력 부여
   - Gives meliai the smite ability
+
+- 레서리치의 마나변이 레벨이 3까지 증가, 더 이상 리치폼이 되었을때도 사라지지않음
+  - Lesserich's combet mana regeneration mutation increase level to 3 level, and no longer disappears when it's lich form.
+
+- 천사는 더 이상 신의 징벌로 변이가 발생하지 않음
+  - Angels no longer mutate as wrath from God.
+
+- 지니에게 뎀네이션 면역을 줌
+  - Give rDamnation to djinni
+ 
+- 호문클루스의 파이팅, 스펠캐스팅 교차수련이 체력과 마나의 최대치를 늘림
+  - Allow blossom homunculus closs training boosts to adjust max hp, mp 
+
+- 반신족이 이제 제단을 부술 수 있음. 부순 수만큼 레벨업시 스탯 보너스를 받는다.
+  - The demigods can now destroy the altar. When you level up by the number of destroyed, you receive a stat bonus.
   
 - 특이점은 이제 피아식별을 하지않고 근처의 모든 것을 느리게 한다
   - Singularity now hits allies and slow down all thing near it.
@@ -56,26 +85,14 @@
 - 용갑옷을 입고 용폼을 사용하면 해당 갑옷의 저항을 획득함
   - Get resistance bonuses from dragon scale in dragon form.
 
-- 레서리치의 마나변이 레벨이 3까지 증가, 더 이상 리치폼이 되었을때도 사라지지않음
-  - Lesserich's combet mana regeneration mutation increase level to 3 level, and no longer disappears when it's lich form.
-
 - 수정창(창 상위티어)의 드랍율 감소
   - Decrease drop rate of crystal spear
 
-- 스프린트에서 새로운 신들을 믿을 수 있도록 수정
-  - Modified to be able to believe in a new god in the sprint.
+- 독사의 이빨을 +8에서 +3으로 너프함
+  - Nerf viper's fang +8 to +3
 
-- 지니에게 뎀네이션 면역을 줌
-  - give rDamnation to djinni
-
-- 아그라피드는 더 이상 mp를 쓰지않음. 큐어링 포션을 금지하지 않는 대신 독을 치유할 수 없게 함
-  - remove mp cost of all agraphede power. agraphede doesn't hate cursing foam anymore, but can't cure poison. 
- 
-- 천사는 더 이상 신의 징벌로 변이가 발생하지 않음
-  - Angels no longer mutate as wrath from God.
-
-- 호문클루스의 파이팅, 스펠캐스팅 교차수련이 체력과 마나의 최대치를 늘림
-  - Allow blossom homunculus closs training boosts to adjust max hp, mp 
+- 쿠부스가 무기를 해제하는 disarm과 장신구를 해제하는 allure of cubus 마법을 가지고도록 변경
+  - Changed cubus's spellset to "disarm" to unwield weapon and "allure of cubus" to unequip jewelleries
 
 ### 0.26 Featrue
 - 데몬스폰변이 - Demonspawn Mut
