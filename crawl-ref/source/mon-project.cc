@@ -266,7 +266,6 @@ static void _bounce_iood(monster& mon)
     reflect_grid rg;
     for (adjacent_iterator ai(iood_prev_pos, false); ai; ++ai)
     {
-        coord_def temp = coord_def (*ai - iood_prev_pos);
         rg(*ai - iood_prev_pos) = cell_is_solid(*ai);
     }
 
@@ -285,6 +284,11 @@ static void _bounce_iood(monster& mon)
     double d2 = diamonds.ls2.index(rtrans.start);
     if (double_is_integral(d2))
         side += iround(d2) ? coord_def(1, -1) : coord_def(-1, 1);
+
+    if (abs(side.x) == 2)
+        side.x = side.x / 2;
+    if (abs(side.y) == 2)
+        side.y = side.y / 2;
 
     //OOD bounce has no corner
     rtrans = bounce_noncorner(rtrans, side, rg);
