@@ -28,3 +28,12 @@ struct ray_def
 
     bool _valid() const;
 };
+int iround(double d);
+int ifloor(double d);
+bool to_grid(geom::ray* r, bool half);
+bool double_is_integral(double d);
+
+geom::ray bounce_corner(const geom::ray& rorig, const coord_def& side,
+    const reflect_grid& rg);
+geom::ray bounce_noncorner(const geom::ray& r, const coord_def& side,
+    const reflect_grid& rg);

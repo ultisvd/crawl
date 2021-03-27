@@ -18,12 +18,14 @@
 #include "coordit.h"
 #include "directn.h"
 #include "env.h"
+#include "god-passive.h"
 #include "item-prop.h"
 #include "message.h"
 #include "mgen-data.h"
 #include "mon-death.h"
 #include "mon-place.h"
 #include "ouch.h"
+#include "ray.h"
 #include "shout.h"
 #include "stepdown.h"
 #include "terrain.h"
@@ -248,6 +250,49 @@ static void _iood_stop(monster& mon, bool msg = true)
     dprf("iood: dissipating");
     monster_die(mon, KILL_DISMISSED, NON_MONSTER);
 }
+
+static geom::grid diamonds(geom::lineseq(1, 1, 0.5, 1),
+    geom::lineseq(1, -1, -0.5, 1));
+
+static void _bounce_iood(monster& mon)
+{
+    const float x = mon.props[IOOD_X];
+    const float y = mon.props[IOOD_Y];
+    float vx = mon.props[IOOD_VX];
+    float vy = mon.props[IOOD_VY];
+
+    coord_def iood_prev_pos(static_cast<int>(round(x- vx)), static_cast<int>(round(y- vy)));
+
+    reflect_grid rg;
+    for (adjacent_iterator ai(iood_prev_pos, false); ai; ++ai)
+    {
+        coord_def temp = coord_def (*ai - iood_prev_pos);
+        rg(*ai - iood_prev_pos) = cell_is_solid(*ai);
+    }
+
+    geom::vector p(iood_prev_pos.x, iood_prev_pos.y);
+    geom::ray rtrans;
+    rtrans.dir = geom::vector(vx, vy);
+    rtrans.start = geom::vector(0.5, 0.5);
+    
+    // Move to the diamond edge to determine the side.
+    coord_def side;
+
+    to_grid(&rtrans, false);
+    double d1 = diamonds.ls1.index(rtrans.start);
+    if (double_is_integral(d1))
+        side += iround(d1) ? coord_def(1, 1) : coord_def(-1, -1);
+    double d2 = diamonds.ls2.index(rtrans.start);
+    if (double_is_integral(d2))
+        side += iround(d2) ? coord_def(1, -1) : coord_def(-1, 1);
+
+    //OOD bounce has no corner
+    rtrans = bounce_noncorner(rtrans, side, rg);
+
+    mon.props[IOOD_VX] = (float) rtrans.dir.x;
+    mon.props[IOOD_VY] = (float) rtrans.dir.y;
+}
+
 
 static void _fuzz_direction(const actor *caster, monster& mon, int pow)
 {
@@ -501,6 +546,20 @@ move_again:
             {
                 _iood_stop(mon);
                 return true;
+            }
+
+            const actor* caster = actor_by_mid(mon.summoner);
+            if (caster && caster->is_player()
+                && !mon.props.exists(IOOD_IMUS_REFLECT)
+                && have_passive(passive_t::imus_bounce_wall))
+            {
+                mon.props[IOOD_REFLECTOR] = (int64_t) MID_PLAYER;
+                mon.props[IOOD_IMUS_REFLECT] = true;
+                _bounce_iood(mon);
+                vx = mon.props[IOOD_VX];
+                vy = mon.props[IOOD_VY];
+                mon.lose_energy(EUT_MOVE);
+                goto move_again;
             }
         }
 

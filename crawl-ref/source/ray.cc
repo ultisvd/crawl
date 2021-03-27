@@ -27,12 +27,12 @@ static int _ifloor(double d)
     return static_cast<int>(floor(d));
 }
 
-static int iround(double d)
+int iround(double d)
 {
     return static_cast<int>(round(d));
 }
 
-static int ifloor(double d)
+int ifloor(double d)
 {
     int r = iround(d);
     if (double_is_zero(d - r))
@@ -41,7 +41,7 @@ static int ifloor(double d)
         return _ifloor(d);
 }
 
-static bool double_is_integral(double d)
+bool double_is_integral(double d)
 {
     return double_is_zero(d - round(d));
 }
@@ -84,14 +84,13 @@ static bool in_non_diamond_int(const geom::vector &v)
     return !in_diamond(v) && !on_line(v);
 }
 
-static bool _to_grid(geom::ray *r, bool half);
 // Is r on a corner and heading into a non-diamond?
 static bool bad_corner(const geom::ray &r)
 {
     if (!is_corner(r.start))
         return false;
     geom::ray copy = r;
-    _to_grid(&copy, true);
+    to_grid(&copy, true);
     return in_non_diamond_int(copy.start);
 }
 
@@ -147,7 +146,7 @@ static bool _to_next_cell(geom::ray *r)
     return c;
 }
 
-static bool _to_grid(geom::ray *r, bool half)
+bool to_grid(geom::ray *r, bool half)
 {
     bool c = r->to_grid(diamonds, half);
     if (!half)
@@ -200,7 +199,7 @@ bool ray_def::advance()
     {
         ASSERT(is_corner(r.start));
         on_corner = false;
-        _to_grid(&r, true);
+        to_grid(&r, true);
     }
     else
     {
@@ -210,7 +209,7 @@ bool ray_def::advance()
         if (c)
         {
             // r is now on a corner, going from diamond to diamond.
-            _to_grid(&r, true);
+            to_grid(&r, true);
             ASSERT(_valid());
             return true;
         }
@@ -347,11 +346,11 @@ static geom::ray _bounce_diag_corridor(const geom::ray &rorig)
     // Now bounce back and forth between l1 and l2 until we hit k.
     while (!double_is_zero(geom::intersect(r, k)))
     {
-        _to_grid(&r, false);
+        to_grid(&r, false);
         r.dir = reflect(r.dir, wall);
     }
     // Now pointing inside the destination cell (1,1) -- move inside.
-    _to_grid(&r, true);
+    to_grid(&r, true);
     return r;
 }
 
@@ -359,7 +358,7 @@ static geom::ray _bounce_diag_corridor(const geom::ray &rorig)
 // of the diamond.
 // r is positioned on the edge already, and side says which
 // side this is.
-static geom::ray _bounce_noncorner(const geom::ray &r, const coord_def &side,
+geom::ray bounce_noncorner(const geom::ray &r, const coord_def &side,
                             const reflect_grid &rg)
 {
     // Mirror r to have it leave through the positive side.
@@ -399,7 +398,7 @@ static geom::ray _bounce_noncorner(const geom::ray &r, const coord_def &side,
             // Depending on the case, we're on some diamond edge
             // or between diamonds. We'll just move safely into
             // the next one.
-            _to_grid(&rmirr, true);
+            to_grid(&rmirr, true);
             if (in_non_diamond_int(rmirr.start))
                 _advance_from_non_diamond(&rmirr);
         }
@@ -439,7 +438,7 @@ static geom::form _corner_wall(const coord_def &side, const reflect_grid &rg)
 // Bounce a ray that leaves cell (0,0) through a corner. We could
 // just fudge it a little, but want to be consistent for rays
 // shot in cardinal directions.
-static geom::ray _bounce_corner(const geom::ray &rorig, const coord_def &side,
+geom::ray bounce_corner(const geom::ray &rorig, const coord_def &side,
                          const reflect_grid &rg)
 {
     geom::ray r = rorig;
@@ -460,13 +459,13 @@ static geom::ray _bounce_corner(const geom::ray &rorig, const coord_def &side,
         if (f.a != 0 && f.b != 0)
         {
             // Diagonal wall: to the next diamond, then inside.
-            _to_grid(&r, false);
-            _to_grid(&r, true);
+            to_grid(&r, false);
+            to_grid(&r, true);
         }
         else
         {
             // Back inside diamond (0,0).
-            _to_grid(&r, true);
+            to_grid(&r, true);
         }
     }
     return r;
@@ -503,7 +502,7 @@ void ray_def::bounce(const reflect_grid &rg)
 
     // Move to the diamond edge to determine the side.
     coord_def side;
-    bool corner = _to_grid(&rtrans, false);
+    bool corner = to_grid(&rtrans, false);
     double d1 = diamonds.ls1.index(rtrans.start);
     if (double_is_integral(d1))
         side += iround(d1) ? coord_def(1,1) : coord_def(-1,-1);
@@ -520,9 +519,9 @@ void ray_def::bounce(const reflect_grid &rg)
     }
 
     if (corner)
-        rtrans = _bounce_corner(rtrans, side, rg);
+        rtrans = bounce_corner(rtrans, side, rg);
     else
-        rtrans = _bounce_noncorner(rtrans, side, rg);
+        rtrans = bounce_noncorner(rtrans, side, rg);
 
     // Translate back.
     r.start = rtrans.start + p;

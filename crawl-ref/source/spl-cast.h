@@ -66,6 +66,7 @@ enum class spret
 #define IOOD_POW "iood_pow"
 #define IOOD_CASTER "iood_caster"
 #define IOOD_REFLECTOR "iood_reflector"
+#define IOOD_IMUS_REFLECT "iood_imus_reflect"
 #define IOOD_DIST "iood_distance"
 #define IOOD_MID "iood_mid"
 #define IOOD_FLAWED "iood_flawed"

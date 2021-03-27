@@ -2481,7 +2481,8 @@ bool bolt::is_bouncy(dungeon_feature_type feat) const
     if(agent() && agent()->is_player() 
         && have_passive(passive_t::imus_bounce_wall)
         && feat_is_solid(feat)
-        && !is_spread)
+        && !is_spread
+        && !(flavour == BEAM_DEVASTATION && name == "orb of destruction"))
     {
         return true;
     }
