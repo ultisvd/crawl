@@ -881,6 +881,12 @@ A magical construct woven with magic of conjurations and bonded with a artificia
 elemental intelligence, created from the arcane furnace of the Forge. The magic it
 is forged with gives it a deadly spell to fire extremely sharpen crystal spear. 
 %%%%
+cubus
+
+A luscious demon with no certain appearance. It often neutralizes and disarms the 
+another being by manipulating thier minds. Some intellectual victims get idolizing
+them and even tries to offer tributes. 
+%%%%
 curse skull
 
 A charred skull floating in the air and rotating slowly. Mystic symbols are
@@ -1564,6 +1570,14 @@ insubstantial wisp
 
 A thin wisp of floating gas, flickering, disappearing and reforming in a
 disconcertingly random fashion while building up an electrical charge.
+%%%%
+interdimensional grape
+
+A fruit of vine grown in the gap between dimensions. Their popping out fruits
+often attract the victims to lead them to violent surroundings that are as unstable
+as where their roots run deep through. As time goes on, the armors of the victims 
+seep into the different dimensions, and in the end only the victim's fragile skin is
+revealed. 
 %%%%
 iron dragon
 
