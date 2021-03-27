@@ -26,13 +26,13 @@
   - Add artefact gauntlet, 2 pair of gauntlets of Distortion {Distortion, \*Blink EV+4 \*Curse}. Gauntlets with a distortion brand in all attacks when worn. Instead, It may blink you when you take damage
 
 - 냉기 구름은 가끔 얕은 물이나 깊은 물을 얼림
- - Ice clouds can occasionally freeze shallow water or deepen it
+  - Ice clouds can occasionally freeze shallow water or deepen it
 
 - 새로운 몹 Interdimensional grape 추가. 후반 던전에 나오면서 오오라안에 있는 플레이어의 장비를 일시적으로 천천히 녹인다.
- - Added new monster Interdimensional Grape. Appearing in the late dungeon, the player's equipments in the aura are temporarily slowly melded.
+  - Added new monster Interdimensional Grape. Appearing in the late dungeon, the player's equipments in the aura are temporarily slowly melded.
 
 - 볼더비틀이 다시 추가됨. 0.19버전 이전에서 굴러다니는 버전으로
- - Add Boulder Beatle again. From version 0.19 version
+  - Add Boulder Beatle again. From version 0.19 version
 
 ### Changed
 - 이머스테하 리워크 Rework Imus thea
