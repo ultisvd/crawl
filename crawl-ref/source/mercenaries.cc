@@ -52,7 +52,7 @@ bool set_spell_witch(monster &witch, item_def* weapon, bool silence)
         return false;
     
     int idx = -1;
-    int stvtype;
+    int stvtype = -1;
     if (weapon->flags & ISFLAG_UNRANDART)
         idx = (int)weapon->unrand_idx;
     else
@@ -419,6 +419,7 @@ static bool _caravan_gift_items_to(monster* mons, int item_slot)
     const bool weapon = gift.base_type == OBJ_WEAPONS
                              || gift.base_type == OBJ_STAVES;
     const bool range_weapon = weapon && is_range_weapon(gift);
+    const bool missle = gift.base_type == OBJ_MISSILES;
     const item_def* mons_weapon = mons->weapon();
     const item_def* mons_alt_weapon = mons->mslot_item(MSLOT_ALT_WEAPON);
 
@@ -438,6 +439,12 @@ static bool _caravan_gift_items_to(monster* mons, int item_slot)
              mons->name(DESC_THE, false).c_str());
         return false;
     }
+    if (missle && !mons->can_use_missile(gift))
+    {
+        mprf("You can't give that to %s.", mons->name(DESC_THE, false).c_str());
+            return false;
+    }
+
 
     const bool use_alt_slot = weapon && mons_weapon
                               && is_range_weapon(gift) !=
@@ -446,7 +453,8 @@ static bool _caravan_gift_items_to(monster* mons, int item_slot)
     const auto mslot = body_armour ? MSLOT_ARMOUR :
                                     shield ? MSLOT_SHIELD :
                               use_alt_slot ? MSLOT_ALT_WEAPON :
-                                             MSLOT_WEAPON;
+                                    missle ? MSLOT_MISSILE :
+                                    MSLOT_WEAPON;
 
     item_def *body_slot = mons->mslot_item(MSLOT_ARMOUR);
 
@@ -523,84 +531,86 @@ static bool _caravan_gift_items_to(monster* mons, int item_slot)
             return false;
     }
 
-    if (weapon) {// weapons.
-
+    if (weapon)
+    {// weapons.
         // ranged weapon
         if (range_weapon)
         {
             if (!_can_use_range(mons, gift))
                 return false;
 
-        } else {
-
-        // polearms for skald.
-        if (mons->type == MONS_MERC_SKALD
-            || mons->type == MONS_MERC_INFUSER
-            || mons->type == MONS_MERC_TIDEHUNTER)
-        {
-            if (item_attack_skill(gift) != SK_POLEARMS)
-            {
-                mprf("%s can only equip polearms.",
-                mons->name(DESC_THE, false).c_str());
-                return false;
-            }
-
-            if (mons->type == MONS_MERC_SKALD
-                && (gift.sub_type == WPN_CRYSTAL_SPEAR
-                   || gift.sub_type == WPN_SCYTHE
-                   || gift.sub_type == WPN_GLAIVE
-                   || gift.sub_type == WPN_BARDICHE))
-            {
-                _is_unskilled(mons, gift);
-                return false;
-            }
-
-            if (mons->type == MONS_MERC_INFUSER
-                && (gift.sub_type == WPN_SCYTHE
-                   || gift.sub_type == WPN_BARDICHE))
-            {
-                _is_unskilled(mons, gift);
-                return false;
-            }
         }
-
-        // magical staves for witch
-        if (mons->type == MONS_MERC_WITCH
-            || mons->type == MONS_MERC_SORCERESS
-            || mons->type == MONS_MERC_ELEMENTALIST)
+        else
         {
-            if (gift.base_type != OBJ_STAVES && !(gift.flags & ISFLAG_UNRANDART))
+            // polearms for skald.
+            if (mons->type == MONS_MERC_SKALD
+                || mons->type == MONS_MERC_INFUSER
+                || mons->type == MONS_MERC_TIDEHUNTER)
             {
-                mprf("%s can only equip magical staves.",
-                mons->name(DESC_THE, false).c_str());
-                return false;
-            }
-            else
-            {
-                if (!set_spell_witch(*mons, &gift, false))
+                if (item_attack_skill(gift) != SK_POLEARMS)
                 {
-                    mons->props[CUSTOM_SPELLS_KEY] = true;
+                    mprf("%s can only equip polearms.",
+                        mons->name(DESC_THE, false).c_str());
+                    return false;
+                }
+
+                if (mons->type == MONS_MERC_SKALD
+                    && (gift.sub_type == WPN_CRYSTAL_SPEAR
+                        || gift.sub_type == WPN_SCYTHE
+                        || gift.sub_type == WPN_GLAIVE
+                        || gift.sub_type == WPN_BARDICHE))
+                {
+                    _is_unskilled(mons, gift);
+                    return false;
+                }
+
+                if (mons->type == MONS_MERC_INFUSER
+                    && (gift.sub_type == WPN_SCYTHE
+                        || gift.sub_type == WPN_BARDICHE))
+                {
+                    _is_unskilled(mons, gift);
                     return false;
                 }
             }
-        }
 
-        // stealth weapon for brigand.
-        if (mons->type == MONS_MERC_BRIGAND
-            || mons->type == MONS_MERC_ASSASSIN
-            || mons->type == MONS_MERC_CLEANER)
-        {
-            if (item_attack_skill(gift) != SK_SHORT_BLADES)
+            // magical staves for witch
+            if (mons->type == MONS_MERC_WITCH
+                || mons->type == MONS_MERC_SORCERESS
+                || mons->type == MONS_MERC_ELEMENTALIST)
             {
-                mprf("%s can only equip short blades.",
-                mons->name(DESC_THE, false).c_str());
-                return false;
+                if (gift.base_type != OBJ_STAVES && !(gift.flags & ISFLAG_UNRANDART))
+                {
+                    mprf("%s can only equip magical staves.",
+                        mons->name(DESC_THE, false).c_str());
+                    return false;
+                }
+                else
+                {
+                    if (!set_spell_witch(*mons, &gift, false))
+                    {
+                        mons->props[CUSTOM_SPELLS_KEY] = true;
+                        return false;
+                    }
+                }
             }
-        }
 
-        if (!_can_use_melee(mons, gift))
-            return false;
-    } }
+            // stealth weapon for brigand.
+            if (mons->type == MONS_MERC_BRIGAND
+                || mons->type == MONS_MERC_ASSASSIN
+                || mons->type == MONS_MERC_CLEANER)
+            {
+                if (item_attack_skill(gift) != SK_SHORT_BLADES)
+                {
+                    mprf("%s can only equip short blades.",
+                        mons->name(DESC_THE, false).c_str());
+                    return false;
+                }
+            }
+
+            if (!_can_use_melee(mons, gift))
+                return false;
+        }
+    }
 
     if (body_slot && !is_shield(gift)) {// body armours.
 
