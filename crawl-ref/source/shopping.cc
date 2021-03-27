@@ -761,14 +761,14 @@ unsigned int item_value(item_def item, bool ident)
             if (item.props.exists(MERCENARY_UNIT_KEY)) 
             {
                 int hit_dice = mons_class_hit_dice((monster_type)item.props[MERCENARY_UNIT_KEY].get_int());
-                valued += hit_dice * 50;
+                valued += hit_dice * 25;
                 if (is_caravan_companion_for_type((monster_type)item.props[MERCENARY_UNIT_KEY].get_int())) {
                     valued *= 2;
                 }
             }
             else 
             {
-                valued += 500;
+                valued += 250;
             }
             break;
 
