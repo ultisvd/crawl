@@ -23,7 +23,7 @@
   - Add artefact ring, stone of krohman {conj+ +Blink MP+18 \*Curse}
 
 - 아티팩트 장갑 -2 pair of gauntlets of Distortion {Distortion, \*Blink EV+4 \*Curse} 추가. 모든 공격(근접, 원거리포함)에 왜곡 속성을 붙임. 피격시 일정 확률로 강제 블링크가 발생함 
-  - Add artefact gauntlet, 2 pair of gauntlets of Distortion {Distortion, \*Blink EV+4 \*Curse}. Gauntlets with a distortion brand in all attacks when worn. Instead, It may blink you when you take damage
+  - Add artefact gauntlet, -2 pair of gauntlets of Distortion {Distortion, \*Blink EV+4 \*Curse}. Gauntlets with a distortion brand in all attacks when worn. Instead, It may blink you when you take damage
 
 - 냉기 구름은 가끔 얕은 물이나 깊은 물을 얼림
   - Ice clouds can occasionally freeze shallow water or deepen it
