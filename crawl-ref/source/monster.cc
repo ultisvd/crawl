@@ -5418,7 +5418,7 @@ bool monster::can_polymorph() const
         return false;
 
     // Poly'd mercs aren't able to use merc-relate functions.
-    if (is_mercenery_companion())
+    if (is_mercenary_companion())
         return false;
 
     return can_mutate();
@@ -6810,7 +6810,7 @@ bool monster::is_divine_companion() const
            && mons_can_use_stairs(*this);
 }
 
-bool monster::is_mercenery_companion(bool check_hostile) const
+bool monster::is_mercenary_companion(bool check_hostile) const
 {
     return props.exists(MERCENARY_FLAG) 
            && props[MERCENARY_FLAG].get_bool()

@@ -128,7 +128,7 @@ void start_recall(recall_t type)
         }
         else if (type == recall_t::caravan)
         {
-            if (!mi->is_mercenery_companion())
+            if (!mi->is_mercenary_companion())
                 continue;
         }
 

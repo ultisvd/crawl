@@ -4212,7 +4212,7 @@ bool handle_mon_spell(monster* mons)
 
     // for witch mercs: do not summon demons when you worship good gods
     if ((you_worship(GOD_SHINING_ONE) || you_worship(GOD_ELYVILON) || you_worship(GOD_ZIN))
-        && mons->attitude == ATT_FRIENDLY && mons->is_mercenery_companion())
+        && mons->attitude == ATT_FRIENDLY && mons->is_mercenary_companion())
     {
         if (spell_cast == SPELL_CALL_IMP
             || spell_cast == SPELL_SUMMON_MINOR_DEMON

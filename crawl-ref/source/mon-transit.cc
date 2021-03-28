@@ -72,7 +72,7 @@ void add_monster_to_transit(const level_id &lid, const monster& m)
     dprf("Monster in transit to %s: %s", lid.describe().c_str(),
          m.name(DESC_PLAIN, true).c_str());
 
-    if (m.is_divine_companion() || m.is_mercenery_companion())
+    if (m.is_divine_companion() || m.is_mercenary_companion())
         move_companion_to(&m, lid);
 
     const int how_many = mlist.size();
@@ -106,7 +106,7 @@ static void _level_place_followers(m_transit_list &m)
         auto mon = i++;
         if ((mon->mons.flags & MF_TAKING_STAIRS) && mon->place(true))
         {
-            if (mon->mons.is_divine_companion() || mon->mons.is_mercenery_companion())
+            if (mon->mons.is_divine_companion() || mon->mons.is_mercenary_companion())
             {
                 move_companion_to(monster_by_mid(mon->mons.mid),
                                                  level_id::current());
