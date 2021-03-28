@@ -3798,6 +3798,8 @@ bool gozag_call_merchant()
             continue;
         if (type == SHOP_EVOKABLES && you.get_mutation_level(MUT_NO_ARTIFICE))
             continue;
+        if (type == SHOP_MERCENARY && you.get_mutation_level(MUT_NO_LOVE))
+            continue;
         if (you.species == SP_FELID &&
             (type == SHOP_ARMOUR
              || type == SHOP_ARMOUR_ANTIQUE
