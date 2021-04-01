@@ -1155,11 +1155,11 @@ static int _mons_power_hd_factor(spell_type spell)
 
         case SPELL_SUMMON_DRAGON:
         case SPELL_SUMMON_HYDRA:
+        case SPELL_FOXFIRE:
             return 5;
 
         case SPELL_CHAIN_LIGHTNING:
         case SPELL_CHAIN_OF_CHAOS:
-        case SPELL_FOXFIRE:
             return 4;
 
         default:
@@ -6626,7 +6626,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         return;
     
     case SPELL_FOXFIRE:
-        cast_foxfire(mons, mons->spell_hd(spell_cast), /*&pbolt,*/ god);
+        cast_foxfire(mons, splpow, GOD_NO_GOD, false);
         return;
 
     case SPELL_AWAKEN_FOREST:
