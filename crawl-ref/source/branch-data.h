@@ -154,7 +154,7 @@ const Branch branches[NUM_BRANCHES] =
       LIGHTGREY, LIGHTRED,
       'H', {}, branch_noise::normal },
 
-    { BRANCH_DIS, BRANCH_VESTIBULE, 1, 1, 7, 28,
+    { BRANCH_DIS, BRANCH_VESTIBULE, 1, 1, 6, 28,
       brflag::no_items | brflag::dangerous_end,
       DNGN_ENTER_DIS, DNGN_ENTER_HELL, DNGN_ENTER_HELL,
       "Dis", "the Iron City of Dis", "Dis",
@@ -162,7 +162,7 @@ const Branch branches[NUM_BRANCHES] =
       CYAN, BROWN,
       'I', { RUNE_DIS }, branch_noise::normal },
 
-    { BRANCH_GEHENNA, BRANCH_VESTIBULE, 1, 1, 7, 28,
+    { BRANCH_GEHENNA, BRANCH_VESTIBULE, 1, 1, 6, 28,
       brflag::no_items | brflag::dangerous_end,
       DNGN_ENTER_GEHENNA, DNGN_ENTER_HELL, DNGN_ENTER_HELL,
       "Gehenna", "Gehenna", "Geh",
@@ -170,7 +170,7 @@ const Branch branches[NUM_BRANCHES] =
       BROWN, RED,
       'G', { RUNE_GEHENNA }, branch_noise::normal },
 
-    { BRANCH_COCYTUS, BRANCH_VESTIBULE, 1, 1, 7, 28,
+    { BRANCH_COCYTUS, BRANCH_VESTIBULE, 1, 1, 6, 28,
       brflag::no_items | brflag::dangerous_end,
       DNGN_ENTER_COCYTUS, DNGN_ENTER_HELL, DNGN_ENTER_HELL,
       "Cocytus", "Cocytus", "Coc",
@@ -178,7 +178,7 @@ const Branch branches[NUM_BRANCHES] =
       LIGHTBLUE, LIGHTCYAN,
       'X', { RUNE_COCYTUS }, branch_noise::normal },
 
-    { BRANCH_TARTARUS, BRANCH_VESTIBULE, 1, 1, 7, 28,
+    { BRANCH_TARTARUS, BRANCH_VESTIBULE, 1, 1, 6, 28,
       brflag::no_items | brflag::dangerous_end,
       DNGN_ENTER_TARTARUS, DNGN_ENTER_HELL, DNGN_ENTER_HELL,
       "Tartarus", "Tartarus", "Tar",

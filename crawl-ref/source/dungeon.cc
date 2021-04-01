@@ -1383,7 +1383,7 @@ static int _num_mons_wanted()
     else if (player_in_branch(BRANCH_CRYPT))
         size = 10;
     else if (player_in_hell())
-        size = 23;
+        size = 25;
 
     int mon_wanted = roll_dice(3, size);
 
