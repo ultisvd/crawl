@@ -4493,7 +4493,8 @@ static void _perish_effect(god_type god, coord_def pos = you.pos())
     }
 
     string wrath_message
-                = make_stringf(" says: \"Thou will pay for your arrogance!\"");
+                = you.penance[god] ?  make_stringf(" says: \"Thee arrogance shall not be forgiven!\"")
+                                   :  make_stringf(" says: \"Thou will pay for your arrogance!\"");
 
     //god_speak part
     switch(god)
@@ -4527,12 +4528,9 @@ bool demigod_perish_altar(coord_def pos)
             }
         }
         grd(pos) = DNGN_FLOOR;
-        you.penance[god] = 0;
         you.penance[god] += (uint8_t)(log(you.experience_level)/log(3) * 10 + random_range(1, 10));
+        mprf("%d", you.penance[god]);
         you.penance[god] = min((uint8_t)MAX_PENANCE, you.penance[god]);
-
-        if (!player_under_penance())
-            add_daction(DACT_REMOVE_JIYVA_ALTARS);
 
         _perish_effect(god);
         return true;

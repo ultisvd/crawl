@@ -4052,6 +4052,8 @@ static int _upheaval_radius(int pow)
 spret qazlal_upheaval(coord_def target, bool quiet, bool fail)
 {
     int pow = you.skill(SK_INVOCATIONS, 6);
+    if (you.species == SP_DEMIGOD)
+        pow = you.penance[GOD_QAZLAL];
     const int max_radius = _upheaval_radius(pow);
 
     bolt beam;

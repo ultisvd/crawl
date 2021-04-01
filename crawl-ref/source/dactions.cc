@@ -352,7 +352,7 @@ static void _apply_daction(daction_type act)
         for (int i = 0; i < NUM_GODS; i++)
         {
             god_type god = (god_type)i;
-            if (you.species == SP_DEMIGOD && you.penance[god])
+            if (you.species == SP_DEMIGOD && (you.penance[god] > 0))
             {
                 for (rectangle_iterator ri(1); ri; ++ri)
                 {
