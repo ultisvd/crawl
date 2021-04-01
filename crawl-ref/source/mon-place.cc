@@ -231,7 +231,7 @@ bool monster_can_submerge(const monster* mon, dungeon_feature_type feat)
         return false;
 }
 
-static void _apply_ood(level_id &place)
+static void _apply_ood(level_id &place, bool reduce_fuzz)
 {
     // OODs do not apply to any portal vaults, any 1-level branches, Zot and
     // hells. What with newnewabyss?
@@ -259,7 +259,7 @@ static void _apply_ood(level_id &place)
 
     if (x_chance_in_y(14, 100))
     {
-        const int fuzzspan = 5;
+        const int fuzzspan = reduce_fuzz ? 2 : 5;
         const int fuzz = max(0, random_range(-fuzzspan, fuzzspan, 2));
 
         // Quite bizarre logic: why should we fail in >50% cases here?
@@ -381,7 +381,8 @@ static bool _is_banded_monster(monster_type mt)
 monster_type pick_random_monster(level_id place,
                                  monster_type kind,
                                  level_id *final_place,
-                                 bool allow_ood)
+                                 bool allow_ood,
+                                 bool reduce_fuzz)
 {
     if (crawl_state.game_is_arena())
     {
@@ -391,7 +392,7 @@ monster_type pick_random_monster(level_id place,
     }
 
     if (allow_ood)
-        _apply_ood(place);
+        _apply_ood(place, reduce_fuzz);
 
     place.depth = min(place.depth, branch_ood_cap(place.branch));
 

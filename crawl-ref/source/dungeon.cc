@@ -4801,6 +4801,7 @@ monster* dgn_place_monster(mons_spec &mspec, coord_def where,
         mspec.place = level_id::current();
     bool chose_ood = false;
     bool allow_ood = true;
+    bool reduce_fuzz = false;
     const int starting_depth = mspec.place.depth;
 
     if (type == RANDOM_SUPER_OOD || type == RANDOM_MODERATE_OOD)
@@ -4808,11 +4809,16 @@ monster* dgn_place_monster(mons_spec &mspec, coord_def where,
         if (brdepth[mspec.place.branch] <= 1)
             ; // no OODs here
         else if (type == RANDOM_SUPER_OOD)
+        {
             mspec.place.depth += 4 + mspec.place.depth;
+            allow_ood = false;
+        }
         else if (type == RANDOM_MODERATE_OOD)
+        {
             mspec.place.depth += 5;
+            reduce_fuzz = true;
+        }
         type = RANDOM_MONSTER;
-        allow_ood = false;
     }
 
     if (type < NUM_MONSTERS)
@@ -4842,8 +4848,8 @@ monster* dgn_place_monster(mons_spec &mspec, coord_def where,
         else
         {
             level_id place = mspec.place; 
-            type = pick_random_monster(mspec.place, mspec.monbase, &place, allow_ood);
-            if (place.depth > starting_depth + 5 || allow_ood)
+            type = pick_random_monster(mspec.place, mspec.monbase, &place, allow_ood, reduce_fuzz);
+            if (place.depth >= starting_depth + 5)
                 chose_ood = true;
         }
         if (!type)
