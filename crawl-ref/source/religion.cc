@@ -4529,7 +4529,6 @@ bool demigod_perish_altar(coord_def pos)
         }
         grd(pos) = DNGN_FLOOR;
         you.penance[god] += (uint8_t)(log(you.experience_level)/log(3) * 10 + random_range(1, 10));
-        mprf("%d", you.penance[god]);
         you.penance[god] = min((uint8_t)MAX_PENANCE, you.penance[god]);
 
         _perish_effect(god);
