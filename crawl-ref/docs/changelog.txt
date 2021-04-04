@@ -1,3 +1,89 @@
+Stone Soup kimchi-1.3.0 (20210404)
+
+Highlights
+----------
+* Rework Imus thea
+* New Speices: Automaton
+* Add subportal hive
+* Rollback sludge elf
+* Apply some stonesoup 0.26 feature
+
+Added
+----------
+* Added automaton(playable), automatic machine that moves 
+  and acts on its own by magic. They cannot use spell directly,
+  but they can engrave spell on their bodies and use them in battle.
+* Rollback sludge elf
+* Add miniportal hive
+* Rollback artefact, +6 Lehudib's crystal spear {return, throwable Int+3}. 
+  The base weapon has been changed to a crystal spear, and 
+  can be used both by melee weapon and projectile. (base damage 14)
+* Add artefact ring, stone of krohman {conj+ +Blink MP+18 *Curse} 
+* Add artefact gauntlet, -2 pair of gauntlets of Distortion
+  {Distortion, *Blink EV+4 *Curse}. Gauntlets with a distortion brand 
+  in all attacks when worn. Instead, It may blink you when you take damage
+* Ice clouds can occasionally freeze shallow water or deepen it
+* Added new monster Interdimensional Grape. Appearing in the
+  late dungeon, the player's equipments in the aura are temporarily 
+  slowly melded.
+* Add Boulder Beatle again. From version 0.19 version
+
+Changed
+----------
+* Rework god: Imus thea
+  - now gain piety to killng monster
+  - 0*: remove two-handed penalty 
+  - 1*: weapons can be fired like projectiles (1 mana)
+  - 2*: all projectiles are reflected off the wall
+  - 3*: Spectrum: Projectiles are dispersed like Dazzling spray
+  - 5*: Fragmentation. Rework to follow projectile
+         firing and without losing health.
+* Remove mp cost of all agraphede power. agraphede doesn't 
+  hate cursing foam anymore, but can't cure poison. 
+* Modified to be able to believe in a new god in the sprint.
+* Add yrederemnul ablity Return from Death
+* Gives meliai the smite ability
+* Lesserich's combet mana regeneration mutation increase level to
+  3 level, and no longer disappears when it's lich form.
+* Angels no longer mutate as wrath from God.
+* Give rDamnation to djinni
+* Allow blossom homunculus closs training boosts to adjust max hp, mp 
+* The demigods can now destroy the altar. When you level up by the 
+  number of destroyed, you receive a stat bonus.
+* Singularity now hits allies and slow down all thing near it.
+* Hell stairs now go down one~three floors at a time
+* Get resistance bonuses from dragon scale in dragon form.
+* Decrease drop rate of crystal spear
+* Nerf viper's fang +8 to +3
+* Changed cubus's spellset to "disarm" to unwield weapon and 
+  "allure of cubus" to unequip jewelleries
+* Slow down Firefox's basic speed and stat. Increase the
+  frequency of Foxfire, add a low probability of blinks
+
+0.26 Featrue
+----------
+* Demonspawn Mut
+* E'NB rework
+* Animate skeleton
+* Showing Damage/Accuracy
+* Palentonga 
+* Rampage
+* Scarf of shadow
+* Vampiric Drain heal cap removal
+* Sword of power
+* Spectral Ego
+* Condensor vane
+* Glaive of the guard
+* Spellpower shown as %
+* Delver
+* Beam type projectile with no range reduce upon hit
+* Phantom mirror and box of beast charge with XP
+* Majin-bo change
+* Shield of resistance change
+* Beastly Appendage melding hat/boot
+* pots of Attraction
+* Enhancing Panlords
+
 Stone Soup kimchi-1.2.3 (20201108)
 --------------------------------
 
