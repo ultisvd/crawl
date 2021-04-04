@@ -119,6 +119,8 @@ force_more_message += sound of rushing water
 force_more_message += oppressive heat about you
 force_more_message += crackle of arcane power
 force_more_message += hear a distant wind
+force_more_message += hear a sound of hammering
+force_more_message += hear a sound of buzzing
 
 # Religion
 force_more_message += press .* to convert to Beogh
