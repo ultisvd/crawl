@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 ### Added
+### Changed
+
+## [kimchi-1.3.0] - ~2021-04-04
+### Added
 - 새로운 종족 오토마톤 추가. 마법으로 움직이는 자동 기계로, 마법을 직접 시전할 순 없지만 자신의 몸에 마법을 새겨서 전투중에 자동으로 사용한다. [상세설명](https://github.com/kimjoy2002/crawl/wiki/automaton)
   - Added automaton(playable), automatic machine that moves and acts on its own by magic. They cannot use spell directly, but they can engrave spell on their bodies and use them in battle.
 
@@ -94,6 +98,9 @@
 - 쿠부스가 무기를 해제하는 disarm과 장신구를 해제하는 allure of cubus 마법을 가지고도록 변경
   - Changed cubus's spellset to "disarm" to unwield weapon and "allure of cubus" to unequip jewelleries
 
+- 파이어폭스의 기본 스피드 및 스펙 감소. 대신 폭스파이어의 빈도 증가 및 적은 확률의 블링크 추가
+  - Slow down Firefox's basic speed and stat. Increase the frequency of Foxfire, add a low probability of blinks 
+
 ### 0.26 Featrue
 - 데몬스폰변이 - Demonspawn Mut
 - 에링야독늪지리워크 - E'NB rework
@@ -122,7 +129,6 @@
 
 
 ## [kimchi-1.2.5] - ~2020-12-18
-
 ### Bug Fixed
 - 획득스크롤을 R키로 리롤가능한 버그 수정
   - Fixed bug where acqscrolls can be re-rollable with R keys
@@ -629,8 +635,9 @@
 - 헤일스톰추가 Added Hailstorm
 - 냉기술사의 기본책은 이제 예전버전과 최신버전을 고를 수 있음 Ice elementalist chooses old or new spell set.
   
-[Unreleased]: https://github.com/kimjoy2002/crawl/compare/kimchi-1.2.3...HEAD  
-[kimchi-1.2.3]: https://github.com/kimjoy2002/crawl/tree/kimchi-1.2.3
+[Unreleased]: https://github.com/kimjoy2002/crawl/compare/kimchi-1.3.0...HEAD  
+[kimchi-1.3]: https://github.com/kimjoy2002/crawl/tree/kimchi-1.3.0
+[kimchi-1.2.5]: https://github.com/kimjoy2002/crawl/tree/kimchi-1.2.5
 [kimchi-1.2]: https://github.com/kimjoy2002/crawl/tree/kimchi-1.2.0
 [kimchi-1.1]: https://github.com/kimjoy2002/crawl/tree/kimchi-1.1.1
 [kimchi-1.0]: https://github.com/kimjoy2002/crawl/tree/kimchi-1.0.1
