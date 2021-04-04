@@ -105,8 +105,8 @@
 
 * [![Build Status](http://joy1999.codns.com:8080/buildStatus/icon?job=crawl%2Fcrawl)](http://joy1999.codns.com:8080/job/crawl/job/crawl/)
 
-* Last Release (kimchi-1.2.5)
-  * https://github.com/kimjoy2002/crawl/releases/tag/kimchi-1.2.5
+* Last Release (kimchi-1.3.0)
+  * https://github.com/kimjoy2002/crawl/releases/tag/kimchi-1.3.0
 
 * 타일판 다운로드
   * http://joy1999.codns.com:8999/download/stone_soup-kimchi-trunk-tiles-win64.zip - 64비트
