@@ -459,12 +459,17 @@ static bool _caravan_gift_items_to(monster* mons, int item_slot)
     item_def *body_slot = mons->mslot_item(MSLOT_ARMOUR);
 
     item_def* item_to_drop = mons->mslot_item(mslot);
+    if (item_to_drop && mons->interdim_melded[mslot])
+    {
+        mprf(MSGCH_ERROR, "%s is melded!", item_to_drop->name(DESC_THE, false).c_str());
+        return false;
+    }
     if (item_to_drop && item_to_drop->cursed())
     {
         mprf(MSGCH_ERROR, "%s is cursed!", item_to_drop->name(DESC_THE, false).c_str());
         return false;
     }
-
+    
     if (gift.cursed() || (is_artefact(gift) && artefact_property(gift, ARTP_CURSE)))
     {
         mprf(MSGCH_ERROR, "%s is cursed!", gift.name(DESC_THE, false).c_str());
@@ -523,6 +528,11 @@ static bool _caravan_gift_items_to(monster* mons, int item_slot)
             if (gift.cursed() || (is_artefact(gift) && artefact_property(gift, ARTP_CURSE)))
             {
                 mprf(MSGCH_ERROR, "%s is cursed!", gift.name(DESC_THE, false).c_str());
+                return false;
+            }
+            if (!mons->interdim_melded[MSLOT_SHIELD])
+            {
+                mprf(MSGCH_ERROR, "%s is melded!", shield_slot->name(DESC_THE, false).c_str());
                 return false;
             }
         }

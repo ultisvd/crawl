@@ -764,6 +764,7 @@ monster_info::monster_info(const monster* m, int milev)
         if (ok)
             inv[i].reset(new item_def(get_item_info(mitm[m->inv[i]])));
     }
+    interdim_melded = m->interdim_melded;
 
     fire_blocker = DNGN_UNSEEN;
     if (!crawl_state.arena_suspended

@@ -31,6 +31,7 @@
 #include "notes.h"
 #include "options.h"
 #include "player-stats.h"
+#include "random.h"
 #include "religion.h"
 #include "shopping.h"
 #include "spl-miscast.h"
@@ -39,6 +40,7 @@
 #include "spl-transloc.h"
 #include "spl-wpnench.h"
 #include "stringutil.h"
+#include "transform.h"      // _dissolve
 #include "xom.h"
 
 static void _mark_unseen_monsters();
@@ -122,6 +124,34 @@ bool unmeld_slot(equipment_type slot)
         return true;
     }
     return false;
+}
+
+void player::dissolve_equip()
+{
+    vector<equipment_type> arm = current_armour_types();
+    if (arm.empty())
+        return;
+    equipment_type slot= *random_iterator(arm);
+    if (you.equip[slot] != -1 && !you.melded[slot] && !you.interdim_melded[slot])
+    {
+        you.interdim_melded.set(slot, true);
+        remove_one_equip(slot, true, false, true);
+    }
+}
+
+void player::undissolve_equip()
+{
+    vector<equipment_type> arm = current_armour_types();
+    if (arm.empty())
+        return;
+    equipment_type slot= *random_iterator(arm);
+    if (get_form()->slot_available(slot) && you.equip[slot] != -1)
+    {
+        if (you.interdim_melded[slot])
+            you.interdim_melded.set(slot, false);
+        if (you.melded[slot])
+            unmeld_one_equip(slot);
+    }
 }
 
 static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld, equipment_type slot);

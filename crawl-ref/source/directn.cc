@@ -3513,15 +3513,17 @@ string get_monster_equipment_desc(const monster_info& mi,
 
     if (mon_arm && arm_inhand)
     {
-        const string armour_desc = make_stringf("wearing %s",
-                                                mon_arm->name(DESC_A).c_str());
+        const string armour_desc = make_stringf("wearing %s%s",
+                                                mon_arm->name(DESC_A).c_str(),
+                                                mi.interdim_melded[MSLOT_ARMOUR] ? "(melded)" : "");
         item_descriptions.push_back(armour_desc);
     }
 
     if (mon_shd && shd_inhand)
     {
-        const string shield_desc = make_stringf("wearing %s",
-                                                mon_shd->name(DESC_A).c_str());
+        const string shield_desc = make_stringf("wearing %s%s",
+                                                mon_shd->name(DESC_A).c_str(),
+                                                mi.interdim_melded[MSLOT_SHIELD] ? "(melded)" : "");
         item_descriptions.push_back(shield_desc);
     }
 

@@ -232,7 +232,7 @@ bool fill_status_info(int status, status_info& inf)
     case STATUS_INTERDIMENSIONAL:
         if (you.within_interdim_crosspoint())
         {
-            inf.light_text = "melding";
+            inf.light_text = "Melding";
             inf.light_colour = RED;
             inf.short_text = "melding armours";
             inf.long_text = "Your armours are melding.";

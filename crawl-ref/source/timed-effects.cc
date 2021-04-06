@@ -36,7 +36,6 @@
 #include "mon-project.h"
 #include "mutation.h"
 #include "player.h"
-#include "player-equip.h"   // _dissolve
 #include "player-stats.h"
 #include "random.h"
 #include "rot.h"
@@ -52,7 +51,6 @@
 #include "tileview.h"
 #include "throw.h"
 #include "travel.h"
-#include "transform.h"      // _dissolve
 #include "viewchar.h"
 #include "unwind.h"
 
@@ -461,34 +459,18 @@ static void _agraphede_poison_passaive(int /*time_delta*/)
 // NOTICE : this timer-effect makes your equippment un-meld, too.
 static void _dissolve(int /*time_delta*/)
 {
-
     if (you.within_interdim_crosspoint())
-    {
-        vector<equipment_type> arm = current_armour_types();
-        if (arm.empty())
-            return;
-        equipment_type slot= *random_iterator(arm);
-        if (you.equip[slot] != -1 && !you.melded[slot] && !you.interdim_melded[slot])
-        {
-            you.interdim_melded.set(slot, true);
-            remove_one_equip(slot, true, false, true);
-        }
-    }
+        you.dissolve_equip();
     else
+        you.undissolve_equip();
+
+    for (monster_iterator mi; mi; ++mi)
     {
-        vector<equipment_type> arm = current_armour_types();
-        if (arm.empty())
-            return;
-        equipment_type slot= *random_iterator(arm);
-        if (get_form()->slot_available(slot) && you.equip[slot] != -1)
-        {
-            if (you.interdim_melded[slot])
-                you.interdim_melded.set(slot, false);
-            if (you.melded[slot])
-                unmeld_one_equip(slot);
-        }
+        if (mi->within_interdim_crosspoint())
+            mi->dissolve_equip();
+        else
+            mi->undissolve_equip();
     }
-    // for (monster_iterator mi; mi; ++mi)
 }
 
 // Get around C++ dividing integers towards 0.

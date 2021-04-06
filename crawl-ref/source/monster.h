@@ -6,6 +6,7 @@
 #include "beh-type.h"
 #include "enchant-type.h"
 #include "mon-ench.h"
+#include "mon-inv-type.h"
 #include "mon-poly.h"
 #include "montravel-target-type.h"
 #include "potion-type.h"
@@ -325,6 +326,8 @@ public:
     item_def* take_item(int steal_what, mon_inv_type mslot,
                         bool is_stolen = false);
     item_def* disarm();
+    item_def* disarm_by_actor(mon_inv_type mslot, actor* caster = &you, bool move = false);
+    FixedBitVector<MSLOT_LAST_VISIBLE_SLOT> interdim_melded;
 
     bool      can_use_missile(const item_def &item) const;
     bool      likes_wand(const item_def &item) const;
@@ -442,7 +445,9 @@ public:
     int antimagic_radius() const override;
     int healaura_radius() const override;
     int dissolving_radius() const override;
-    void dissolve_equip() const override { return; };// nothing to do, yet.
+    void dissolve_equip() override;
+    void undissolve_equip() override;
+
     bool petrified() const override;
     bool petrifying() const override;
     bool liquefied_ground() const override;

@@ -271,6 +271,7 @@ struct monster_info : public monster_info_base
             if (mi.inv[i])
                 inv[i].reset(new item_def(*mi.inv[i]));
         }
+        interdim_melded = mi.interdim_melded;
     }
 
     monster_info& operator=(const monster_info& p)
@@ -289,6 +290,7 @@ struct monster_info : public monster_info_base
 
     /* only real equipment is visible, miscellany is for mimic items */
     unique_ptr<item_def> inv[MSLOT_LAST_VISIBLE_SLOT + 1];
+    FixedBitVector<MSLOT_LAST_VISIBLE_SLOT> interdim_melded;
 
     struct
     {

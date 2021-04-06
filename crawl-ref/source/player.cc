@@ -5652,6 +5652,7 @@ player::player()
 
     equip.init(-1);
     melded.reset();
+    interdim_melded.reset();
     unrand_reacts.reset();
     last_unequip = -1;
 

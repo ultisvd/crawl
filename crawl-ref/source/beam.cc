@@ -5622,10 +5622,6 @@ bool ench_flavour_affects_monster(beam_type flavour, const monster* mon,
         rc = !mons_aligned(&you, mon) && you.can_constrict(mon, false);
         break;
 
-    case BEAM_DISARM:
-    //  weapon/second_weapon
-        break;
-
     default:
         break;
     }
@@ -6204,6 +6200,15 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
         mon->add_ench(mon_enchant(ENCH_VILE_CLUTCH, 0, &you, dur));
         obvious_effect = true;
         return MON_AFFECTED;
+    }
+
+    case BEAM_DISARM:
+    {
+        if (mon->disarm_by_actor(MSLOT_WEAPON, agent()))
+        {
+            obvious_effect = true;
+            return MON_AFFECTED;
+        }
     }
 
     default:

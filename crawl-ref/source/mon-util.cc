@@ -444,12 +444,17 @@ bool mons_class_flag(monster_type mc, monclass_flags_t bits)
     return me && (me->bitfields & bits);
 }
 
-int monster::wearing(equipment_type slot, int sub_type, bool calc_unid, bool /*include_melded*/) const
+int monster::wearing(equipment_type slot, int sub_type, bool calc_unid, bool include_melded) const
 {
     int ret = 0;
     const item_def *item = 0;
 
     if (!alive())
+        return 0;
+
+    mon_inv_type mslot = equip_slot_to_mslot(slot);
+    item = mslot_item(mslot);
+    if (!item || !include_melded && interdim_melded[mslot])
         return 0;
 
     switch (slot)
@@ -516,12 +521,17 @@ int monster::wearing(equipment_type slot, int sub_type, bool calc_unid, bool /*i
     return ret;
 }
 
-int monster::wearing_ego(equipment_type slot, int special, bool calc_unid, bool /*include_melded*/) const
+int monster::wearing_ego(equipment_type slot, int special, bool calc_unid, bool include_melded) const
 {
     int ret = 0;
     const item_def *item = 0;
 
     if (!alive())
+        return 0;
+
+    mon_inv_type mslot = equip_slot_to_mslot(slot);
+    item = mslot_item(mslot);
+    if (!item || !include_melded && interdim_melded[mslot])
         return 0;
 
     switch (slot)
@@ -586,7 +596,7 @@ int monster::wearing_ego(equipment_type slot, int special, bool calc_unid, bool 
 }
 
 int monster::scan_artefacts(artefact_prop_type ra_prop, bool /*calc_unid*/,
-                            vector<item_def> *matches, bool /*include_melded*/) const
+                            vector<item_def> *matches, bool include_melded) const
 {
     UNUSED(matches); //TODO: implement this when it will be required somewhere
 
@@ -598,40 +608,39 @@ int monster::scan_artefacts(artefact_prop_type ra_prop, bool /*calc_unid*/,
     // TODO: do we really want to prevent randarts from working for zombies?
     if (mons_itemuse(*this) >= MONUSE_STARTING_EQUIPMENT)
     {
-        const int weap      = inv[MSLOT_WEAPON];
-        const int second    = inv[MSLOT_ALT_WEAPON]; // Two-headed ogres, etc.
-        const int armour    = inv[MSLOT_ARMOUR];
-        const int shld      = inv[MSLOT_SHIELD];
-        const int jewellery = inv[MSLOT_JEWELLERY];
+        for (int i = MSLOT_WEAPON; i < MSLOT_MISCELLANY; ++i)
+        {   
+            mon_inv_type mslot = (mon_inv_type)i;
+            if ( mslot == MSLOT_MISSILE || mslot == MSLOT_ALT_MISSILE || mslot == MSLOT_WAND)
+                continue;
+            int meq               = inv[mslot];
+            object_class_type obj = OBJ_WEAPONS;
+            
+            if (!include_melded && interdim_melded[mslot])
+                continue;
 
-        if (weap != NON_ITEM && mitm[weap].base_type == OBJ_WEAPONS
-            && is_artefact(mitm[weap]))
-        {
-            ret += artefact_property(mitm[weap], ra_prop);
-        }
+            switch(mslot)
+            {
+                case MSLOT_WEAPON:
+                case MSLOT_ALT_WEAPON:
+                    obj = OBJ_WEAPONS;
+                    break;
+                case MSLOT_SHIELD:
+                case MSLOT_ARMOUR:
+                    obj = OBJ_ARMOUR;
+                    break;
+                case MSLOT_JEWELLERY:
+                    obj = OBJ_JEWELLERY;
+                default:
+                    break;
+            }
 
-        if (second != NON_ITEM && mitm[second].base_type == OBJ_WEAPONS
-            && is_artefact(mitm[second]) && mons_wields_two_weapons(*this))
-        {
-            ret += artefact_property(mitm[second], ra_prop);
-        }
-
-        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOUR
-            && is_artefact(mitm[armour]))
-        {
-            ret += artefact_property(mitm[armour], ra_prop);
-        }
-
-        if (shld != NON_ITEM && mitm[shld].base_type == OBJ_ARMOUR
-            && is_artefact(mitm[shld]))
-        {
-            ret += artefact_property(mitm[shld], ra_prop);
-        }
-
-        if (jewellery != NON_ITEM && mitm[jewellery].base_type == OBJ_JEWELLERY
-            && is_artefact(mitm[jewellery]))
-        {
-            ret += artefact_property(mitm[jewellery], ra_prop);
+            if (meq != NON_ITEM && mitm[meq].base_type == obj
+                && is_artefact(mitm[meq]))
+            {
+                if (meq != MSLOT_ALT_WEAPON || mons_wields_two_weapons(*this))
+                    ret += artefact_property(mitm[meq], ra_prop);
+            }
         }
     }
 

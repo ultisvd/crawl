@@ -123,6 +123,7 @@ void monster::reset()
     ench_cache.reset();
     ench_countdown = 0;
     inv.init(NON_ITEM);
+    interdim_melded.reset();
     spells.clear();
 
     mid             = 0;
@@ -1209,7 +1210,10 @@ bool monster::drop_item(mon_inv_type eslot, bool msg)
     int item_index = inv[eslot];
     if (item_index == NON_ITEM)
         return true;
-
+    
+    if (alive() && interdim_melded[eslot])
+        return false;
+    
     item_def& pitem = mitm[item_index];
 
     // Unequip equipped items before dropping them; unequip() prevents
@@ -2200,9 +2204,15 @@ void monster::wield_melee_weapon(maybe_bool msg)
     }
 }
 
-item_def *monster::slot_item(equipment_type eq, bool /*include_melded*/) const
+item_def *monster::slot_item(equipment_type eq, bool include_melded) const
 {
-    return mslot_item(equip_slot_to_mslot(eq));
+    mon_inv_type mslot = equip_slot_to_mslot(eq);
+    item_def *item = mslot_item(mslot);
+    if (item && (include_melded || !interdim_melded[mslot]))
+        return item;
+    else
+        return nullptr;
+
 }
 
 item_def *monster::mslot_item(mon_inv_type mslot) const
@@ -6657,6 +6667,80 @@ item_def* monster::disarm()
         you.props[CEREBOV_DISARMED_KEY] = true;
 
     return mons_wpn;
+}
+
+/** Disarm this monster, and preferably pull the weapon into your tile.
+ *
+ *  @param mslot Which mon_inv_type to pull the item from.
+ *  @param caster Who pulls the item.
+ *  @param move
+ * 
+ *  @returns a pointer to the weapon disarmed, or nullptr if unsuccessful.
+ */
+item_def* monster::disarm_by_actor(mon_inv_type mslot, actor* caster, bool move)
+{
+    item_def *item = mslot_item(mslot);
+
+    if (!item
+        || item->cursed()
+        || mons_class_is_animated_weapon(type)
+        || !adjacent(caster->pos(), pos())
+        || !caster->can_see(*this)
+        || item->flags & ISFLAG_SUMMONED)
+    {
+        return nullptr;
+    }
+
+    drop_item(mslot, false);
+
+    // XXX: assumes nothing's re-ordering items - e.g. gozag gold
+    if (caster && move)
+        move_top_item(pos(), caster->pos());
+
+    if (type == MONS_CEREBOV)
+        you.props[CEREBOV_DISARMED_KEY] = true;
+
+    return item;
+}
+
+void monster::dissolve_equip()
+{
+    mon_inv_type mslot = MSLOT_ARMOUR;
+    if (coinflip())
+        mslot = MSLOT_SHIELD;
+
+    item_def *armour = mslot_item(mslot);
+
+    if (!armour)
+        return;
+    if (!interdim_melded[mslot])
+    {
+        interdim_melded.set((unsigned int)mslot, true);
+
+        mprf(MSGCH_PLAIN, "%s %s %s.", armour->name(DESC_THE).c_str(),
+                "melds into",
+                name(DESC_THE).c_str());
+    }
+}
+
+void monster::undissolve_equip()
+{
+    mon_inv_type mslot = MSLOT_ARMOUR;
+    if (coinflip())
+        mslot = MSLOT_SHIELD;
+
+    item_def *armour = mslot_item(mslot);
+
+    if (!armour)
+        return;
+    if (interdim_melded[mslot])
+    {
+        interdim_melded.set((unsigned int)mslot, false);
+    
+        mprf(MSGCH_PLAIN, "%s %s %s.", armour->name(DESC_THE).c_str(),
+                "unmelds from",
+                name(DESC_THE).c_str());
+    }
 }
 
 /**

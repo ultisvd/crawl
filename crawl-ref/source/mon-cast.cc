@@ -349,6 +349,8 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
             const actor* foe = caster.get_foe();
             if (foe && (foe->undead_or_demonic() || foe->is_nonliving() || foe->is_holy()))
                 return false;
+            if (foe && foe->is_monster() && foe->as_monster()->inv[MSLOT_JEWELLERY] == NON_ITEM)
+                return false;
             return foe && _caster_sees_foe(caster);
             }, _allure_of_cubus, } },
     { SPELL_RESONANCE_STRIKE, { _caster_has_foe, _cast_resonance_strike, } },
@@ -525,7 +527,7 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
     { SPELL_DISARM, _hex_logic(SPELL_DISARM, [](const monster &caster) {
         const actor* foe = caster.get_foe();
         return foe && (!foe->is_player() || foe->as_player()->weapon() || foe->as_player()->second_weapon()) 
-                   && (!foe->is_monster());
+                   && (!foe->is_monster() || foe->as_monster()->weapon());
     }, 16) },
 
 };
@@ -8018,93 +8020,6 @@ static void _siren_sing(monster* mons, bool avatar)
     you.add_beholder(*mons);
 }
 
-/*
-
-{ SPELL_VAMPIRIC_DRAINING, {
-        [](const monster &caster)
-        {
-            const actor* foe = caster.get_foe();
-            // always cast at < 1/3rd hp, never at > 2/3rd hp
-            const bool low_hp = x_chance_in_y(caster.max_hit_points * 2 / 3
-                                                - caster.hit_points,
-                                              caster.max_hit_points / 3);
-            return foe
-                   && adjacent(caster.pos(), foe->pos())
-                   && !_foe_should_res_negative_energy(foe)
-                   && low_hp;
-        },
-        _mons_vampiric_drain,
-        nullptr,
-        MSPELL_NO_AUTO_NOISE,
-    } },
-
-    { SPELL_DRAINING_GAZE, {
-        _caster_sees_foe,
-        [](monster &caster, mon_spell_slot slot, bolt&) {
-            enchant_actor_with_flavour(caster.get_foe(), &caster,
-                                       BEAM_DRAIN_MAGIC,
-                                       mons_spellpower(caster, slot.spell));
-        },
-    } },
-
-static mons_spell_logic _hex_logic(spell_type spell,
-                                   function<bool(const monster&)> extra_logic,
-                                   int power_hd_factor)
-{
-    function<bool(const monster&)> worthwhile = nullptr;
-    if (!extra_logic)
-        worthwhile = _setup_hex_check(spell);
-    else
-    {
-        worthwhile = [spell, extra_logic](const monster& caster) {
-            return _worth_hexing(caster, spell) && extra_logic(caster);
-        };
-    }
-    return { worthwhile, _fire_simple_beam, _zap_setup(spell),
-             MSPELL_LOGIC_NONE, power_hd_factor * ENCH_POW_FACTOR };
-}
-
-if (!_can_takeoff_armour(item))
-        return false;
-
-    item_def& invitem = you.inv[item];
-
-    // It's possible to take this thing off, but if it would drop a stat
-    // below 0, we should get confirmation.
-    if (!_safe_to_remove_or_wear(invitem, true))
-        return false;
-
-    const equipment_type slot = get_armour_slot(invitem);
-
-    // TODO: isn't this check covered above by the call to item_is_worn? The
-    // only way to return false inside this switch would be if the player is
-    // wearing a hat on their feet or something like that.
-    switch (slot)
-    {
-    case EQ_BODY_ARMOUR:
-    case EQ_SHIELD:
-    case EQ_CLOAK:
-    case EQ_HELMET:
-    case EQ_GLOVES:
-    case EQ_BOOTS:
-        if (item != you.equip[slot])
-        {
-            mpr("You aren't wearing that!");
-            return false;
-        }
-        break;
-
-    default:
-        break;
-    }
-
-    you.turn_is_over = true;
-
-    const int delay = armour_equip_delay(invitem);
-    start_delay<ArmourOffDelay>(delay - 1, invitem);
-
-    return true;
-*/
 static bool _allure_of_cubus(monster &caster, mon_spell_slot, bolt&)
 {
     actor* foe = caster.get_foe();
@@ -8127,7 +8042,12 @@ static bool _allure_of_cubus(monster &caster, mon_spell_slot, bolt&)
     else if (foe->is_monster())
     {
         monster &foe_monster = *foe->as_monster();
-        return true;
+        if (foe->as_monster()->disarm_by_actor(MSLOT_JEWELLERY, &caster, true))
+        {
+            mprf("%s devotes %s to the cubus", foe_monster.name(DESC_THE).c_str(),
+                                                  mitm[foe_monster.inv[MSLOT_JEWELLERY]].name(DESC_THE).c_str());
+            return true;
+        }
     }
     else
     {

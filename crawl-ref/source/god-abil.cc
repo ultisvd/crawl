@@ -2006,6 +2006,11 @@ static bool _beogh_gift_items_to(monster* mons, int item_slot)
 
     // need to remove any curses so that drop_item won't fail
     item_def* item_to_drop = mons->mslot_item(mslot);
+    if (item_to_drop && mons->interdim_melded[mslot])
+    {
+        mprf(MSGCH_ERROR, "%s is melded!", item_to_drop->name(DESC_THE, false).c_str());
+        return false;
+    }
     if (item_to_drop && item_to_drop->cursed())
     {
         mprf("%s removes the curse on %s.", god_name(GOD_BEOGH).c_str(),
@@ -2024,6 +2029,7 @@ static bool _beogh_gift_items_to(monster* mons, int item_slot)
         mprf("%s removes the curse on %s.", god_name(GOD_BEOGH).c_str(),
                                 shield_slot->name(DESC_THE).c_str());
         do_uncurse_item(*shield_slot);
+        mons->interdim_melded.set(MSLOT_SHIELD, false);
     }
 
     item_def *floor_item = mons->take_item(item_slot, mslot);

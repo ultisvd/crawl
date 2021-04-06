@@ -852,8 +852,8 @@ public:
     int antimagic_radius() const override;
     int healaura_radius() const override;
     int dissolving_radius() const override;
-    void dissolve_equip() const override { return; };
-    void undissolve_equip() const { return; };
+    void dissolve_equip() override;
+    void undissolve_equip() override;
     bool petrifying() const override;
     bool petrified() const override;
     bool liquefied_ground() const override;

@@ -396,7 +396,8 @@ public:
 
     // Being dissolved in the interdimensional crosspoint?
     virtual bool within_interdim_crosspoint() const;
-    virtual void dissolve_equip() const = 0;
+    virtual void dissolve_equip() = 0;
+    virtual void undissolve_equip() = 0;
     // Dissolution field radius
     virtual int dissolving_radius() const = 0;
 
