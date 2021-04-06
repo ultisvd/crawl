@@ -790,7 +790,7 @@ bool spell_direction(dist &spelld, bolt &pbolt, direction_chooser_args *args)
     if (!spelld.isValid)
     {
         // Check for user cancel.
-        if(!args->auto_click)
+        if(!args || !args->auto_click)
             canned_msg(MSG_OK);
         return false;
     }
