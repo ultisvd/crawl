@@ -809,19 +809,15 @@ static void _maybe_freeze_water(const coord_def pos)
 
     if (grd(pos) == DNGN_SHALLOW_WATER)
         feat = DNGN_ICY_FLOOR;
-    else if (grd(pos) == DNGN_DEEP_WATER && you.pos() != pos
-                && !crawl_state.game_is_sprint())
+    else if (grd(pos) == DNGN_DEEP_WATER)
     {
-        if (one_chance_in(3))
-            // Don't drown the player!
-            feat = DNGN_SHALLOW_WATER;
-        else if (one_chance_in(3))
+        else if (x_chance_in_y(2, 3))
             feat = DNGN_ICY_FLOOR;
     }
 
-    if (grd(pos) != feat)
+    if (feat == DNGN_ICY_FLOOR)
     {
-        if (you.pos() == pos && you.ground_level())
+        if (you.pos() == pos && you.ground_level() && grd(pos) != feat)
             mpr("The cold temperatures freeze the water where you stand on!");
         temp_change_terrain(pos, feat, random_range(500, 1000),
                             TERRAIN_CHANGE_COLD);

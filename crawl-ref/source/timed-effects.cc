@@ -1300,7 +1300,13 @@ void timeout_terrain_changes(int duration, bool force)
             && actor_at(mark->pos)->is_player())
         {
             if (marker->duration > 0 && marker->duration < 50)
-                mprf(MSGCH_WARN, "The ground starts to shake.");
+            {
+                if (you.ground_level())
+                    mprf(MSGCH_WARN, "The ground starts to shake.");
+                
+                else
+                    mprf(MSGCH_WARN, "You can see the ground shaking.")
+            }
         }
 
 
