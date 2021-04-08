@@ -1305,7 +1305,7 @@ void timeout_terrain_changes(int duration, bool force)
                     mprf(MSGCH_WARN, "The ground starts to shake.");
                 
                 else
-                    mprf(MSGCH_WARN, "You can see the ground shaking.")
+                    mprf(MSGCH_WARN, "You can see the ground shaking.");
             }
         }
 
