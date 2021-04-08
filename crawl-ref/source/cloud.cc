@@ -811,7 +811,7 @@ static void _maybe_freeze_water(const coord_def pos)
         feat = DNGN_ICY_FLOOR;
     else if (grd(pos) == DNGN_DEEP_WATER)
     {
-        else if (x_chance_in_y(2, 3))
+        if (x_chance_in_y(2, 3))
             feat = DNGN_ICY_FLOOR;
     }
 
