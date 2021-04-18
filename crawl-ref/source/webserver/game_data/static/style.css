@@ -160,8 +160,8 @@ body {
     display:none;
     visibility:hidden;
 }
- /* Visible for Magic Golem */
-#stats[data-species="Magic Golem"] #stats_gheatline {
+ /* Visible for Automaton */
+#stats[data-species="Automaton"] #stats_gheatline {
     display:block;
     visibility:visible;
 }
