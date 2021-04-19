@@ -337,7 +337,6 @@ void give_items_skills(const newgame_def& ng)
         if (ng.job_specific == 1 && ng.species != SP_CRUSTACEAN) {
             newgame_make_item(OBJ_RODS, ROD_STRIKING, 1, 0);
             you.skills[SK_STAVES]++;
-
         } else {
             newgame_make_item(OBJ_WANDS, WAND_FLAME, 1, 15);
             newgame_make_item(OBJ_WANDS, WAND_ENSLAVEMENT, 1, 15);

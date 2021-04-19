@@ -1846,6 +1846,13 @@ bool quaff_potion(item_def &potion)
 {
     const bool was_known = item_type_known(potion);
 
+    // The Great Wyrm: sometimes you will waste potion
+    if (player_under_penance(GOD_WYRM) && one_chance_in(3))
+    {
+        simple_god_message(" extracts your potion just before you drink!", GOD_WYRM);
+        return true;   // No effect, of course.
+    }
+
     if (!was_known)
     {
         set_ident_flags(potion, ISFLAG_IDENT_MASK);
