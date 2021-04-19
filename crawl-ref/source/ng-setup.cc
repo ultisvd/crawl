@@ -334,7 +334,7 @@ void give_items_skills(const newgame_def& ng)
 
     } else if (you.char_class == JOB_ARTIFICER) {
 
-        if (ng.job_specific == 1) {
+        if (ng.job_specific == 1 && ng.species != SP_CRUSTACEAN) {
             newgame_make_item(OBJ_RODS, ROD_STRIKING, 1, 0);
             you.skills[SK_STAVES]++;
 
