@@ -756,27 +756,13 @@ bool melee_attack::handle_phase_hit()
         emit_foul_stench();
     }
 
-    if (attacker->is_player() && you.duration[DUR_CIGOTUVIS_PLAGUE] && defender->alive())
+    if (attacker->is_cigotuvis_host() && defender->alive())
     {
-        monster* mon = defender->as_monster();
-        mon->add_ench(mon_enchant(ENCH_CIGOTUVIS_PLAGUE, 0, &you, 10 * BASELINE_DELAY));
-        mon->add_ench(mon_enchant(ENCH_CONFUSION, 0, &you, 5 * BASELINE_DELAY));
+        int dur = 10;
+        if (defender->is_monster())
+            dur = 10 * BASELINE_DELAY;
+        defender->cigotuvis_infection(dur, false);
     }
-    if (attacker->is_monster() && attacker->as_monster()->has_ench(ENCH_CIGOTUVIS_PLAGUE))
-    {
-        if (defender->is_player() && !you.is_nonliving())
-        {
-            you.set_duration(DUR_CIGOTUVIS_PLAGUE, 10);
-        }
-
-        else if (defender->is_monster() && mons_can_be_zombified(*defender->as_monster()))
-        {
-            defender->as_monster()->add_ench(mon_enchant(ENCH_CIGOTUVIS_PLAGUE, 0, &you, 10 * BASELINE_DELAY));
-            defender->as_monster()->add_ench(mon_enchant(ENCH_CONFUSION, 0, &you, 5 * BASELINE_DELAY));
-        }
-    }
-
-    
 
     return true;
 }

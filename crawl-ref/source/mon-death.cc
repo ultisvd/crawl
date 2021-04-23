@@ -462,24 +462,15 @@ static void _blood_spray_with_cigotuvis(const monster* mons, int level)
             coord_def bloody = origin;
             bloody.x += random_range(-range, range);
             bloody.y += random_range(-range, range);
-            actor *victim = actor_at(bloody);
 
             if (in_bounds(bloody) && cell_see_cell(origin, bloody, LOS_SOLID))
             {
                 bleed_onto_floor(bloody, montype, 99, false, true, origin);
-                if (victim && bloody != origin)
-                {
-                    if (victim->is_player() && !you.is_nonliving())
-                    {   
-                        mprf("You've been touched by infected blood!");
-                        you.set_duration(DUR_CIGOTUVIS_PLAGUE, 10);
-                    }
-                    else if (victim->is_monster() && mons_can_be_zombified(*victim->as_monster()))
-                    {
-                        mprf("%s touches infected blood!", victim->as_monster()->name(DESC_THE).c_str());
-                        victim->as_monster()->add_ench(mon_enchant(ENCH_CIGOTUVIS_PLAGUE, 0, nullptr, (1+random2(3)) * BASELINE_DELAY));
-                    }
-                }
+                actor* victim = actor_at(bloody);
+                
+                if (victim)
+                    victim->cigotuvis_infection(0, true);
+                
                 break;
             }
         }
@@ -488,10 +479,9 @@ static void _blood_spray_with_cigotuvis(const monster* mons, int level)
 
 static void _cigotuvis_plague_make_abomination(const monster* mons)
 {
-    if (you_worship(GOD_GOZAG) || !mons_can_be_zombified(*mons))
-    {
+    if (you_worship(GOD_GOZAG))
         return;
-    }
+
     los_def ld(mons->pos(), opc_no_actor);
     int pow = you.skill(SK_HEXES) + 2*you.skill(SK_NECROMANCY);
     const int chunks = max_corpse_chunks(mons->type);
@@ -732,8 +722,8 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
     bool goldify = have_passive(passive_t::goldify_corpses)
                    && mons_gives_xp(mons, you)
                    && !force;
-
-    bool cigotuvihost = mons.has_ench(ENCH_CIGOTUVIS_PLAGUE);
+    
+    bool cigotuvis = mons.has_ench(ENCH_CIGOTUVIS_PLAGUE);
 
     const bool no_coinflip = mons.props.exists("always_corpse")
                              || force
@@ -781,7 +771,7 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
     else if (!_fill_out_corpse(mons, corpse))
         return nullptr;
 
-    else if (cigotuvihost)
+    else if (cigotuvis)
     {   
         corpse.clear();
         _cigotuvis_plague_make_abomination(&mons);

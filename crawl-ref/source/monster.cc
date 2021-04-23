@@ -7060,3 +7060,27 @@ void monster::rin_shapeshift()
     }
 
 }
+
+bool monster::is_cigotuvis_host()
+{
+    return has_ench(ENCH_CIGOTUVIS_PLAGUE);
+}
+
+bool monster::cigotuvis_infection(int dur, bool blood)
+{
+    if (!actor_is_susceptible_to_vampirism(*this))
+        return false;
+
+    if (blood)
+    {
+        mprf("%s touches infected blood!", name(DESC_THE).c_str());
+        add_ench(mon_enchant(ENCH_CIGOTUVIS_PLAGUE, 0, nullptr, (1+random2(3)) * BASELINE_DELAY));
+    }
+    else
+    {
+        add_ench(mon_enchant(ENCH_CIGOTUVIS_PLAGUE, 0, &you, dur));
+        add_ench(mon_enchant(ENCH_CONFUSION, 0, &you, 5 * BASELINE_DELAY));
+        simple_monster_message(*this, " seems sick!");
+    }
+    return true;
+}

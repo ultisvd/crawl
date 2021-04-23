@@ -468,6 +468,9 @@ public:
     virtual bool constriction_does_damage(bool direct) const = 0;
     virtual bool clear_far_engulf() = 0;
 
+    virtual bool is_cigotuvis_host() = 0;
+    virtual bool cigotuvis_infection(int dur = 0, bool blood = false) = 0;
+
     // Be careful using this, as it doesn't keep the constrictor in sync.
     void clear_constricted();
 

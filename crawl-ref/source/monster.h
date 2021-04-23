@@ -588,6 +588,9 @@ public:
     bool clear_far_engulf() override;
     bool search_slots(function<bool (const mon_spell_slot &)> func) const;
 
+    bool is_cigotuvis_host() override;
+    bool cigotuvis_infection(int dur = 0, bool blood = false) override;
+
     bool has_facet(int facet) const;
     bool angered_by_attacks() const;
 

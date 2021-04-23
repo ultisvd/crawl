@@ -132,6 +132,12 @@ static void _maybe_bloodify_square(const coord_def& where, int amount,
 
     bool may_bleed = _allow_bleeding_on_square(where, ignite_blood);
 
+    actor *victim = actor_at(where);
+    bool plague = false;
+    actor* host = actor_at(from);
+    if (host)
+        plague = host->is_cigotuvis_host();
+
     if (ignite_blood)
         amount *= 2;
 
@@ -150,6 +156,9 @@ static void _maybe_bloodify_square(const coord_def& where, int amount,
             {
                 place_cloud(CLOUD_FIRE, where, 5 + random2(6), &you);
             }
+
+            if (victim && plague)
+                victim->cigotuvis_infection(0, true);
         }
 
         // The blood spilled can be detected via blood scent even if the
@@ -196,10 +205,6 @@ void bleed_onto_floor(const coord_def& where, monster_type montype,
 
 void blood_spray(const coord_def& origin, monster_type montype, int level)
 {
-    bool plague = false;
-    if (actor_at(origin))
-        plague = actor_at(origin)->is_player() && actor_at(origin)->as_player()->duration[DUR_CIGOTUVIS_PLAGUE] ||
-                    actor_at(origin)->is_monster() && actor_at(origin)->as_monster()->has_ench(ENCH_CIGOTUVIS_PLAGUE); 
     int tries = 0;
     for (int i = 0; i < level; ++i)
     {
@@ -214,24 +219,10 @@ void blood_spray(const coord_def& origin, monster_type montype, int level)
             coord_def bloody = origin;
             bloody.x += random_range(-range, range);
             bloody.y += random_range(-range, range);
-            actor *victim = actor_at(bloody);
 
             if (in_bounds(bloody) && cell_see_cell(origin, bloody, LOS_SOLID))
             {
                 bleed_onto_floor(bloody, montype, 99, false, true, origin);
-                if (victim && bloody != origin && plague)
-                {
-                    if (victim->is_player() && !you.is_nonliving())
-                    {   
-                        mprf("You've been touched by infected blood!");
-                        you.set_duration(DUR_CIGOTUVIS_PLAGUE, 10);
-                    }
-                    else if (victim->is_monster() && mons_can_be_zombified(*victim->as_monster()))
-                    {
-                        mprf("%s touches infected blood!", victim->as_monster()->name(DESC_THE).c_str());
-                        victim->as_monster()->add_ench(mon_enchant(ENCH_CIGOTUVIS_PLAGUE, 0, nullptr, (1+random2(3)) * BASELINE_DELAY));
-                    }
-                }
                 break;
             }
         }

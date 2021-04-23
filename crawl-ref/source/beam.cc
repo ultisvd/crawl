@@ -6182,12 +6182,13 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
     case BEAM_CIGOTUVIS_PLAGUE:
     {
         const int dur = (10 + random2avg(ench_power / 2, 2)) * BASELINE_DELAY;
-        if (mons_can_be_zombified(*mon))
+        if (mon->cigotuvis_infection())
         {
-            mon->add_ench(mon_enchant(ENCH_CIGOTUVIS_PLAGUE, 0, &you, dur));
+            mon_enchant plague = mon->get_ench(ENCH_CIGOTUVIS_PLAGUE);
+            plague.duration = dur;
+            mon->update_ench(plague);
             mon->add_ench(mon_enchant(ENCH_INSANE, 0, &you, dur));
-            if (simple_monster_message(*mon, " seems sick!"))
-                obvious_effect = true;
+            obvious_effect = true;
             return MON_AFFECTED;
         }
         return MON_UNAFFECTED;   

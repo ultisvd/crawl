@@ -9689,3 +9689,25 @@ void player::init_auto_cast_vector()
         }
     }
 }
+
+bool player::is_cigotuvis_host()
+{
+    return duration[DUR_CIGOTUVIS_PLAGUE];
+}  
+
+bool player::cigotuvis_infection(int dur, bool blood)
+{
+    if (!actor_is_susceptible_to_vampirism(*this))
+        return false;
+
+    if (blood)
+    {   
+        mprf("You've been touched by infected blood!");
+        you.set_duration(DUR_CIGOTUVIS_PLAGUE, 10);
+    }
+    else
+    {
+        you.set_duration(DUR_CIGOTUVIS_PLAGUE, dur);
+    }
+    return true;
+}

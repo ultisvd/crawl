@@ -958,6 +958,9 @@ public:
 
     bool clear_far_engulf() override;
 
+    bool is_cigotuvis_host() override;
+    bool cigotuvis_infection(int dur = 0, bool blood = false) override;
+
     int armour_class_with_one_sub(item_def sub) const;
 
     int armour_class_with_one_removal(item_def sub) const;
