@@ -38,6 +38,7 @@
 #include "mon-poly.h"
 #include "nearby-danger.h"
 #include "pronoun-type.h"
+#include "potion.h"
 #include "religion.h"
 #include "spl-goditem.h"
 #include "spl-miscast.h"
