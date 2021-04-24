@@ -1846,6 +1846,17 @@ bool attack::apply_damage_brand(const char *what)
         if (mon && !mons_is_firewood(*mon))
             handle_spectral_brand();
     }
+    
+    // Use the glavie of Prune makes player a little Prune-y(so be attractive for monsters)
+    if (attacker->is_player() && weapon
+        && is_unrandom_artefact(*weapon, UNRAND_PRUNE))
+    {
+        if (x_chance_in_y(1,100))
+        {
+            potionlike_effect(POT_ATTRACTION, 0, false, true);
+            xom_is_stimulated(100);
+        }
+    }
 
     if (special_damage > 0)
         inflict_damage(special_damage, special_damage_flavour);
