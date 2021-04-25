@@ -1848,6 +1848,10 @@ static bool _wu_jian_lunge(const coord_def& old_pos)
         }
     }
 
+    if (you.is_auto_spell() && mons) {
+        you.auto_cast(potential_target, you.time_taken, AS_PHASE_MELEE);
+    }
+
     return true;
 }
 
@@ -1912,6 +1916,7 @@ static bool _wu_jian_whirlwind(const coord_def& old_pos)
 
         count_action(CACT_INVOKE, ABIL_WU_JIAN_WHIRLWIND);
 
+        coord_def mon_pos = you.pos();
         for (int i = 0; i < number_of_attacks; i++)
         {
             if (!mons->alive())
@@ -1920,8 +1925,14 @@ static bool _wu_jian_whirlwind(const coord_def& old_pos)
             whirlwind.wu_jian_attack = WU_JIAN_ATTACK_WHIRLWIND;
             whirlwind.wu_jian_number_of_targets = common_targets.size();
             whirlwind.attack();
-            if (!did_at_least_one_attack)
-              did_at_least_one_attack = true;
+            if (!did_at_least_one_attack) {
+                did_at_least_one_attack = true;
+                mon_pos = mons->pos();
+            }
+        }
+
+        if (you.is_auto_spell() && did_at_least_one_attack) {
+            you.auto_cast(mon_pos, you.time_taken, AS_PHASE_MELEE);
         }
     }
 
