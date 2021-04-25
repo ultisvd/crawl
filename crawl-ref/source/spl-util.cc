@@ -1810,7 +1810,19 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_p
     const int minRange = get_dist_to_nearest_monster();
     const int powc = calc_spell_power(spell, true);
     monster* mons = monster_at(target);
-    if (invalid_monster(mons) && target != you.pos() && phase != AS_PHASE_ESCAPE)
+    if (invalid_monster(mons) 
+        && target != you.pos()
+        && !is_castable_null_target(spell) 
+        && phase != AS_PHASE_ESCAPE)
+        return false;
+
+    bool no_enemy = true;
+    for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
+    {
+        if( mi->visible_to(&you))
+            no_enemy = false;
+    }
+    if (no_enemy)
         return false;
 
     switch (spell) {
@@ -1847,7 +1859,7 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_p
         bool affected = false;
         for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
         {
-            if (!toxic_can_affect(mons))
+            if (!toxic_can_affect(*mi))
                 continue;
             affected = true;
         }
@@ -2242,11 +2254,11 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_p
         bool affected = false;
         for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
         {
-            if (mons->wont_attack())
+            if (mi->wont_attack())
                 continue;
 
             int duration;
-            if (mons->is_summoned(&duration))
+            if (mi->is_summoned(&duration))
                 affected = true;
         }
         if(!affected)
@@ -2409,6 +2421,70 @@ bool is_dangerous_auto_spell(spell_type spell)
     }
 
 }
+
+bool is_castable_null_target(spell_type spell)
+{
+    if (get_spell_disciplines(spell) & spschool::summoning)
+        return true;
+    switch (spell)
+    {
+        case SPELL_HASTE:
+        case SPELL_RING_OF_FLAMES:
+        case SPELL_OLGREBS_TOXIC_RADIANCE:
+        case SPELL_MASS_CONFUSION:
+        case SPELL_AURA_OF_ABJURATION:
+        case SPELL_TORNADO:
+        case SPELL_OZOCUBUS_REFRIGERATION:
+        case SPELL_OZOCUBUS_ARMOUR:
+        case SPELL_REPEL_MISSILES:
+        case SPELL_REGENERATION:
+        case SPELL_INSULATION:
+        case SPELL_POISON_WEAPON:
+        case SPELL_DEATH_CHANNEL:
+        case SPELL_DEFLECT_MISSILES:
+        case SPELL_IGNITE_POISON:
+        case SPELL_ENGLACIATION:
+        case SPELL_PHASE_SHIFT:
+        case SPELL_WARP_BRAND:
+        case SPELL_SILENCE:
+        case SPELL_DISCHARGE:
+        case SPELL_INTOXICATE:
+        case SPELL_CONDENSATION_SHIELD:
+        case SPELL_STONESKIN:
+        case SPELL_CHAIN_LIGHTNING:
+        case SPELL_EXCRUCIATING_WOUNDS:
+        case SPELL_PORTAL_PROJECTILE:
+        case SPELL_LEDAS_LIQUEFACTION:
+        case SPELL_DARKNESS:
+        case SPELL_SHROUD_OF_GOLUBRIA:
+        case SPELL_INFUSION:
+        case SPELL_SONG_OF_SLAYING:
+        case SPELL_SONG_OF_SHIELDING:
+        case SPELL_SPECTRAL_WEAPON:
+        case SPELL_DISCORD:
+        case SPELL_IRRADIATE:
+        case SPELL_IGNITION:
+        case SPELL_HAILSTORM:
+        case SPELL_STARBURST:
+        case SPELL_ELENENTAL_WEAPON:
+        case SPELL_FLAME_STRIKE:
+        case SPELL_BEASTLY_APPENDAGE:
+        case SPELL_BLADE_HANDS:
+        case SPELL_DRAGON_FORM:
+        case SPELL_HYDRA_FORM:
+        case SPELL_ICE_FORM:
+        case SPELL_SPIDER_FORM:
+        case SPELL_STATUE_FORM:
+        case SPELL_NECROMUTATION:
+        case SPELL_ELDRITCH_FORM:
+            return true;
+        default:
+            return false;
+    }
+}
+
+
+
 
 bool is_can_spectrum(spell_type spell)
 {

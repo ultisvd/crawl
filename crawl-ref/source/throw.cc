@@ -1185,8 +1185,7 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
     }
     if(projected != launch_retval::FUMBLED
         && you.is_auto_spell() 
-        && targ_monst 
-        && targ_monst->alive()) {
+        && targ_monst) {
         you.auto_cast(thr.target, you.time_taken, AS_PHASE_RANGE);
     }
     return hit;

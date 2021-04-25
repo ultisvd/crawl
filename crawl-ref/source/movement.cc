@@ -1292,7 +1292,7 @@ void move_player_action(coord_def move)
                 return;
             }
 
-            if(you.is_auto_spell() && targ_monst && targ_monst->alive()) {
+            if(you.is_auto_spell() && targ_monst) {
                 you.auto_cast(targ, you.time_taken, AS_PHASE_MELEE);
             }
 
