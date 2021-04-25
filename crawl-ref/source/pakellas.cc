@@ -1068,7 +1068,8 @@ spell_type evoke_support_pakellas_rod()
         return SPELL_NO_SPELL;
     }
 
-    if (keyin - 'a' >= (int)list_spells.size()) {
+    if (keyin - 'a' < 0 || keyin - 'a' >= (int)list_spells.size()) {
+        canned_msg(MSG_HUH);
         return SPELL_NO_SPELL;
     }
 
