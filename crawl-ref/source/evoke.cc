@@ -238,6 +238,10 @@ static bool _reaching_weapon_attack(const item_def& wpn)
             return false;
     }
 
+    if (you.is_auto_spell() && mons && mons->alive()) {
+        you.auto_cast(beam.target, you.time_taken, AS_PHASE_MELEE);
+    }
+
     return true;
 }
 
