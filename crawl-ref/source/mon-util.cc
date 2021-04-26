@@ -1310,8 +1310,7 @@ monster_type mons_genus(monster_type mc)
 {
     if (mc == RANDOM_DRACONIAN || mc == RANDOM_BASE_DRACONIAN
         || mc == RANDOM_NONBASE_DRACONIAN
-        || (mc == MONS_PLAYER_ILLUSION && species_is_draconian(you.species))
-        || (mc == MONS_IMUS_MIRROR && species_is_draconian(you.species)))
+        || (mc == MONS_PLAYER_ILLUSION && species_is_draconian(you.species)))
     {
         return MONS_DRACONIAN;
     }
@@ -1354,7 +1353,7 @@ monster_type draco_or_demonspawn_subspecies(const monster& mon)
     ASSERT(mons_genus(mon.type) == MONS_DRACONIAN
            || mons_genus(mon.type) == MONS_DEMONSPAWN);
 
-    if ((mon.type == MONS_PLAYER_ILLUSION || mon.type == MONS_IMUS_MIRROR)
+    if ((mon.type == MONS_PLAYER_ILLUSION)
         && mons_genus(mon.type) == MONS_DRACONIAN)
     {
         return player_species_to_mons_species(mon.ghost->species);
@@ -2849,7 +2848,7 @@ void mons_load_spells(monster& mon)
         return mon.load_ghost_spells();
 
     mon.spells.clear();
-    if (mons_genus(mon.type) == MONS_DRACONIAN)
+    if (mons_genus(mon.type) == MONS_DRACONIAN && mon.type != MONS_IMUS_MIRROR)
     {
         mon_spell_slot breath = drac_breath(draco_or_demonspawn_subspecies(mon));
         if (breath.spell != SPELL_NO_SPELL)
@@ -3071,7 +3070,7 @@ void define_monster(monster& mons)
     case MONS_IMUS_MIRROR:
     {
         ghost_demon ghost;
-        ghost.init_player_ghost();
+        ghost.init_player_ghost(mcls == MONS_IMUS_MIRROR);
         if (mcls == MONS_PLAYER_GHOST || mcls == MONS_IMUS_MIRROR)
         {
             // still don't allow undead ghosts, even mirrored

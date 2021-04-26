@@ -408,7 +408,7 @@ void ghost_demon::init_pandemonium_lord()
 static const set<brand_type> ghost_banned_brands =
                 { SPWPN_HOLY_WRATH, SPWPN_CHAOS };
 
-void ghost_demon::init_player_ghost()
+void ghost_demon::init_player_ghost(bool imus)
 {
     // don't preserve transformations for ghosty purposes
     unwind_var<transformation> form(you.form, transformation::none);
@@ -516,7 +516,8 @@ void ghost_demon::init_player_ghost()
 
     flies = true;
 
-    add_spells();
+    if(!imus) 
+        add_spells();
 }
 
 static colour_t _ugly_thing_assign_colour(colour_t force_colour,
