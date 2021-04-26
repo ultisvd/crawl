@@ -9,6 +9,44 @@
 ### Added
 ### Changed
 
+## [kimchi-1.3.2] - ~2021-04-27
+
+### Bug Fixed
+- 오토마톤의 히트게이지가 웹타일에서 안보이는 버그 수정
+  - Fixed bug where automaton heat gauge was not visible in webtiles
+
+- 로드를 사용하지못하는 crustaceans가 로드를 들는 아티피셔를 선택가능한 문제 수정
+  - Fixed bug where crustaceans started carrying rods in artificer
+
+- 위대한 뱀을 부순 데미갓이 포션을 마실때 발생하는 크래쉬 수정
+  - Fixed crash when demigod destroys the wrym altar
+
+- 파켈라스 보조로드를 사용할때 대문자 키등을 눌러서 발생하는 크래쉬 수정
+  - Fixed crash when using pakellas rod
+
+- 창같은 reaching공격에 오토마톤 오토스펠이 작동하도록 수정
+  - Allow auto-magic with reaching attack
+
+- 오토마톤이 공격으로 적을 죽여도 일부 오토스펠은 작동하도록 수정
+  - Allow auto-magic when killing an enemy
+
+- 우지안의 런지와 휠윈드에도 오토스펠이 발동하도록 수정
+  - Allow auto-magic with wu jian lunge and whirlwind
+
+- 오토스펠이 malign gateway를 무한히 소환하던 문제 수정
+  - Fixed infinite malign gateway bug
+
+- 이머스테하의 분신 능력을 드라코니언이 사용했을때 발생하는 크래쉬 수정
+  - Fixed imus fragment with draconian crash bug
+
+- 스마이트타겟팅 소환 마법도 오토스펠로 사용가능하도록 수정
+  - Allow auto-magic with smite-targeting summon spell
+
+## [kimchi-1.3.1] - ~2021-04-04
+### Bug Fixed
+- 텐구리버가 발생시키는 크래쉬 수정
+  - fixed crash with tengu reaver
+
 ## [kimchi-1.3.0] - ~2021-04-04
 ### Added
 - 새로운 종족 오토마톤 추가. 마법으로 움직이는 자동 기계로, 마법을 직접 시전할 순 없지만 자신의 몸에 마법을 새겨서 전투중에 자동으로 사용한다. [상세설명](https://github.com/kimjoy2002/crawl/wiki/automaton)
@@ -635,8 +673,10 @@
 - 헤일스톰추가 Added Hailstorm
 - 냉기술사의 기본책은 이제 예전버전과 최신버전을 고를 수 있음 Ice elementalist chooses old or new spell set.
   
-[Unreleased]: https://github.com/kimjoy2002/crawl/compare/kimchi-1.3.0...HEAD  
-[kimchi-1.3]: https://github.com/kimjoy2002/crawl/tree/kimchi-1.3.0
+[Unreleased]: https://github.com/kimjoy2002/crawl/compare/kimchi-1.3.2...HEAD  
+[kimchi-1.3.2]: https://github.com/kimjoy2002/crawl/tree/kimchi-1.3.2
+[kimchi-1.3.1]: https://github.com/kimjoy2002/crawl/tree/kimchi-1.3.1
+[kimchi-1.3.0]: https://github.com/kimjoy2002/crawl/tree/kimchi-1.3.0
 [kimchi-1.2.5]: https://github.com/kimjoy2002/crawl/tree/kimchi-1.2.5
 [kimchi-1.2]: https://github.com/kimjoy2002/crawl/tree/kimchi-1.2.0
 [kimchi-1.1]: https://github.com/kimjoy2002/crawl/tree/kimchi-1.1.1
