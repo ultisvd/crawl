@@ -1816,11 +1816,25 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_p
         && phase != AS_PHASE_ESCAPE)
         return false;
 
+    bool attack_unvisible = false;
+    if (mons)
+    {
+      if (!mons_is_threatening(*mons) || mons_attitude(*mons) != ATT_HOSTILE)
+      {
+        return false;
+      }
+      if (!mons->visible_to(&you)) //attacking unvisible
+      {
+        attack_unvisible = true;
+      }
+    }
+
     bool no_enemy = true;
     for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
     {
-        if( mi->visible_to(&you))
-            no_enemy = false;
+      if ((mi->visible_to(&you) || attack_unvisible) 
+           && mons_is_threatening(**mi) && mons_attitude(**mi) == ATT_HOSTILE)
+        no_enemy = false;
     }
     if (no_enemy)
         return false;
@@ -1859,7 +1873,7 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_p
         bool affected = false;
         for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
         {
-            if (!toxic_can_affect(*mi))
+            if (!toxic_can_affect(*mi) && mons_is_threatening(**mi) && mons_attitude(**mi) == ATT_HOSTILE)
                 continue;
             affected = true;
         }
@@ -2258,7 +2272,7 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_p
                 continue;
 
             int duration;
-            if (mi->is_summoned(&duration))
+            if (mi->is_summoned(&duration) && mons_attitude(**mi) == ATT_HOSTILE)
                 affected = true;
         }
         if(!affected)
@@ -2281,6 +2295,8 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_p
     {
         coord_def point = find_gateway_location(&you);
         if (point == coord_def(0, 0))
+            return false;
+        if (!can_cast_malign_gateway())
             return false;
         break;
     }
