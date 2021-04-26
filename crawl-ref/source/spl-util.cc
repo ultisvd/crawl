@@ -1202,7 +1202,6 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         switch (spell)
         {
         case SPELL_CONJURE_FLAME:
-        case SPELL_FULMINANT_PRISM:
         case SPELL_CONFUSING_TOUCH:
         case SPELL_APPORTATION:
         case SPELL_TELEPORT_OTHER:
@@ -1839,6 +1838,20 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_p
     if (no_enemy)
         return false;
 
+    if (is_smite_targeting_summon(spell))
+    {
+        vector<coord_def> spots;
+        for (adjacent_iterator ai(target); ai; ++ai)
+        {
+            if (!feat_is_solid(grd(*ai)) && !actor_at(*ai))
+            {
+                spots.push_back(*ai);
+            }
+        }
+        if (spots.size() <= 0)
+            return false;
+    }
+
     switch (spell) {
         //buf spell
     case SPELL_FROZEN_RAMPARTS:
@@ -2431,6 +2444,7 @@ bool is_dangerous_auto_spell(spell_type spell)
     case SPELL_LRD:
     case SPELL_VIOLENT_UNRAVELLING:
     case SPELL_OLGREBS_LAST_MERCY:
+    case SPELL_FULMINANT_PRISM:
         return true;
     default:
         return false;
@@ -2497,6 +2511,19 @@ bool is_castable_null_target(spell_type spell)
         default:
             return false;
     }
+}
+bool is_smite_targeting_summon(spell_type spell)
+{
+    switch (spell)
+    {
+    case SPELL_SUMMON_LIGHTNING_SPIRE:
+    case SPELL_SINGULARITY:
+    case SPELL_FULMINANT_PRISM:
+        return true;
+    default:
+        return false;
+    }
+
 }
 
 

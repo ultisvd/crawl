@@ -144,5 +144,6 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_p
 bool is_currect_phase_auto_spell(spell_type spell, auto_spell_phase phase);
 bool is_dangerous_auto_spell(spell_type spell);
 bool is_castable_null_target(spell_type spell);
+bool is_smite_targeting_summon(spell_type spell);
 
 bool is_can_spectrum(spell_type spell);

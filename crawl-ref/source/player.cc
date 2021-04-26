@@ -9667,7 +9667,25 @@ bool player::auto_cast(const coord_def& target, int delay, auto_spell_phase phas
     dec_mp(cost, false);
     if (majin_charge_hp())
         dec_hp(hp_cost, false);
-    spret cast_result = your_spells(cast_spell, 0, false, nullptr, (flags & spflag::selfench) ? you.pos() : target);
+
+    coord_def cast_target = target;
+    if (is_smite_targeting_summon(cast_spell))
+    {
+        vector<coord_def> spots;
+        for (adjacent_iterator ai(target); ai; ++ai)
+        {
+            if (!feat_is_solid(grd(*ai)) && !actor_at(*ai))
+            {
+                spots.push_back(*ai);
+            }
+        }
+        if (spots.size() <= 0)
+            return false;
+
+        cast_target = spots[random2(spots.size())]; //new summon position
+    }
+
+    spret cast_result = your_spells(cast_spell, 0, false, nullptr, (flags & spflag::selfench) ? you.pos() : cast_target);
     if (cast_result == spret::abort)
     {
         inc_mp(cost, true);
