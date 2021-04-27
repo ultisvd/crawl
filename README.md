@@ -4,7 +4,7 @@
   * [이전 투표들](https://github.com/kimjoy2002/crawl/blob/master/SURVEY.md)
   * 최근 투표
     * 김치죽 1.3.1 밸런싱 투표 (4.27~5.4) https://forms.gle/HPqt8WmrwhiG3rEY7
-    * 김치죽 1.3.1 기타 투표 (4.27~5.4) https://forms.gle/HPqt8WmrwhiG3rEY7
+    * 김치죽 1.3.1 기타 투표 (4.27~5.4) https://forms.gle/w3FC1BaHeAg2cEjGA
       
 # Design goals
 
