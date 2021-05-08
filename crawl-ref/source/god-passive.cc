@@ -1080,9 +1080,7 @@ map<skill_type, int8_t> ash_get_boosted_skills(eq_type type)
         break;
 
     case (ET_SHIELD):
-        if (you.species == SP_TWO_HEADED_OGRE) {
-            ASSERT(scwpn);
-
+        if (you.species == SP_TWO_HEADED_OGRE && scwpn) {
             // Boost weapon skill. Plain "staff" means an unrand magical staff,
             // boosted later.
             if (scwpn->base_type == OBJ_WEAPONS
