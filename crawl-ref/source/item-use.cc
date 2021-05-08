@@ -1005,16 +1005,16 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
     else
     {
         auto twoweapons = [](){ return you.weapon() && you.second_weapon(); };
-        auto noweapons = [](){ return !you.weapon() || !you.second_weapon(); };
+        auto noweapons = [](){ return !you.weapon() && !you.second_weapon(); };
 
         if ((you.weapon() && you.hands_reqd(*you.weapon()) == HANDS_TWO)
             || you.hands_reqd(new_wpn) == HANDS_TWO)
         {
             //if two handed weapon(maybe range weapon) you should unwield weapon all
-            while (!twoweapons() && !noweapons())
+            while (!noweapons())
             {
-                auto choosed_wpn = !you.weapon() ? EQ_WEAPON : EQ_SECOND_WEAPON;
-                if (!_wieldable(new_wpn, choosed_wpn))
+                auto choosed_wpn = you.weapon() ? EQ_WEAPON : EQ_SECOND_WEAPON;
+                if (!_wieldable(new_wpn, EQ_WEAPON))
                     return false;
                 if (unwield_item(show_weff_messages, choosed_wpn))
                 {
