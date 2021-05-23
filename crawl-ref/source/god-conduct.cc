@@ -448,8 +448,7 @@ static peeve_map divine_peeves[] =
         } },
     },
     // GOD_AGRAPHEDE,
-    {
-    },
+    peeve_map(),
 };
 
 string get_god_dislikes(god_type which_god)
