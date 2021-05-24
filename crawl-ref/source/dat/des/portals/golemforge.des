@@ -58,7 +58,6 @@ function golemforge_appearance(e)
 end
 
 function callback.golemforge_phase_one(data, triggerable, triggerer, marker, ev)
-
   if triggerer.type ~= "turn" or triggerer.sub_type ~= "countdown" then
     return
   end
@@ -377,10 +376,10 @@ local two = TriggerableFunction:new{func="callback.golemforge_phase_two", repeat
 local three = TriggerableFunction:new{func="callback.golemforge_phase_three", repeated = true}
 local antispam = TriggerableFunction:new{func="callback.golemforge_prevent_spamming", repeated = true}
 
-one:add_triggerer(DgnTriggerer:new { type="turn", delay_min=200000, delay_max=300000})
-two:add_triggerer(DgnTriggerer:new { type="turn", delay_min=400000, delay_max=500000})
-three:add_triggerer(DgnTriggerer:new { type="turn", delay_min=700000, delay_max=800000})
-antispam:add_triggerer(DgnTriggerer:new { type="turn", delay_min=1000000, delay_max=1100000})
+one:add_triggerer(DgnTriggerer:new { type="turn", delay_min=2000, delay_max=3000})
+two:add_triggerer(DgnTriggerer:new { type="turn", delay_min=4000, delay_max=5000})
+three:add_triggerer(DgnTriggerer:new { type="turn", delay_min=7000, delay_max=8000})
+antispam:add_triggerer(DgnTriggerer:new { type="turn", delay_min=10000, delay_max=11000})
 
 lua_marker('1', one)
 lua_marker('n', props_marker {spawn_point1 = 1})
