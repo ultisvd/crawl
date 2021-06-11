@@ -5849,6 +5849,8 @@ void place_spec_shop(const coord_def& where, shop_spec &spec, int shop_level)
     shop.type = spec.sh_type;
     if (shop.type == SHOP_RANDOM)
         shop.type = static_cast<shop_type>(random2(NUM_SHOPS));
+    if (shop.type == SHOP_MERCENARY && x_chance_in_y(3,5))
+        shop.type = static_cast<shop_type>(random2(NUM_SHOPS));
     shop.greed = _shop_greed(shop.type, level_number, spec.greed);
     shop.pos = where;
 
