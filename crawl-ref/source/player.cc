@@ -1046,7 +1046,7 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid, bool i
     case EQ_WEAPON:
     case EQ_SECOND_WEAPON:
         // Hands can have more than just weapons.
-        if ((item = slot_item(EQ_WEAPON, include_melded))
+        if ((item = slot_item(slot, include_melded))
             && item->base_type == OBJ_WEAPONS
             && get_weapon_brand(*item) == special)
         {
