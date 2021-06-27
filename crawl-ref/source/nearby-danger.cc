@@ -505,6 +505,7 @@ void revive()
 
     if (yred_revive) {
         perma_mutate(MUT_NEGATIVE_ENERGY_RESISTANCE, 3, "yrederemnul revive");
+        perma_mutate(MUT_TORMENT_RESISTANCE, 1, "yrederemnul revive");
     }
 
     mprf("You rejoin the land of the %s...", yred_revive ? "dead": "living");
