@@ -548,8 +548,9 @@ spret cast_evaporate(int pow, bolt& beem, int pot_idx, bool fail)
         break;
 
     case POT_MUTATION:
+    case POT_UNSTABLE_MUTATION:
         // Maybe we'll get a mutagenic cloud.
-        if (coinflip())
+        if (potion.sub_type == POT_MUTATION || coinflip())
         {
             beem.effect_known = true;
             tracer_flavour = beem.flavour = BEAM_POTION_MUTAGENIC;
