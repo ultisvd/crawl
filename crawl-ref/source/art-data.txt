@@ -1481,14 +1481,6 @@ EV:      5
 MAGIC:   1
 VALUE:   600
 
-NAME:    stone of krohman
-OBJ:     OBJ_JEWELLERY/RING_MAGICAL_POWER
-COLOUR:  ETC_ENCHANT
-TILE:    urand_krohman
-INSCRIP: Conj+
-MP:       +9
-BOOL:    curse, blink
-
 ENUM:    GAUNTLETS_DISTOTION
 NAME:    gauntlets of Distortion
 OBJ:     OBJ_ARMOUR/ARM_GLOVES
