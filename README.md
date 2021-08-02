@@ -22,7 +22,7 @@
         * 마법아티,미니볼트추가-13표(43.3%)
         * 기존삭제된종족직업신롤백-8표(26.7%)
       * 기타의견 - https://forms.gle/w3FC1BaHeAg2cEjGA
-
+    * 김치죽 0.27 적용 투표 (8.03~8.20) https://forms.gle/xXoati7F9kYHXVH77
       
 # Design goals
 
