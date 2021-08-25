@@ -997,6 +997,19 @@ static const mutation_def mut_data[] =
    "Your connection to magic feels less subdued."},
 },
 
+{ MUT_DEMONIC_MAGIC, 0, 3, mutflag::good, false,
+  "demonic magic",
+
+  {"Spells you cast may paralyse adjacent enemies.",
+   "Spells you cast may paralyse nearby enemies.",
+   "Spells you cast and wands you use may paralyse nearby enemies."},
+
+  {"A menacing aura infuses your magic.",
+   "Your magic grows more menacing.",
+   "Your wands become infused with your menacing aura."},
+
+  {"","",""},
+},
 #if TAG_MAJOR_VERSION == 34
 { MUT_FORLORN, 0, 1, mutflag::bad, false,
   "forlorn",
@@ -1031,11 +1044,22 @@ static const mutation_def mut_data[] =
    "You feel slightly disoriented."},
 },
 
-{ MUT_ICEMAIL, 0, 1, mutflag::good, false,
+{ MUT_ICEMAIL, 0, 2, mutflag::good, false,
   "icemail",
 
-  {"A meltable icy envelope protects you from harm. (AC +", "", ""},
-  {"An icy envelope takes form around you.", "", ""},
+  {"A meltable icy envelope protects you from harm. (AC +",
+   "A thick, meltable icy envelope protects you from harm. (AC +", ""},
+  {"An icy envelope takes form around you.",
+   "Your icy envelope grows thicker.", ""},
+  {"", "", ""},
+},
+
+
+{ MUT_CONDENSATION_SHIELD, 0, 1, mutflag::good, false,
+  "condensation shield",
+
+  {"A meltable shield of frost defends you. (SH +", "", ""},
+  {"Frost condenses into a shield before you.","", ""},
   {"", "", ""},
 },
 
@@ -1057,12 +1081,12 @@ static const mutation_def mut_data[] =
 },
 #endif
 
-{ MUT_PASSIVE_FREEZE, 0, 1, mutflag::good, false,
+{ MUT_PASSIVE_FREEZE, 1, 1, mutflag::good, false,
   "passive freeze",
 
   {"A frigid envelope surrounds you and freezes all who hurt you.", "", ""},
   {"Your skin feels very cold.", "", ""},
-  {"", "", ""},
+  {"Your skin warms up.", "", ""},
 },
 
 { MUT_NIGHTSTALKER, 0, 3, mutflag::good, false,
@@ -1481,24 +1505,28 @@ static const mutation_def mut_data[] =
    "Your natural camouflage becomes less effective."},
 },
 
-{ MUT_IGNITE_BLOOD, 0, 1, mutflag::good, false,
+  { MUT_IGNITE_BLOOD, 0, 3, mutflag::good, false,
   "ignite blood",
 
-  {"Your demonic aura causes spilled blood to erupt in flames.", "", ""},
-  {"Your blood runs red-hot!", "", ""},
+  {"Your demonic aura sometimes causes spilled blood to erupt in flames",
+   "Your demonic aura often causes spilled blood to erupt in flames",
+   "Your demonic aura causes all spilled blood to erupt in flames."},
+  {"Your blood heats up.",
+   "Your blood runs red-hot!",
+   "Your blood burns even hotter!"},
   {"", "", ""},
 },
 
-{ MUT_FOUL_STENCH, 0, 2, mutflag::good, false,
+{ MUT_FOUL_STENCH, 0, 3, mutflag::good, false,
   "foul stench",
 
-  {"You may emit foul miasma when damaged in melee.",
-   "You frequently emit foul miasma when damaged in melee.",
-   ""},
+  {"You may rarely emit foul miasma when damaged in melee.",
+   "You sometimes emit foul miasma when damaged in melee.",
+   "You frequently emit foul miasma when damaged in melee."},
 
   {"You begin to emit a foul stench of rot and decay.",
-   "You begin to radiate miasma.",
-   ""},
+   "Your foul stench grows more powerful.",
+   "You begin to radiate miasma."},
 
   {"", "", ""},
 },
@@ -1582,6 +1610,47 @@ static const mutation_def mut_data[] =
 
   {"Your melee attacks may debilitate your foes.", "", ""},
   {"An ominous black mark forms on your body.", "", ""},
+  {"", "", ""},
+},
+
+{ MUT_DEMONIC_WILL, 0, 1, mutflag::good, false,
+  "demonic willpower",
+
+  {"You punish those that try to bend your will (MR+).", "", ""},
+  {"You feel willful.", "", ""},
+  {"", "", ""},
+},
+
+{ MUT_SILENCE_AURA, 0, 1, mutflag::good, false,
+  "aura of silence",
+
+  {"You are surrounded by an aura of silence.", "", ""},
+  {"An unnatural silence shrouds you.", "", ""},
+  {"", "", ""},
+},
+
+{ MUT_HEX_ENHANCER, 0, 1, mutflag::good, false,
+  "bedeviling",
+
+  {"Your maledictions are enhanced.", "", ""},
+  {"You feel delightfully devilish.", "", ""},
+  {"", "", ""},
+ },
+
+{ MUT_CORRUPTING_PRESENCE, 0, 2, mutflag::good, false,
+  "corrupting presence",
+
+  {"Your presence sometimes corrodes those you injure.",
+   "Your presence sometimes corrodes or deforms those you injure", ""},
+  {"You feel corrupt.", "Your corrupting presence intensifies.", ""},
+  {"", "", ""},
+},
+
+{ MUT_WORD_OF_CHAOS, 0, 1, mutflag::good, false,
+  "word of chaos",
+
+  {"You can speak a Word of Chaos.", "", ""},
+  {"Your tongue twists.", "", ""},
   {"", "", ""},
 },
 

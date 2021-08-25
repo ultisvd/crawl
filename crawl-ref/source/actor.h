@@ -386,6 +386,8 @@ public:
 
     // Silence radius
     virtual int silence_radius() const = 0;
+    // Demonspawn silence radius
+    virtual int demon_silence_radius() const = 0;
     
     // Within any actor's antimagic halo?
     virtual bool antimagic_haloed() const;

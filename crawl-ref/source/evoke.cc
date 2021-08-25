@@ -1981,6 +1981,13 @@ static bool _rod_spell(item_def& irod, bool check_range)
     return true;
 }
 
+static bool _valid_tremorstone_target(const monster& m)
+{
+    return !mons_is_firewood(m)
+        && !god_protects(&m)
+        && !always_shoot_through_monster(&you, m);
+}
+
 /**
  * Find the cell at range 3 closest to the center of mass of monsters in range,
  * or a random range 3 cell if there are none.
@@ -1997,7 +2004,7 @@ static coord_def _find_tremorstone_target(bool& see_targets)
 
     for (radius_iterator ri(you.pos(), LOS_NO_TRANS); ri; ++ri)
     {
-        if (monster_at(*ri) && !mons_is_firewood(*monster_at(*ri)))
+        if (monster_at(*ri) && _valid_tremorstone_target(*monster_at(*ri)))
         {
             com += *ri;
             see_targets = see_targets || you.can_see(*monster_at(*ri));
@@ -2099,8 +2106,7 @@ static spret _tremorstone()
     targeter_radius hitfunc(&you, LOS_NO_TRANS);
     auto vulnerable = [](const actor *act) -> bool
     {
-        return !(have_passive(passive_t::shoot_through_plants)
-                 && fedhas_protects(*act->as_monster()));
+        return act && _valid_tremorstone_target(*act->as_monster());
     };
     if ((!see_target
         && !yesno("You can't see anything, throw a tremorstone anyway?",

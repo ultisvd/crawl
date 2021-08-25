@@ -827,7 +827,8 @@ static void _maybe_freeze_water(const coord_def pos)
 //   Places a cloud with the given stats. Will overwrite an old
 //   cloud under some circumstances.
 void place_cloud(cloud_type cl_type, const coord_def& ctarget, int cl_range,
-                 const actor *agent, int _spread_rate, int excl_rad)
+                 const actor *agent, int _spread_rate, int excl_rad,
+    bool do_conducts)
 {
     if (is_sanctuary(ctarget) && !is_harmless_cloud(cl_type))
         return;
@@ -843,13 +844,37 @@ void place_cloud(cloud_type cl_type, const coord_def& ctarget, int cl_range,
         return;
     }
 
+    const monster* const mons = monster_at(ctarget);
+
+    // Fedhas protects plants from damaging clouds.
+    // XX demonic guardians? This logic mostly doesn't apply because protected
+    // monsters are also cloud immune, mostly
+    if (god_protects(agent, mons)
+        && !actor_cloud_immune(*mons, cl_type))
+    {
+        return;
+    }
+
     ASSERT(!cell_is_solid(ctarget));
 
+
+    god_conduct_trigger conducts[3];
     kill_category whose = KC_OTHER;
-    killer_type killer  = KILL_MISC;
-    mid_t source        = MID_NOBODY;
+    killer_type killer = KILL_MISC;
+    mid_t source = MID_NOBODY;
     if (agent && agent->is_player())
-        whose = KC_YOU, killer = KILL_YOU_MISSILE, source = MID_PLAYER;
+    {
+        if (do_conducts
+            && mons && mons->alive()
+            && !actor_cloud_immune(*mons, cl_type))
+        {
+            set_attack_conducts(conducts, *mons, you.can_see(*mons));
+        }
+
+        whose = KC_YOU;
+        killer = KILL_YOU_MISSILE;
+        source = MID_PLAYER;
+    }
     else if (agent && agent->is_monster())
     {
         if (agent->as_monster()->friendly())
@@ -861,7 +886,8 @@ void place_cloud(cloud_type cl_type, const coord_def& ctarget, int cl_range,
     }
 
     // There's already a cloud here. See if we can overwrite it.
-    if (cloud_at(ctarget) && !_cloud_is_stronger(cl_type, *cloud_at(ctarget)))
+    const cloud_struct* cloud = cloud_at(ctarget);
+    if (cloud && !_cloud_is_stronger(cl_type, *cloud))
         return;
 
     if (cl_type == CLOUD_COLD)
@@ -871,7 +897,7 @@ void place_cloud(cloud_type cl_type, const coord_def& ctarget, int cl_range,
 
     // if the old cloud was opaque, may need to recalculate los.
     // It *is* possible to overwrite an opaque cloud with a non-opaque one; OOD will do this.
-    const cloud_type old = cloud_type_at(ctarget);
+    const cloud_type old = cloud ? cloud->type : CLOUD_NONE;
 
     const int spread_rate = _actual_spread_rate(cl_type, _spread_rate);
 
@@ -987,11 +1013,12 @@ bool actor_cloud_immune(const actor &act, cloud_type type)
     {
         case CLOUD_FIRE:
         case CLOUD_FOREST_FIRE:
-	case CLOUD_INNER_FLAME:
+   	    case CLOUD_INNER_FLAME:
             if (!act.is_player())
                 return act.res_fire() >= 3;
             return you.duration[DUR_FIRE_SHIELD]
                 || you.has_mutation(MUT_FLAME_CLOUD_IMMUNITY)
+                || you.has_mutation(MUT_IGNITE_BLOOD)
                 || player_equip_unrand(UNRAND_FIRESTARTER);
         case CLOUD_HOLY:
             return act.res_holy_energy() >= 3;
@@ -1055,8 +1082,7 @@ bool actor_cloud_immune(const actor &act, const cloud_struct &cloud)
     const bool player = act.is_player();
 
     if (!player
-        && (you_worship(GOD_FEDHAS)
-            && fedhas_protects(*act.as_monster())
+        && (god_protects(act.as_monster())
             || testbits(act.as_monster()->flags, MF_DEMONIC_GUARDIAN))
         && (cloud.whose == KC_YOU || cloud.whose == KC_FRIENDLY)
         && (act.as_monster()->friendly() || act.as_monster()->neutral()))

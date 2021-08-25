@@ -1162,10 +1162,6 @@ void player_reacts()
     if (you.species == SP_LAVA_ORC)
         temperature_check();
 
-
-    if (you.has_mutation(MUT_DEMONIC_GUARDIAN))
-        check_demonic_guardian();
-
     if (you.unrand_reacts.any())
         unrand_reacts();
 

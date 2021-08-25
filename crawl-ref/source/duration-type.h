@@ -233,5 +233,6 @@ enum duration_type
     DUR_SPECTRUM,
     DUR_ATTRACTIVE,
     DUR_HEAT,
+    DUR_WORD_OF_CHAOS_COOLDOWN,
     NUM_DURATIONS
 };

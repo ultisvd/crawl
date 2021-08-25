@@ -2430,6 +2430,12 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         ostr << mdef.have[0] << player_icemail_armour_class() << ")";
         result = ostr.str();
     }
+    else if (mut == MUT_CONDENSATION_SHIELD)
+    {
+        ostringstream ostr;
+        ostr << mdef.have[0] << player_condensation_shield_class() << ")";
+        result = ostr.str();
+    }
     else if (mut == MUT_SANGUINE_ARMOUR)
     {
         ostringstream ostr;
@@ -2558,35 +2564,36 @@ static const facet_def _demon_facets[] =
     { 1, { MUT_SHARP_SCALES, MUT_SHARP_SCALES, MUT_SHARP_SCALES },
       { -33, -33, 0 } },
     // Tier 2 facets
-    { 2, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_IGNITE_BLOOD },
+    { 2, { MUT_IGNITE_BLOOD, MUT_IGNITE_BLOOD, MUT_IGNITE_BLOOD },
       { -33, 0, 0 } },
-    { 2, { MUT_COLD_RESISTANCE, MUT_FREEZING_CLOUD_IMMUNITY, MUT_ICEMAIL },
+    { 2, { MUT_CONDENSATION_SHIELD, MUT_ICEMAIL, MUT_ICEMAIL },
+      { -33, 0, 0 } },
+    { 2, { MUT_DEMONIC_MAGIC, MUT_DEMONIC_MAGIC, MUT_DEMONIC_MAGIC },
       { -33, 0, 0 } },
     { 2, { MUT_POWERED_BY_DEATH, MUT_POWERED_BY_DEATH, MUT_POWERED_BY_DEATH },
       { -33, 0, 0 } },
     { 2, { MUT_DEMONIC_GUARDIAN, MUT_DEMONIC_GUARDIAN, MUT_DEMONIC_GUARDIAN },
-      { -66, 17, 50 } },
+      { -33, 0, 0 } },
     { 2, { MUT_NIGHTSTALKER, MUT_NIGHTSTALKER, MUT_NIGHTSTALKER },
       { -33, 0, 0 } },
     { 2, { MUT_SPINY, MUT_SPINY, MUT_SPINY },
       { -33, 0, 0 } },
     { 2, { MUT_POWERED_BY_PAIN, MUT_POWERED_BY_PAIN, MUT_POWERED_BY_PAIN },
       { -33, 0, 0 } },
-    { 2, { MUT_ROT_IMMUNITY, MUT_FOUL_STENCH, MUT_FOUL_STENCH },
+    { 2, { MUT_FOUL_STENCH, MUT_FOUL_STENCH, MUT_FOUL_STENCH },
       { -33, 0, 0 } },
-    { 2, { MUT_MANA_SHIELD, MUT_MANA_REGENERATION, MUT_MANA_LINK },
+    { 2, { MUT_MANA_REGENERATION, MUT_MANA_SHIELD, MUT_MANA_LINK },
       { -33, 0, 0 } },
     // Tier 3 facets
-    { 3, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_HURL_DAMNATION },
-      { 50, 50, 50 } },
-    { 3, { MUT_COLD_RESISTANCE, MUT_FREEZING_CLOUD_IMMUNITY, MUT_PASSIVE_FREEZE },
+    { 3, { MUT_DEMONIC_WILL, MUT_TORMENT_RESISTANCE, MUT_HURL_DAMNATION },
       { 50, 50, 50 } },
     { 3, { MUT_ROBUST, MUT_ROBUST, MUT_ROBUST },
       { 50, 50, 50 } },
-    { 3, { MUT_NEGATIVE_ENERGY_RESISTANCE, MUT_STOCHASTIC_TORMENT_RESISTANCE,
-           MUT_BLACK_MARK },
+    { 3, { MUT_HEX_ENHANCER, MUT_BLACK_MARK, MUT_SILENCE_AURA },
       { 50, 50, 50 } },
     { 3, { MUT_AUGMENTATION, MUT_AUGMENTATION, MUT_AUGMENTATION },
+      { 50, 50, 50 } },
+    { 3, { MUT_CORRUPTING_PRESENCE, MUT_CORRUPTING_PRESENCE, MUT_WORD_OF_CHAOS },
       { 50, 50, 50 } },
 };
 
@@ -2637,8 +2644,7 @@ try_again:
 
     ret.clear();
     int absfacet = 0;
-    int ice_elemental = 0;
-    int fire_elemental = 0;
+    int elemental = 0;
     int cloud_producing = 0;
 
     set<const facet_def *> facets_used;
@@ -2665,21 +2671,21 @@ try_again:
 
                 ret.emplace_back(m, next_facet->when[i], absfacet);
 
-                if (m == MUT_COLD_RESISTANCE)
-                    ice_elemental++;
+                if (i == 0)
+                {
+                    if (m == MUT_CONDENSATION_SHIELD || m == MUT_IGNITE_BLOOD)
+                        elemental++;
 
-                if (m == MUT_HEAT_RESISTANCE)
-                    fire_elemental++;
-
-                if (m == MUT_ROT_IMMUNITY || m == MUT_IGNITE_BLOOD)
-                    cloud_producing++;
+                    if (m == MUT_FOUL_STENCH || m == MUT_IGNITE_BLOOD)
+                        cloud_producing++;
+                }
             }
 
             ++absfacet;
         }
     }
 
-    if (ice_elemental + fire_elemental > 1)
+    if (elemental > 1)
         goto try_again;
 
     if (cloud_producing > 1)
@@ -2904,20 +2910,10 @@ int player::how_jiyva_mutated() const
     return result;
 }
 
-// Return whether current tension is balanced
-static bool _balance_demonic_guardian()
-{
-    // if tension is unfavorably high, perhaps another guardian should spawn
-    const int mutlevel = you.get_mutation_level(MUT_DEMONIC_GUARDIAN);
-    const int tension = get_tension(GOD_NO_GOD);
-    return tension*3/4 <= mutlevel*6 + random2(mutlevel*mutlevel*2);
-}
-
-// Primary function to handle and balance demonic guardians, if the tension
-// is unfavorably high and a guardian was not recently spawned, a new guardian
-// will be made, if tension is below a threshold (determined by the mutations
-// level and a bit of randomness), guardians may be dismissed in
-// _balance_demonic_guardian()
+// Primary function to handle demonic guardians.
+// Guardian tier is partially based on player experience level. This should
+// allow players to get the mutation early without it going totally out of
+// control.
 void check_demonic_guardian()
 {
     // Players hated by all monsters don't get guardians, so that they aren't
@@ -2927,12 +2923,12 @@ void check_demonic_guardian()
 
     const int mutlevel = you.get_mutation_level(MUT_DEMONIC_GUARDIAN);
 
-    if (!_balance_demonic_guardian() &&
-        you.duration[DUR_DEMONIC_GUARDIAN] == 0)
+    if (you.duration[DUR_DEMONIC_GUARDIAN] == 0)
     {
         monster_type mt;
+        int guardian_str = mutlevel + div_rand_round(you.experience_level - 9, 9);
 
-        switch (mutlevel)
+        switch (guardian_str)
         {
         case 1:
             mt = random_choose(MONS_QUASIT, MONS_WHITE_IMP, MONS_UFETUBUS,
@@ -2940,12 +2936,20 @@ void check_demonic_guardian()
             break;
         case 2:
             mt = random_choose(MONS_ORANGE_DEMON, MONS_ICE_DEVIL,
-                               MONS_SOUL_EATER, MONS_SMOKE_DEMON,
-                               MONS_SIXFIRHY);
+                               MONS_RUST_DEVIL, MONS_HELLWING);
             break;
         case 3:
-            mt = random_choose(MONS_EXECUTIONER, MONS_BALRUG, MONS_REAPER,
-                               MONS_CACODEMON, MONS_LOROCYPROCA);
+            mt = random_choose(MONS_SOUL_EATER, MONS_SMOKE_DEMON,
+                MONS_SIXFIRHY, MONS_SUN_DEMON);
+            break;
+        case 4:
+            mt = random_choose(MONS_BALRUG, MONS_REAPER,
+                MONS_LOROCYPROCA, MONS_CACODEMON,
+                MONS_HELL_BEAST);
+            break;
+        case 5:
+            mt = random_choose(MONS_EXECUTIONER, MONS_HELL_SENTINEL,
+                MONS_BRIMSTONE_FIEND);
             break;
         default:
             die("Invalid demonic guardian level: %d", mutlevel);
@@ -2965,6 +2969,8 @@ void check_demonic_guardian()
 
         // no more guardians for mutlevel+1 to mutlevel+20 turns
         you.duration[DUR_DEMONIC_GUARDIAN] = 10*(mutlevel + random2(20));
+
+        mpr("A demonic guardian appears!");
     }
 }
 

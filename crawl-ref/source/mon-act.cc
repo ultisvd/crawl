@@ -4090,8 +4090,7 @@ static bool _heated_area_immune(monster& mons)
     // HACK: Currently this prevents even auras not caused by lava orcs...
     if (you_worship(GOD_BEOGH) && mons.friendly() && mons.god == GOD_BEOGH)
         return true;
-    if (have_passive(passive_t::shoot_through_plants)
-        && fedhas_protects(mons))
+    if (god_protects(&mons))
         return true;
     return false;
 }

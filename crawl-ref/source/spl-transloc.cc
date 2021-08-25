@@ -45,7 +45,9 @@
 #include "output.h"
 #include "player.h"
 #include "prompt.h"
+#include "religion.h"
 #include "shout.h"
+#include "spl-monench.h"
 #include "spl-util.h"
 #include "spl-summoning.h" // trigger_spectral_weapon for palentonga charge
 #include "stash.h"
@@ -1618,6 +1620,8 @@ static void _attract_actor(const actor* agent, actor* victim,
                            const coord_def pos, int pow, int strength)
 {
     ASSERT(victim); // XXX: change to actor &victim
+    const bool fedhas_prot = victim->is_monster()
+        && god_protects(agent, victim->as_monster());
 
     ray_def ray;
     if (!find_ray(victim->pos(), pos, ray, opc_solid))
@@ -1629,8 +1633,17 @@ static void _attract_actor(const actor* agent, actor* victim,
                  victim->name(DESC_THE).c_str(),
                  victim->conj_verb("stop").c_str());
         }
-        victim->hurt(agent, roll_dice(strength / 2, pow / 20),
-                     BEAM_MMISSILE, KILLED_BY_BEAM, "", GRAVITY);
+        if (fedhas_prot)
+        {
+            simple_god_message(
+                make_stringf(" protects %s from harm.",
+                    agent->is_player() ? "your" : "a").c_str(), GOD_FEDHAS);
+        }
+        else
+        {
+            victim->hurt(agent, roll_dice(strength / 2, pow / 20),
+                BEAM_MMISSILE, KILLED_BY_BEAM, "", GRAVITY);
+        }
         return;
     }
 
@@ -1661,10 +1674,11 @@ static void _attract_actor(const actor* agent, actor* victim,
         else
             victim->move_to_pos(newpos);
 
-        if (auto mons = victim->as_monster())
+        if (victim->is_monster() && !fedhas_prot)
         {
-            behaviour_event(mons, ME_ANNOY, agent, agent ? agent->pos()
-                                                         : coord_def(0, 0));
+            behaviour_event(victim->as_monster(),
+                ME_ANNOY, agent, agent ? agent->pos()
+                : coord_def(0, 0));
         }
 
         if (victim->pos() == pos)
@@ -1901,4 +1915,50 @@ void attract_monsters()
         mi->apply_location_effects(old_pos);
         mons_relocated(*mi);
     }
+}
+
+bool word_of_chaos(int pow)
+{
+    vector<monster*> targets;
+    for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
+    {
+        if (!mons_is_tentacle_or_tentacle_segment(mi->type)
+            && !mi->friendly())
+        {
+            targets.push_back(*mi);
+        }
+    }
+
+    if (targets.empty())
+    {
+        if (!yesno("There are no visible enemies. Speak a word of chaos anyway?",
+            true, 'n'))
+        {
+            return false;
+        }
+    }
+
+    shuffle_array(targets);
+
+    mprf("You speak a word of chaos!");
+    for (auto mons : targets)
+    {
+        if (mons->no_tele())
+            continue;
+
+        blink_away(mons, &you, false);
+        if (x_chance_in_y(pow, 500))
+            ensnare(mons);
+        if (x_chance_in_y(pow, 500))
+            do_slow_monster(*mons, &you, 20 + random2(pow));
+        if (x_chance_in_y(pow, 500))
+        {
+            mons->add_ench(mon_enchant(ENCH_FEAR, 0, &you));
+            behaviour_event(mons, ME_SCARE, &you);
+        }
+    }
+
+    you.increase_duration(DUR_WORD_OF_CHAOS_COOLDOWN, 15 + random2(10));
+    drain_player(50, false, true);
+    return true;
 }

@@ -606,7 +606,9 @@ static bool _boosted_ev()
 static bool _boosted_sh()
 {
     return you.duration[DUR_CONDENSATION_SHIELD] || you.duration[DUR_MAGIC_SHIELD] || you.duration[DUR_DIVINE_SHIELD]
-           || qazlal_sh_boost() > 0;
+           || qazlal_sh_boost() > 0
+           || (you.get_mutation_level(MUT_CONDENSATION_SHIELD)
+               && !you.duration[DUR_ICEMAIL_DEPLETED]);
 }
 
 #ifdef DGL_SIMPLE_MESSAGING
@@ -1310,6 +1312,7 @@ static void _get_status_lights(vector<status_light>& out)
         DUR_DEATHS_DOOR,
         DUR_BERSERK_COOLDOWN,
         DUR_EXHAUSTED,
+        DUR_WORD_OF_CHAOS_COOLDOWN,
         DUR_DEATHS_DOOR_COOLDOWN,
         DUR_QUAD_DAMAGE,
         STATUS_SERPENTS_LASH,

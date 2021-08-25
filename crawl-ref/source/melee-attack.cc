@@ -140,8 +140,7 @@ bool melee_attack::handle_phase_attempted()
             if (stop_attack_prompt(hitfunc, "attack",
                                    [](const actor *act)
                                    {
-                                       return !(you.deity() == GOD_FEDHAS
-                                       && fedhas_protects(*act->as_monster()));
+                                       return !god_protects(act->as_monster());
                                    }, nullptr, defender->as_monster()))
             {
                 cancel_attack = true;
@@ -184,8 +183,7 @@ bool melee_attack::handle_phase_attempted()
             if (stop_attack_prompt(hitfunc, "attack",
                 [](const actor* act)
                 {
-                    return !(you.deity() == GOD_FEDHAS
-                        && fedhas_protects(*(act->as_monster())));
+                    return !god_protects(act->as_monster());
                 }, nullptr, defender->as_monster()))
             {
                 cancel_attack = true;
@@ -3839,7 +3837,8 @@ void melee_attack::do_spines()
 
         if (mut && attacker->alive() && coinflip())
         {
-            int dmg = random_range(mut, you.experience_level + mut);
+            int dmg = random_range(mut,
+                div_rand_round(you.experience_level * 2, 3) + mut * 3);
             int hurt = attacker->apply_ac(dmg);
 
             dprf(DIAG_COMBAT, "Spiny: dmg = %d hurt = %d", dmg, hurt);
@@ -3921,10 +3920,7 @@ void melee_attack::emit_foul_stench()
     {
         const int mut = you.get_mutation_level(MUT_FOUL_STENCH);
 
-        if (one_chance_in(3))
-            mon->sicken(50 + random2(100));
-
-        if (damage_done > 4 && x_chance_in_y(mut, 5)
+        if (damage_done > 0 && x_chance_in_y(mut * 3 - 1, 20)
             && !cell_is_solid(mon->pos())
             && !cloud_at(mon->pos()))
         {

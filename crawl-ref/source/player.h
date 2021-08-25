@@ -846,6 +846,7 @@ public:
     bool umbra() const override;
     int halo_radius() const override;
     int silence_radius() const override;
+    int demon_silence_radius() const override;
     int liquefying_radius() const override;
     int umbra_radius() const override;
     int heat_radius() const override;
@@ -1056,6 +1057,7 @@ int player_hunger_rate(bool temp = true);
 int calc_hunger(int food_cost);
 
 int player_icemail_armour_class();
+int player_condensation_shield_class();
 int sanguine_armour_bonus();
 
 int player_wizardry(spell_type spell);

@@ -83,10 +83,15 @@ void maybe_melt_player_enchantments(beam_type flavour, int damage)
         || flavour == BEAM_STICKY_FLAME || flavour == BEAM_STEAM
         || flavour == BEAM_ROD_FIRE)
     {
-        if (you.has_mutation(MUT_ICEMAIL))
+        if (you.has_mutation(MUT_CONDENSATION_SHIELD))
         {
             if (!you.duration[DUR_ICEMAIL_DEPLETED])
-                mprf(MSGCH_DURATION, "Your icy envelope dissipates!");
+            {
+                if (you.has_mutation(MUT_ICEMAIL))
+                    mprf(MSGCH_DURATION, "Your icy defenses dissipate!");
+                else
+                    mprf(MSGCH_DURATION, "Your condensation shield dissipates!");
+            }
             you.duration[DUR_ICEMAIL_DEPLETED] = ICEMAIL_TIME;
             you.redraw_armour_class = true;
         }
@@ -553,6 +558,19 @@ static void _maybe_ru_retribution(int dam, mid_t death_source)
             return;
 
         ru_retribution_fineff::schedule(mons, &you, dam);
+    }
+}
+
+static void _maybe_summon_demonic_guardian(int dam)
+{
+    // low chance to summon on any hit that dealt damage
+    // always tries to summon if the hit did 50% max hp or if we're about to die
+    if (you.has_mutation(MUT_DEMONIC_GUARDIAN)
+        && (x_chance_in_y(dam, you.hp_max)
+            || dam > you.hp_max / 2
+            || you.hp * 5 < you.hp_max))
+    {
+        check_demonic_guardian();
     }
 }
 
@@ -1163,6 +1181,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char* aux,
             _yred_mirrors_injury(dam, source);
             _maybe_ru_retribution(dam, source);
             _maybe_spawn_monsters(dam, death_type, source);
+            _maybe_summon_demonic_guardian(dam);
             _maybe_fog(dam);
             _powered_by_pain(dam);
             if (sanguine_armour_valid())

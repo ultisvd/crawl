@@ -344,6 +344,8 @@ static const ability_def Ability_List[] =
     { ABIL_STOP_FLYING, "Stop Flying", 0, 0, 0, 0, {}, abflag::starve_ok },
     { ABIL_DAMNATION, "Hurl Damnation",
         0, 150, 200, 0, {fail_basis::xl, 50, 1}, abflag::none },
+    { ABIL_WORD_OF_CHAOS, "Word of Chaos",
+        6, 0, 0, 0, {fail_basis::xl, 50, 1}, abflag::skill_drain },
 
     { ABIL_CANCEL_PPROJ, "Cancel Portal Projectile",
       0, 0, 0, 0, {}, abflag::instant | abflag::starve_ok },
@@ -2749,11 +2751,22 @@ static spret _do_ability(const ability_def& abil, bool fail)
     case ABIL_DAMNATION:
         fail_check();
         if (your_spells(SPELL_HURL_DAMNATION,
-                        you.experience_level * 10,
+                        40 + you.experience_level * 6,
                         false) == spret::abort)
         {
             return spret::abort;
         }
+        break;
+
+    case ABIL_WORD_OF_CHAOS:
+        if (you.duration[DUR_WORD_OF_CHAOS_COOLDOWN])
+        {
+            mpr("You're unable to speak a word of chaos right now.");
+            return spret::abort;
+        }
+        fail_check();
+        if (!word_of_chaos(40 + you.experience_level * 6))
+            return spret::abort;
         break;
 
     case ABIL_EVOKE_TURN_INVISIBLE:     // cloaks, randarts
@@ -5117,6 +5130,10 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     // Mutations
     if (you.get_mutation_level(MUT_HURL_DAMNATION))
         _add_talent(talents, ABIL_DAMNATION, check_confused);
+
+    // Mutations
+    if (you.get_mutation_level(MUT_WORD_OF_CHAOS) && (!silenced(you.pos()) || include_unusable))
+        _add_talent(talents, ABIL_WORD_OF_CHAOS, check_confused);
 
     if (you.duration[DUR_TRANSFORMATION] && !you.transform_uncancellable)
         _add_talent(talents, ABIL_END_TRANSFORMATION, check_confused);

@@ -3541,6 +3541,21 @@ void bolt::affect_player_enchantment(bool resistible)
                 mprf("You%s", you.resist_margin_phrase(margin).c_str());
             }
         }
+
+        // punish the monster if we're a willful demon
+        if (you.get_mutation_level(MUT_DEMONIC_WILL))
+        {
+            monster* mon = monster_by_mid(source_id);
+            if (mon && mon->alive())
+            {
+                int damage_roll = 3 + random2(1 + div_rand_round(ench_power, 10));
+                mprf("Your will lashes out at %s%s", mon->observable() ?
+                    mon->name(DESC_THE).c_str() : "something",
+                    attack_strength_punctuation(damage_roll).c_str());
+                mon->hurt(&you, damage_roll, BEAM_DAMNATION);
+            }
+        }
+
         // You *could* have gotten a free teleportation in the Abyss,
         // but no, you resisted.
         if (flavour == BEAM_TELEPORT && player_in_branch(BRANCH_ABYSS))
@@ -5156,12 +5171,7 @@ void bolt::affect_monster(monster* mon)
             if (testbits(mon->flags, MF_DEMONIC_GUARDIAN))
                 mpr("Your demonic guardian avoids your attack.");
             else if (!bush_immune(*mon))
-            {
-                simple_god_message(
-                    make_stringf(" protects %s plant from harm.",
-                        attitude == ATT_FRIENDLY ? "your" : "a").c_str(),
-                    GOD_FEDHAS);
-            }
+                god_protects(agent(), mon, false); // messaging
         }
     }
 
@@ -5445,8 +5455,7 @@ void bolt::affect_monster(monster* mon)
         //
         // FIXME: Should be a better way of doing this. For now, we are
         // just falsifying the death report... -cao
-        else if (you_worship(GOD_FEDHAS) && flavour == BEAM_SPORE
-            && fedhas_protects(*mon))
+        else if (flavour == BEAM_SPORE && god_protects(mon))
         {
             if (mon->attitude == ATT_FRIENDLY)
                 mon->attitude = ATT_HOSTILE;
@@ -5481,11 +5490,8 @@ bool bolt::ignores_monster(const monster* mon) const
     // All kinds of beams go past orbs of destruction and friendly
     // battlespheres. We don't check mon->is_projectile() because that
     // check includes boulder beetles which should be hit.
-    if (mons_is_projectile(*mon)
-        || (mons_is_avatar(mon->type) && mons_aligned(agent(), mon)))
-    {
+    if (always_shoot_through_monster(agent(), *mon))
         return true;
-    }
 
     // Missiles go past bushes and briar patches, unless aimed directly at them
     if (bush_immune(*mon))
@@ -7151,6 +7157,16 @@ int _ench_pow_to_dur(int pow)
     return stepdown(pow * BASELINE_DELAY, 70);
 }
 
+// Do all beams skip past a particular monster?
+// see also shoot_through_monsters
+// can these be consolidated? Some checks there don't need a bolt arg
+bool always_shoot_through_monster(const actor* originator, const monster& victim)
+{
+    return mons_is_projectile(victim)
+        || (mons_is_avatar(victim.type)
+            && originator && mons_aligned(originator, &victim));
+}
+
 // Can a particular beam go through a particular monster?
 // Fedhas worshipers can shoot through non-hostile plants,
 // and players can shoot through their demonic guardians.
@@ -7160,32 +7176,9 @@ bool shoot_through_monster(const bolt& beam, const monster* victim)
     if (!victim || !originator)
         return false;
 
-    bool origin_worships_fedhas;
-    mon_attitude_type origin_attitude;
-    if (originator->is_player())
-    {
-        origin_worships_fedhas = have_passive(passive_t::shoot_through_plants);
-        origin_attitude = ATT_FRIENDLY;
-    }
-    else
-    {
-        monster* temp = originator->as_monster();
-        if (!temp)
-            return false;
-        origin_worships_fedhas = (temp->god == GOD_FEDHAS
-            || (temp->friendly()
-                && have_passive(passive_t::shoot_through_plants)));
-        origin_attitude = temp->attitude;
-    }
-
-    return (origin_worships_fedhas
-            && fedhas_protects(*victim))
-           || (originator->is_player()
-               && testbits(victim->flags, MF_DEMONIC_GUARDIAN))
-           && !beam.is_enchantment()
-           && beam.origin_spell != SPELL_CHAIN_LIGHTNING
-           && (mons_atts_aligned(victim->attitude, origin_attitude)
-               || victim->neutral());
+    return god_protects(originator, victim)
+        || (originator->is_player()
+            && testbits(victim->flags, MF_DEMONIC_GUARDIAN));
 }
 
 /**
