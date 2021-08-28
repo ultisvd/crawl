@@ -131,6 +131,7 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_IRRADIATE,
     SPELL_STATUE_FORM,
     SPELL_HYDRA_FORM,
+    SPELL_STORM_FORM,
     SPELL_DRAGON_FORM,
 },
 
@@ -203,6 +204,7 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_SILENCE,
     SPELL_DEFLECT_MISSILES,
     SPELL_CONJURE_BALL_LIGHTNING,
+    SPELL_STORM_FORM,
     SPELL_TORNADO,
 },
 

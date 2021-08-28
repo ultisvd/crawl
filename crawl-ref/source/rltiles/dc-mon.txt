@@ -1256,6 +1256,7 @@ tree_form TRAN_TREE
 mushroom_form TRAN_MUSHROOM
 shadow_form TRAN_SHADOW
 golem_form TRAN_GOLEM
+storm_form TRAN_STORM
 %rim 1
 
 %sdir misc

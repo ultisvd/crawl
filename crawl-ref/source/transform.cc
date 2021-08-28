@@ -959,6 +959,33 @@ public:
     }
 };
 
+void set_airform_power(int pow)
+{
+    you.props[AIRFORM_POWER_KEY] = pow;
+}
+
+class FormStorm : public Form
+{
+private:
+    FormStorm() : Form(transformation::storm) { }
+    DISALLOW_COPY_AND_ASSIGN(FormStorm);
+public:
+    static const FormStorm& instance() { static FormStorm inst; return inst; }
+
+    /**
+     * Find the player's base unarmed damage in this form.
+     */
+    int get_base_unarmed_damage() const override
+    {
+        int power = 0;
+        if (you.props.exists(AIRFORM_POWER_KEY))
+            power = you.props[AIRFORM_POWER_KEY].get_int();
+        return 2 + div_rand_round(power * 2, 5);
+    }
+
+    bool can_offhand_punch() const override { return true; }
+};
+
 /**
  * Set the number of hydra heads that the player currently has.
  *
@@ -1087,6 +1114,7 @@ static const Form* forms[] =
     &FormHolySwine::instance(),
     &FormEldritch::instance(),
     &FormGolem::instance(),
+    &FormStorm::instance(),
 };
 
 const Form* get_form(transformation xform)
@@ -1848,6 +1876,9 @@ bool transform(int pow, transformation which_trans, bool involuntary,
     if (which_trans == transformation::hydra)
         set_hydra_form_heads(div_rand_round(pow, 10));
 
+    if (which_trans == transformation::storm)
+        set_airform_power(pow);
+
     // Give the transformation message.
     mpr(get_form(which_trans)->transform_message(previous_trans));
 
@@ -2089,6 +2120,8 @@ void untransform(bool skip_move)
         you.props.erase(TRANSFORM_POW_KEY);
     if (you.props.exists(HYDRA_FORM_HEADS_KEY))
         you.props.erase(HYDRA_FORM_HEADS_KEY);
+    if (you.props.exists(AIRFORM_POWER_KEY))
+        you.props.erase(AIRFORM_POWER_KEY);
 
     // Must be unset first or else infinite loops might result. -- bwr
     const transformation old_form = you.form;

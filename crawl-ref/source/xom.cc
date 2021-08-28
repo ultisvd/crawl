@@ -504,6 +504,9 @@ static bool _transformation_check(const spell_type spell)
     case SPELL_DRAGON_FORM:
         tran = transformation::dragon;
         break;
+    case SPELL_STORM_FORM:
+        tran = transformation::storm;
+        break;
     case SPELL_NECROMUTATION:
         tran = transformation::lich;
         break;

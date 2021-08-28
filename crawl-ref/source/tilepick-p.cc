@@ -537,6 +537,7 @@ tileidx_t tileidx_player()
     case transformation::hydra:     ch = tileidx_mon_clamp(TILEP_MONS_HYDRA,
                                                            you.heads() - 1);
                                     break;
+    case transformation::storm:     ch = TILEP_TRAN_STORM;    break;
     case transformation::dragon:
     {
         switch (you.species)

@@ -277,5 +277,16 @@ static const form_entry formdata[] =
     FC_DEFAULT, FC_DEFAULT, FC_DEFAULT, true, true,
     "", 0, "activated golem gauntlets", "activated golem boots", "", "activated golem armour"
 },
+
+{
+    transformation::storm, MONS_TWISTER, "Storm", "storm-form", "storm",
+    "a lightning-filled tempest!",
+    EQF_PHYSICAL, MR_RES_ELEC | MR_RES_PETRIFY,
+    DEFAULT_DURATION, 0, 0, SIZE_CHARACTER, 10,
+    10, 10, 0, true, 0, true, -1,
+    SPWPN_ELECTROCUTION, LIGHTCYAN, "Storm fists", { "hit", "buffet", "batter", "blast" },
+    FC_ENABLE, FC_DEFAULT, FC_FORBID, true, false,
+    "bellow", 0, "", "", "place yourself before", "air"
+}
 };
 COMPILE_CHECK(ARRAYSZ(formdata) == NUM_TRANSFORMS);

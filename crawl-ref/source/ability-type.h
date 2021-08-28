@@ -77,7 +77,9 @@ enum ability_type
     ABIL_ROLLING_CHARGE,
     // Automaton
     ABIL_AUTOMATON_FORGET_SPELL,
-    ABIL_MAX_INTRINSIC = ABIL_AUTOMATON_FORGET_SPELL,
+    // Air Walk
+    ABIL_BLINKBOLT,
+    ABIL_MAX_INTRINSIC = ABIL_BLINKBOLT,
 
     // Evoking items.
     ABIL_EVOKE_BERSERK = 100,

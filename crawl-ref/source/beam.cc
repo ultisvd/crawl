@@ -2473,7 +2473,9 @@ bool bolt::is_bouncy(dungeon_feature_type feat) const
     if (is_enchantment())
         return false;
 
-    if (flavour == BEAM_ELECTRICITY && !feat_is_metal(feat)
+    if (flavour == BEAM_ELECTRICITY
+        && origin_spell != SPELL_BLINKBOLT 
+        && !feat_is_metal(feat)
         && !feat_is_tree(feat))
     {
         return true;
@@ -2688,10 +2690,13 @@ void bolt::affect_endpoint()
             return;
 
         for (vector<coord_def>::reverse_iterator citr = path_taken.rbegin();
-             citr != path_taken.rend(); ++citr)
+            citr != path_taken.rend(); ++citr)
         {
-            if (act->is_habitable(*citr) && act->blink_to(*citr, false))
+            if (act->is_habitable(*citr) && (!act->is_player() || !monster_at(*citr))
+                && act->blink_to(*citr, false))
+            {
                 return;
+            }
         }
         return;
     }
@@ -2714,7 +2719,8 @@ bool bolt::stop_at_target() const
 {
     // the pos check is to avoid a ray.cc assert for a ray that goes nowhere
     return is_explosion || is_big_cloud() ||
-            (aimed_at_spot && (pos() == source || flavour != BEAM_DIGGING));
+        (source_id == MID_PLAYER && origin_spell == SPELL_BLINKBOLT) ||
+        (aimed_at_spot && (pos() == source || flavour != BEAM_DIGGING));
 }
 
 void bolt::drop_object()

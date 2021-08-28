@@ -1204,6 +1204,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_STORM_FORM, "Storm Form",
+    spschool::transmutation | spschool::air,
+    spflag::helpful | spflag::chaotic | spflag::utility,
+    7,
+    200,
+    -1, -1,
+    15, 0,
+    TILEG_STORM_FORM,
+},
+
+{
     SPELL_DRAGON_FORM, "Dragon Form",
     spschool::transmutation,
     spflag::helpful | spflag::chaotic | spflag::utility,
@@ -1218,7 +1229,7 @@ static const struct spell_desc spelldata[] =
     SPELL_HYDRA_FORM, "Hydra Form",
     spschool::transmutation,
     spflag::helpful | spflag::chaotic | spflag::utility,
-    6,
+    5,
     200,
     -1, -1,
     6, 0,

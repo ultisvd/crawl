@@ -180,6 +180,7 @@ blade_hands BLADE_HANDS
 beastly_appendage BEASTLY_APPENDAGE
 irradiate IRRADIATE
 hydra_form HYDRA_FORM
+storm_form STORM_FORM
 dragon_form DRAGON_FORM
 wall_camoflage WALL_CAMOFLAGE
 eldritch_form ELDRITCH_FORM

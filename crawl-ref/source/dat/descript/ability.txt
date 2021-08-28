@@ -1195,3 +1195,10 @@ Summon Spider ability
 
 Call down the swarm of poisonous insects and spiders, moths, and webs.
 %%%%
+Blinkbolt ability
+
+Turns the user into living lightning and zaps them at the chosen monster,
+dealing electric damage to everything in their path and depositing the user
+at the bolt's end. After using this ability, you will be unable to use it
+again for a short time.
+%%%%

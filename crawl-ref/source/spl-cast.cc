@@ -2104,6 +2104,9 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
     case SPELL_HYDRA_FORM:
         return cast_transform(powc, transformation::hydra, fail);
 
+    case SPELL_STORM_FORM:
+        return cast_transform(powc, transformation::storm, fail);
+
     case SPELL_DRAGON_FORM:
         return cast_transform(powc, transformation::dragon, fail);
 
@@ -2233,6 +2236,9 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
 
     case SPELL_POISONOUS_VAPOURS:
         return cast_poisonous_vapours(powc, spd, fail);
+
+    case SPELL_BLINKBOLT:
+        return blinkbolt(powc, beam, fail);
 
     case SPELL_ERINGYAS_ROOTSPIKE:
         return cast_eringyas_rootspike(powc, spd, fail);

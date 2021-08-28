@@ -2385,6 +2385,9 @@ static int _player_evasion_bonuses()
     if (you.get_mutation_level(MUT_SLOW_REFLEXES))
         evbonus -= you.get_mutation_level(MUT_SLOW_REFLEXES) * 5;
 
+    if (you.props.exists(AIRFORM_POWER_KEY))
+        evbonus += you.props[AIRFORM_POWER_KEY].get_int() / 10;
+
     // If you have an active amulet of the acrobat and just moved or waited, get massive
     // EV bonus.
     if (acrobat_boost_active())
@@ -6860,6 +6863,7 @@ mon_holy_type player::holiness(bool temp) const
     // Petrification takes precedence over base holiness and lich form
     if (temp && (form == transformation::statue
                  || form == transformation::wisp
+                 || form == transformation::storm
                  || petrified()))
     {
         holi = MH_NONLIVING;
@@ -6921,7 +6925,8 @@ bool player::is_unbreathing() const
 
 bool player::is_insubstantial() const
 {
-    return form == transformation::wisp;
+    return form == transformation::wisp
+        || form == transformation::storm;
 }
 
 bool player::is_hydra() const

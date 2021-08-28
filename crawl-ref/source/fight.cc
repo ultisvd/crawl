@@ -906,7 +906,8 @@ void get_cleave_targets(const actor &attacker, const coord_def& def,
                 && attacker.as_monster()->type == MONS_MACHINE_GOLEM
                 && is_blueprint_exist(BLUEPRINT_CLEAVING)
             || attacker.is_player()
-               && (you.form == transformation::hydra && you.heads() > 1
+               && ((you.form == transformation::hydra && you.heads() > 1)
+                   || you.form == transformation::storm
                    || you.duration[DUR_CLEAVE]))
     {
         const coord_def atk = attacker.pos();

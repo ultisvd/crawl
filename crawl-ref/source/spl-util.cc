@@ -1092,6 +1092,7 @@ bool spell_is_form(spell_type spell)
         case SPELL_DRAGON_FORM:
         case SPELL_HYDRA_FORM:
         case SPELL_ICE_FORM:
+        case SPELL_STORM_FORM:
         case SPELL_SPIDER_FORM:
         case SPELL_STATUE_FORM:
         case SPELL_NECROMUTATION:
@@ -1313,6 +1314,20 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_HYDRA_FORM:
         if (you.species == SP_HYDRA)
             return "this spell is useless, since you are hydra yousrelf!";
+        if (you.undead_state(temp) == US_UNDEAD
+            || you.undead_state(temp) == US_HUNGRY_DEAD)
+        {
+            return "your undead flesh cannot be transformed.";
+        }
+        if (temp && you.is_lifeless_undead())
+            return "your current blood level is not sufficient.";
+        if (you.species == SP_ADAPTION_HOMUNCULUS)
+            return "you're an artificial being.";
+        break;
+
+    case SPELL_STORM_FORM:
+        if (you.species == SP_SPARKBORN)
+            return "this spell is useless, since you are already an electrical creature!";
         if (you.undead_state(temp) == US_UNDEAD
             || you.undead_state(temp) == US_HUNGRY_DEAD)
         {
@@ -2359,6 +2374,7 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_p
     case SPELL_DRAGON_FORM:
     case SPELL_HYDRA_FORM:
     case SPELL_ICE_FORM:
+    case SPELL_STORM_FORM:
     case SPELL_SPIDER_FORM:
     case SPELL_STATUE_FORM:
     case SPELL_NECROMUTATION:
@@ -2408,6 +2424,7 @@ bool is_currect_phase_auto_spell(spell_type spell, auto_spell_phase phase)
     case SPELL_DRAGON_FORM:
     case SPELL_HYDRA_FORM:
     case SPELL_ICE_FORM:
+    case SPELL_STORM_FORM:
     case SPELL_SPIDER_FORM:
     case SPELL_ELDRITCH_FORM:
         return phase == AS_PHASE_MELEE;
@@ -2503,6 +2520,7 @@ bool is_castable_null_target(spell_type spell)
         case SPELL_DRAGON_FORM:
         case SPELL_HYDRA_FORM:
         case SPELL_ICE_FORM:
+        case SPELL_STORM_FORM:
         case SPELL_SPIDER_FORM:
         case SPELL_STATUE_FORM:
         case SPELL_NECROMUTATION:

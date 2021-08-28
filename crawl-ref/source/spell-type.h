@@ -492,5 +492,6 @@ enum spell_type : int
     SPELL_SUMMON_LIVELY_MASS,
     SPELL_MASS_BARRIER,
     SPELL_DISARM,
+    SPELL_STORM_FORM,
     NUM_SPELLS
 };
