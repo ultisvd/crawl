@@ -39,6 +39,7 @@
 #include "spl-damage.h"
 #include "spl-summoning.h"
 #include "spl-transloc.h"
+#include "spl-transloc.h"
 #include "spl-zap.h"
 #include "stringutil.h"
 #include "target.h"
@@ -1349,15 +1350,6 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 
     case SPELL_EXCRUCIATING_WOUNDS:
-        if (temp
-            && (!you.weapon()
-                || you.weapon()->base_type != OBJ_WEAPONS
-                || !is_brandable_weapon(*you.weapon(), true)))
-        {
-            return "you aren't wielding a brandable weapon.";
-        }
-        // intentional fallthrough
-
     case SPELL_ELENENTAL_WEAPON:
         if (temp
             && (!you.weapon()
@@ -1366,7 +1358,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         {
             return "you aren't wielding a brandable weapon.";
         }
-        // intentional fallthrough
+        // intentional fallthrough to portal projectile
     case SPELL_PORTAL_PROJECTILE:
     case SPELL_SPECTRAL_WEAPON:
         if (you.species == SP_FELID || you.species == SP_HYDRA)
@@ -1502,6 +1494,16 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         if (temp && you.duration[DUR_NOXIOUS_BOG])
             return "you cannot sustain more bogs right now.";
         break;
+
+    case SPELL_MANIFOLD_ASSAULT:
+    {
+        if (temp)
+        {
+            const string unproj_reason = weapon_unprojectability_reason();
+            if (unproj_reason != "")
+                return unproj_reason;
+        }
+    }
     default:
         break;
     }
@@ -1624,6 +1626,9 @@ bool spell_no_hostile_in_range(spell_type spell, bool rod)
 
     case SPELL_STARBURST:
         return cast_starburst(-1, false, true) == spret::abort;
+
+    case SPELL_MANIFOLD_ASSAULT:
+        return cast_manifold_assault(-1, false, false) == spret::abort;
 
     default:
         break;
@@ -2264,6 +2269,12 @@ bool can_auto_cast_spell(spell_type spell, const coord_def& target, auto_spell_p
             return false;
         break;    
     }
+    case SPELL_MANIFOLD_ASSAULT:
+    {
+        if (cast_manifold_assault(-1, false, false) == spret::abort)
+            return false;
+        break;
+    }
     case SPELL_BECKONING:
     {
         if (minRange > 1) {
@@ -2427,6 +2438,7 @@ bool is_currect_phase_auto_spell(spell_type spell, auto_spell_phase phase)
     case SPELL_STORM_FORM:
     case SPELL_SPIDER_FORM:
     case SPELL_ELDRITCH_FORM:
+    case SPELL_MANIFOLD_ASSAULT:
         return phase == AS_PHASE_MELEE;
     case SPELL_PORTAL_PROJECTILE:
         return phase == AS_PHASE_RANGE;
@@ -2525,6 +2537,7 @@ bool is_castable_null_target(spell_type spell)
         case SPELL_STATUE_FORM:
         case SPELL_NECROMUTATION:
         case SPELL_ELDRITCH_FORM:
+        case SPELL_MANIFOLD_ASSAULT:
             return true;
         default:
             return false;

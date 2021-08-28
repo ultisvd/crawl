@@ -76,7 +76,7 @@ melee_attack::melee_attack(actor *attk, actor *defn,
     ::attack(attk, defn),
 
     attack_number(attack_num), effective_attack_number(effective_attack_num),
-    cleaving(is_cleaving), is_riposte(false), is_double_attack(false), roll_dist(0), quiet(quiet_),
+    cleaving(is_cleaving), is_riposte(false), is_projected(false), is_double_attack(false), roll_dist(0), quiet(quiet_),
     wu_jian_attack(WU_JIAN_ATTACK_NONE),
     wu_jian_number_of_targets(1)
 {
@@ -93,7 +93,8 @@ bool melee_attack::can_reach()
 {
     return attk_type == AT_HIT && weapon && weapon_reach(*weapon) > REACH_NONE
            || attk_flavour == AF_REACH
-           || attk_flavour == AF_REACH_STING;
+           || attk_flavour == AF_REACH_STING
+           || is_projected;
 }
 
 bool melee_attack::handle_phase_attempted()
@@ -822,7 +823,8 @@ bool melee_attack::handle_phase_aux()
 {
     if (attacker->is_player()
         && !cleaving
-        && wu_jian_attack != WU_JIAN_ATTACK_TRIGGERED_AUX)
+        && wu_jian_attack != WU_JIAN_ATTACK_TRIGGERED_AUX
+        && !is_projected)
     {
         // returns whether an aux attack successfully took place
         // additional attacks from cleave don't get aux
@@ -1103,7 +1105,8 @@ bool melee_attack::handle_phase_end()
     if (!cleave_targets.empty())
     {
         attack_cleave_targets(*attacker, cleave_targets, attack_number,
-                              effective_attack_number, wu_jian_attack);
+                              effective_attack_number, wu_jian_attack,
+                              is_projected);
     }
 
     // Check for passive mutation effects.
@@ -1234,7 +1237,8 @@ bool melee_attack::attack()
         handle_phase_blocked();
     else
     {
-        if (attacker != defender && adjacent(defender->pos(), attack_position)
+        if (attacker != defender
+            && (adjacent(defender->pos(), attack_position) || is_projected)
             && !is_riposte)
         {
             // Check for defender Spines
@@ -2960,7 +2964,8 @@ int melee_attack::calc_to_hit(bool random)
 
 void melee_attack::player_stab_check()
 {
-    attack::player_stab_check();
+    if (!is_projected)
+        attack::player_stab_check();
 }
 
 /**
@@ -4091,9 +4096,17 @@ bool melee_attack::do_knockback(bool trample)
  */
 void melee_attack::cleave_setup()
 {
-    // Don't cleave on a self-attack.
+    // Don't cleave on a self-attack attack.
     if (attacker->pos() == defender->pos())
         return;
+    
+    // Allow Gyre & Gimble to 'cleave' when projected, but not other attacks.
+    if (is_projected)
+    {
+        if (weapon && is_unrandom_artefact(*weapon, UNRAND_GYRE))
+            cleave_targets.push_back(defender);
+        return;
+    }
 
     // We need to get the list of the remaining potential targets now because
     // if the main target dies, its position will be lost.

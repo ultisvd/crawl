@@ -33,6 +33,7 @@ public:
     list<actor*> cleave_targets;
     bool         cleaving;        // additional attack from cleaving
     bool         is_riposte;      // long blade retaliation attack
+    bool         is_projected;    // projected weapon spell attack
     bool         is_double_attack;// is double attack
     int          roll_dist;       // palentonga rolling charge distance
     bool         quiet;           // whether message is shown or not.

@@ -493,5 +493,6 @@ enum spell_type : int
     SPELL_MASS_BARRIER,
     SPELL_DISARM,
     SPELL_STORM_FORM,
+    SPELL_MANIFOLD_ASSAULT,
     NUM_SPELLS
 };

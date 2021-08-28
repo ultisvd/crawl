@@ -71,7 +71,7 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_BECKONING,
     SPELL_GRAVITAS,
     SPELL_TELEPORT_OTHER,
-    SPELL_GOLUBRIAS_PASSAGE,
+    SPELL_MANIFOLD_ASSAULT
 },
 
 {   // Book of Enchantments
@@ -211,7 +211,8 @@ static const vector<spell_type> spellbook_templates[] =
 {   // Book of the Warp
     SPELL_GRAVITAS,
     SPELL_PORTAL_PROJECTILE,
-    SPELL_FORCE_LANCE,
+    SPELL_GOLUBRIAS_PASSAGE,
+    SPELL_MANIFOLD_ASSAULT,
     SPELL_DISPERSAL,
     SPELL_CONTROLLED_BLINK,
     SPELL_DISJUNCTION,

@@ -14,6 +14,8 @@
 #include "abyss.h"
 #include "act-iter.h"
 #include "areas.h"
+#include "art-enum.h"
+#include "artefact.h"
 #include "beam.h"
 #include "cloud.h"
 #include "coordit.h"
@@ -1235,6 +1237,169 @@ spret cast_portal_projectile(int pow, bool fail)
     // Calculate the accuracy bonus based on current spellpower.
     you.attribute[ATTR_PORTAL_PROJECTILE] = pow;
     you.increase_duration(DUR_PORTAL_PROJECTILE, 3 + random2(pow / 2) + random2(pow / 5), 50);
+    return spret::success;
+}
+
+string weapon_unprojectability_reason()
+{
+    if (!you.weapon())
+        return "";
+    const item_def& it = *you.weapon();
+    // These all cause attack prompts, which are awkward to handle.
+    // TODO: support these!
+    static const vector<int> forbidden_unrands = {
+        UNRAND_POWER,
+        UNRAND_DEVASTATOR,
+        UNRAND_VARIABILITY,
+        UNRAND_SINGING_SWORD,
+        UNRAND_TORMENT,
+        UNRAND_ARC_BLADE,
+    };
+    for (int urand : forbidden_unrands)
+    {
+        if (is_unrandom_artefact(it, urand))
+        {
+            return make_stringf("%s would react catastrophically with paradoxical space!",
+                you.weapon()->name(DESC_THE, false, false, false, false, ISFLAG_KNOW_PLUSES).c_str());
+        }
+    }
+    return "";
+}
+
+spret cast_manifold_assault(int power, bool fail, bool real)
+{
+    vector<monster*> targets;
+    for (monster_near_iterator mi(&you, LOS_NO_TRANS); mi; ++mi)
+    {
+        if (mi->wont_attack() || mi->neutral())
+            continue; // this should be enough to avoid penance?
+        if (mons_is_firewood(**mi) || mons_is_projectile(**mi))
+            continue;
+        targets.emplace_back(*mi);
+    }
+
+    if (targets.empty())
+    {
+        if (real)
+            mpr("You can't see anything to attack.");
+        return spret::abort;
+    }
+
+    if (real)
+    {
+        const string unproj_reason = weapon_unprojectability_reason();
+        if (unproj_reason != "")
+        {
+            mprf("%s", unproj_reason.c_str());
+            return spret::abort;
+        }
+    }
+
+    if (!real)
+        return spret::success;
+
+
+    if (you.species == SP_TWO_HEADED_OGRE)
+    {
+        if (!wielded_weapon_check(you.weapon()) && !wielded_weapon_check(you.second_weapon()))
+            return spret::abort;
+    }
+    else
+    {
+        if (!wielded_weapon_check(you.weapon()))
+            return spret::abort;
+    }
+
+    fail_check();
+
+    mpr("Space momentarily warps into an impossible shape!");
+
+    const int initial_time = you.time_taken;
+
+    shuffle_array(targets);
+    const size_t max_targets = 2 + div_rand_round(power, 50);
+    for (size_t i = 0; i < max_targets && i < targets.size(); i++)
+    {
+        // Somewhat hacky: reset attack delay before each attack so that only the final
+        // attack ends up actually setting time taken. (No quadratic effects.)
+        you.time_taken = initial_time;
+
+        if (you.species == SP_TWO_HEADED_OGRE)
+        {
+            bool able_first_weapon = you.weapon() && wielded_weapon_check(you.weapon())
+                && !is_range_weapon(*you.weapon());
+            bool able_second_weapon = you.second_weapon() && wielded_weapon_check(you.second_weapon())
+                && !is_range_weapon(*you.second_weapon());
+            bool dual_handed_ = false;
+            int attack_num = 0;
+
+            if (able_second_weapon && !able_first_weapon) {
+                attack_num = 1;
+            }
+            else if (able_first_weapon && able_second_weapon) {
+                attack_num = coinflip() ? 0 : 1;
+                dual_handed_ = true;
+            }
+            {
+                melee_attack atk(&you, targets[i], attack_num);
+                atk.is_projected = true;
+                atk.attack();
+            }
+            if (targets[i] && targets[i]->alive() && dual_handed_ && coinflip()) {
+                mprf("Double attack!");
+                melee_attack atk(&you, targets[i], attack_num?0:1);
+                atk.is_projected = true;
+                atk.attack();
+            }
+        }
+        if(you.has_hydra_multi_attack())
+        {
+            int attack_num = (you.heads() - 1) / 3 + 1;
+            int remain = you.heads() - attack_num;
+            for (int j = 0; j < attack_num; ++j) 
+            {
+                if (targets[i] && targets[i]->alive()) 
+                {
+                    melee_attack atk(&you, targets[i], attack_num ? 0 : 1);
+                    atk.is_projected = true;
+                    atk.attack();
+                }
+                else 
+                {
+                    break;
+                }
+            }
+            if (targets[i] && targets[i]->alive()) 
+            {
+                int additional_attack_success = 0;
+                for (int j = 0; j < remain; ++j) {
+                    if (!one_chance_in(pow(2, additional_attack_success)))
+                    {
+                        continue;
+                    }
+                    if (targets[i] && targets[i]->alive()) 
+                    {
+                        melee_attack atk(&you, targets[i], attack_num ? 0 : 1);
+                        atk.is_projected = true;
+                        atk.attack();
+                    }
+                    else 
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        else {
+            melee_attack atk(&you, targets[i]);
+            atk.is_projected = true;
+            atk.attack();
+        }
+
+        if (you.hp <= 0 || you.pending_revival)
+            break;
+    }
+
     return spret::success;
 }
 
