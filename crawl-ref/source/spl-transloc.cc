@@ -1352,44 +1352,6 @@ spret cast_manifold_assault(int power, bool fail, bool real)
                 atk.attack();
             }
         }
-        if(you.has_hydra_multi_attack())
-        {
-            int attack_num = (you.heads() - 1) / 3 + 1;
-            int remain = you.heads() - attack_num;
-            for (int j = 0; j < attack_num; ++j) 
-            {
-                if (targets[i] && targets[i]->alive()) 
-                {
-                    melee_attack atk(&you, targets[i], attack_num ? 0 : 1);
-                    atk.is_projected = true;
-                    atk.attack();
-                }
-                else 
-                {
-                    break;
-                }
-            }
-            if (targets[i] && targets[i]->alive()) 
-            {
-                int additional_attack_success = 0;
-                for (int j = 0; j < remain; ++j) {
-                    if (!one_chance_in(pow(2, additional_attack_success)))
-                    {
-                        continue;
-                    }
-                    if (targets[i] && targets[i]->alive()) 
-                    {
-                        melee_attack atk(&you, targets[i], attack_num ? 0 : 1);
-                        atk.is_projected = true;
-                        atk.attack();
-                    }
-                    else 
-                    {
-                        break;
-                    }
-                }
-            }
-        }
         else {
             melee_attack atk(&you, targets[i]);
             atk.is_projected = true;
