@@ -398,8 +398,8 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Hepliaklqana
-    { { 0, ABIL_HEPLIAKLQANA_RECALL, "recall your ancestor" },
-      { 0, ABIL_HEPLIAKLQANA_IDENTITY, "remember your ancestor's identity" },
+    { { 1, ABIL_HEPLIAKLQANA_RECALL, "recall your ancestor" },
+      { 1, ABIL_HEPLIAKLQANA_IDENTITY, "remember your ancestor's identity" },
       { 3, ABIL_HEPLIAKLQANA_TRANSFERENCE, "swap creatures with your ancestor" },
       { 4, ABIL_HEPLIAKLQANA_IDEALISE, "heal and protect your ancestor" },
       { 5, "drain nearby creatures when transferring your ancestor"},
@@ -1932,6 +1932,36 @@ int hepliaklqana_ally_hp()
 }
 
 /**
+ * Choose an antique name for a Hepliaklqana-granted ancestor.
+ *
+ * @param gender    The ancestor's gender.
+ * @return          An appropriate name; e.g. Hrodulf, Citali, Aat.
+ */
+static string _make_ancestor_name(gender_type gender)
+{
+    const string gender_name = gender == GENDER_MALE ? " male " :
+        gender == GENDER_FEMALE ? " female " : " ";
+    const string suffix = gender_name + "name";
+    const string name = getRandNameString("ancestor", suffix);
+    return name.empty() ? make_name() : name;
+}
+
+/// Setup when gaining a Hepliaklqana ancestor.
+static void _setup_hepliaklqana_ancestor()
+{
+    // initial setup.
+    if (!you.props.exists(HEPLIAKLQANA_ALLY_NAME_KEY))
+    {
+        const gender_type gender = random_choose(GENDER_NEUTRAL,
+            GENDER_MALE,
+            GENDER_FEMALE);
+
+        you.props[HEPLIAKLQANA_ALLY_NAME_KEY] = _make_ancestor_name(gender);
+        you.props[HEPLIAKLQANA_ALLY_GENDER_KEY] = gender;
+    }
+}
+
+/**
  * Creates a mgen_data with the information needed to create the ancestor
  * granted by Hepliaklqana.
  *
@@ -1942,6 +1972,7 @@ int hepliaklqana_ally_hp()
  */
 mgen_data hepliaklqana_ancestor_gen_data()
 {
+    _setup_hepliaklqana_ancestor();
     const monster_type type = you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY) ?
         (monster_type)you.props[HEPLIAKLQANA_ALLY_TYPE_KEY].get_int() :
         MONS_ANCESTOR;
@@ -2594,6 +2625,19 @@ static void _gain_piety_point()
 
         const int rank = piety_rank();
         take_note(Note(NOTE_PIETY_RANK, you.religion, rank));
+        // For messaging reasons, we want to get our ancestor before
+        // we get the associated recall / rename powers.
+        if (rank == rank_for_passive(passive_t::frail))
+        {
+            calc_hp(); // adjust for frailty
+            // In exchange for your hp, you get an ancestor!
+            const mgen_data mg = hepliaklqana_ancestor_gen_data();
+            delayed_monster(mg);
+            simple_god_message(make_stringf(" forms a fragment of your life essence"
+                " into the memory of your ancestor, %s!",
+                mg.mname.c_str()).c_str());
+        }
+
         for (const auto& power : get_god_powers(you.religion))
         {
             if (power.rank == rank
@@ -2817,6 +2861,14 @@ void lose_piety(int pgn)
         tiles.layout_statcol();
         redraw_screen();
 #endif
+        if (will_have_passive(passive_t::frail) && !have_passive(passive_t::frail))
+        {
+            // hep: just lost 1*
+            // remove companion (gained at same tier as frail)
+            add_daction(DACT_ALLY_HEPLIAKLQANA);
+            remove_all_companions(GOD_HEPLIAKLQANA);
+            calc_hp(); // adjust for frailty
+        }
     }
 
     if (you.piety > 0 && you.piety <= 5)
@@ -2895,7 +2947,18 @@ bool god_protects(const actor* agent, const monster* target, bool quiet)
                 make_stringf(" protects %s plant from harm.",
                     agent->is_player() ? "your" : "a").c_str(),
                 GOD_FEDHAS);
-        }
+        }    
+
+        return true;
+    }
+
+    if (agent && target && agent->is_player()
+        && mons_is_hepliaklqana_ancestor(target->type))
+    {
+        // TODO: this message does not work very well for all sorts of attacks
+        // should this be a god message?
+        if (!quiet && you.can_see(*target))
+            mprf("%s avoids your attack.", target->name(DESC_THE).c_str());
         return true;
     }
     return false;
@@ -2908,7 +2971,7 @@ bool god_protects(const monster* target, bool quiet)
 
 
 
-// Fedhas neutralises most plants and fungi
+/// Whether Fedhas would set `target` to a neutral attitude
 bool fedhas_neutralises(const monster& target)
 {
     return mons_is_plant(target)
@@ -3860,41 +3923,6 @@ static void _join_gozag()
     add_daction(DACT_GOLD_ON_TOP);
 }
 
-/**
- * Choose an antique name for a Hepliaklqana-granted ancestor.
- *
- * @param female    Whether the ancestor is female or male.
- * @return          An appropriate name; e.g. Hrodulf, Citali, Aat.
- */
-static string _make_ancestor_name(bool female)
-{
-    const string gender_name = female ? "female" : "male";
-    const string suffix = " " + gender_name + " name";
-    const string name = getRandNameString("ancestor", suffix);
-    return name.empty() ? make_name() : name;
-}
-
-/// Setup when joining the devoted followers of Hepliaklqana.
-static void _join_hepliaklqana()
-{
-    // initial setup.
-    if (!you.props.exists(HEPLIAKLQANA_ALLY_NAME_KEY))
-    {
-        const bool female = coinflip();
-        you.props[HEPLIAKLQANA_ALLY_NAME_KEY] = _make_ancestor_name(female);
-        you.props[HEPLIAKLQANA_ALLY_GENDER_KEY] = female ? GENDER_FEMALE
-                                                         : GENDER_MALE;
-    }
-
-    calc_hp(); // adjust for frailty
-
-    // Complimentary ancestor upon joining.
-    const mgen_data mg = hepliaklqana_ancestor_gen_data();
-    delayed_monster(mg);
-    simple_god_message(make_stringf(" forms a fragment of your life essence"
-                                    " into the memory of your ancestor, %s!",
-                                    mg.mname.c_str()).c_str());
-}
 
 /// Setup when joining the gelatinous groupies of Jiyva.
 static void _join_jiyva()
@@ -4010,7 +4038,6 @@ static const map<god_type, function<void ()>> on_join = {
     }},
     { GOD_GOZAG, _join_gozag },
     { GOD_JIYVA, _join_jiyva },
-    { GOD_HEPLIAKLQANA, _join_hepliaklqana },
     { GOD_LUGONU, []() {
         if (you.worshipped[GOD_LUGONU] == 0)
             gain_piety(20, 1, false);  // allow instant access to first power
