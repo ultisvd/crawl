@@ -1890,7 +1890,7 @@ static bool _rod_spell(item_def& irod, bool check_range)
         crawl_state.zero_turns_taken();
         return false;
     }
-    int mana = spell_mana(spell) * ROD_CHARGE_MULT;
+    int mana = spell_mana(spell, false) * ROD_CHARGE_MULT;
     int power = calc_spell_power(spell, false, false, true, 1, true);
 
     int food = spell_hunger(spell, true);

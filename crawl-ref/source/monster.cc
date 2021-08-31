@@ -4179,6 +4179,10 @@ int monster::res_magic(bool calc_unid) const
     if (mons_immune_magic(*this) || has_barrier())
         return MAG_IMMUNE;
 
+    const item_def* arm = mslot_item(MSLOT_ARMOUR);
+    if (arm && is_unrandom_artefact(*arm, UNRAND_FOLLY))
+        return 0;
+
     const int type_mr = (get_monster_data(type))->resist_magic;
     // Negative values get multiplied with monster hit dice.
     int u = type_mr < 0 ?

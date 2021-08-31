@@ -15,6 +15,7 @@
 #include <cstring>
 
 #include "act-iter.h"
+#include "art-enum.h"
 #include "areas.h"
 #include "coordit.h"
 #include "cloud.h"
@@ -483,11 +484,19 @@ bool spell_harms_area(spell_type spell)
 
 // applied to spell misfires (more power = worse) and triggers
 // for Xom acting (more power = more likely to grab his attention) {dlb}
-int spell_mana(spell_type which_spell)
+int spell_mana(spell_type which_spell, bool real_spell)
 {
     //exception case...
     int add_ = pakellas_addtional_difficult(which_spell);
-    return _seekspell(which_spell)->level + add_;
+
+    const int level = _seekspell(which_spell)->level + add_;
+
+    if (real_spell && (player_equip_unrand(UNRAND_FOLLY)))
+    {
+        return level / 2 + level % 2; // round up
+    }
+
+    return level;
 }
 
 // applied in naughties (more difficult = higher level knowledge = worse)

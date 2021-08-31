@@ -7086,6 +7086,9 @@ int player_res_magic(bool calc_unid, bool temp)
         you.form == transformation::eldritch))
         return MAG_IMMUNE;
 
+    if (player_equip_unrand(UNRAND_FOLLY))
+        return 0;
+
     if (you.attribute[ATTR_BARRIER] > 0 && you.duration[DUR_BARRIER])
         return MAG_IMMUNE;
 
