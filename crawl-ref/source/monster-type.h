@@ -1100,6 +1100,7 @@ enum monster_type                      // menv[].type
     MONS_KILLER_BEE_LARVA,
     MONS_PALENTONGA,
     MONS_INTERDIMENSIONAL_GRAPE,
+    MONS_ANIMATED_ARMOUR_SPELL,
 
     NUM_MONSTERS,               // used for polymorph
 

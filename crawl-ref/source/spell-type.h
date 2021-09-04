@@ -494,5 +494,6 @@ enum spell_type : int
     SPELL_DISARM,
     SPELL_STORM_FORM,
     SPELL_MANIFOLD_ASSAULT,
+    SPELL_ANIMATE_ARMOUR,
     NUM_SPELLS
 };

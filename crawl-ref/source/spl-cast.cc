@@ -1958,6 +1958,9 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
     case SPELL_CALL_CANINE_FAMILIAR:
         return cast_call_canine_familiar(powc, god, fail);
 
+    case SPELL_ANIMATE_ARMOUR:
+        return cast_summon_armour_spirit(powc, god, fail);
+
     case SPELL_SUMMON_ELEMENTAL:
         return cast_summon_elemental(powc, god, fail);
 

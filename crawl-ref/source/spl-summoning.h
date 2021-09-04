@@ -33,6 +33,7 @@ spret cast_call_canine_familiar(int pow, god_type god, bool fail);
 spret cast_summon_hooded_malice(int pow, bool fail);
 spret cast_summon_lively_mass(int pow, god_type god, bool fail);
 spret cast_summon_elemental(int pow, god_type god = GOD_NO_GOD, bool fail = false);
+spret cast_summon_armour_spirit(int pow, god_type god, bool fail);
 spret cast_summon_ice_beast(int pow, god_type god, bool fail);
 spret cast_monstrous_menagerie(actor* caster, int pow, god_type god,
                                  bool fail = false);

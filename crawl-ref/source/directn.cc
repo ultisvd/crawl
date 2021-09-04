@@ -3511,7 +3511,8 @@ string get_monster_equipment_desc(const monster_info& mi,
         item_descriptions.push_back(weap.substr(1)); // strip leading space
     }
 
-    if (mon_arm && arm_inhand)
+    // as with dancing weapons, don't claim animated armours 'wear' their armour
+    if (mon_arm && arm_inhand && mi.type != MONS_ANIMATED_ARMOUR_SPELL)
     {
         const string armour_desc = make_stringf("wearing %s%s",
                                                 mon_arm->name(DESC_A).c_str(),

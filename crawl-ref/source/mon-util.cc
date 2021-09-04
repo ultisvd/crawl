@@ -803,9 +803,12 @@ bool mons_is_firewood(const monster& mon)
 bool mons_has_body(const monster& mon)
 {
     if (mon.type == MONS_FLYING_SKULL
-        || mon.type == MONS_CURSE_SKULL
+        || mons_species(mon.type) == MONS_CURSE_SKULL // including Murray
         || mon.type == MONS_CURSE_TOE
-        || mons_class_is_animated_weapon(mon.type))
+        || mon.type == MONS_DEATH_COB
+        || mon.type == MONS_ANIMATED_ARMOUR_SPELL
+        || mons_class_is_animated_weapon(mon.type)
+        || mons_is_tentacle_or_tentacle_segment(mon.type))
     {
         return false;
     }
@@ -816,7 +819,6 @@ bool mons_has_body(const monster& mon)
     case 'v':
     case 'G':
     case '*':
-    case '%':
     case 'J':
         return false;
     }
@@ -2063,35 +2065,47 @@ mon_attack_def mons_attack_spec(const monster& m, int attk_number,
     ASSERT_smc();
     mon_attack_def attk = smc->attack[attk_number];
 
-    if (mons_is_demonspawn(mon.type) && attk_number == 0)
+    if (attk_number == 0)
     {
-        const monsterentry* mbase =
-            get_monster_data (draco_or_demonspawn_subspecies(mon));
-        ASSERT(mbase);
-        attk.flavour = mbase->attack[0].flavour;
-        return attk;
-    }
+        if (mons_is_demonspawn(mon.type))
+        {
+            const monsterentry* mbase =
+                get_monster_data(draco_or_demonspawn_subspecies(mon));
+            ASSERT(mbase);
+            attk.flavour = mbase->attack[0].flavour;
+            return attk;
+        }
 
-    // Nonbase draconians inherit aux attacks from their base type.
-    // Implicit assumption: base draconian types only get one aux
-    // attack, and it's in their second attack slot.
-    // If that changes this code will need to be changed.
-    if (mons_species(mon.type) == MONS_DRACONIAN
+        if (mon.type == MONS_PLAYER_SHADOW)
+        {
+            if (!you.weapon())
+                attk.damage = max(1, you.skill_rdiv(SK_UNARMED_COMBAT, 10, 20));
+        }
+    }
+    else if (mons_species(mon.type) == MONS_DRACONIAN
         && mon.type != MONS_DRACONIAN
         && attk.type == AT_NONE
-        && attk_number > 0
         && smc->attack[attk_number - 1].type != AT_NONE)
     {
+        // Nonbase draconians inherit aux attacks from their base type.
+        // Implicit assumption: base draconian types only get one aux
+        // attack, and it's in their second attack slot.
+        // If that changes this code will need to be changed.
         const monsterentry* mbase =
             get_monster_data (draco_or_demonspawn_subspecies(mon));
         ASSERT(mbase);
         return mbase->attack[1];
     }
 
-    if (mon.type == MONS_PLAYER_SHADOW && attk_number == 0)
+    if (mon.type == MONS_ANIMATED_ARMOUR_SPELL)
     {
-        if (!you.weapon())
-            attk.damage = max(1, you.skill_rdiv(SK_UNARMED_COMBAT, 10, 20));
+        const int armour_slot = mon.inv[MSLOT_ARMOUR];
+        if (armour_slot != NON_ITEM)
+        {
+            const int typ = env.item[armour_slot].sub_type;
+            const int ac = armour_prop(typ, PARM_AC);
+            attk.damage = ac + ac * ac / 2;
+        }
     }
 
     if (!base_flavour)
