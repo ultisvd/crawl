@@ -2121,6 +2121,11 @@ A long and sinuous dragon, seemingly more neck and tail than anything else. Its
 skin shines like molten mercury, magical energies arc from its pointed snout,
 and it moves with terrifying swiftness.
 %%%%
+quicksilver ooze
+
+A thin coating of shining, reflective goo, covering a great area and rushing
+forward with startling speed. Enchantments slide off it like water.
+%%%%
 quokka
 
 A pesky little marsupial that is a bit like a rat, but not quite.
@@ -2186,6 +2191,12 @@ river rat
 
 A rodent with hair of a most peculiar green colour, and a powerful bite. It
 tends to form great swarms with its kin.
+%%%%
+rockslime
+
+An oozing avalanche, scouring the ground beneath it as it rumbles forward.
+It consumes only the metal and bone from its victims, using them to reinforce
+itself even further.
 %%%%
 the Royal Jelly
 

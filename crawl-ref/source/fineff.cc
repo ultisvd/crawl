@@ -566,7 +566,7 @@ void jiyva_create_jelly_fineff::fire()
         jelly_type = MONS_SLIME_CREATURE;
     }
     if (jelly_hd > 15) {
-        jelly_type = random_choose(MONS_ACID_BLOB, MONS_AZURE_JELLY, MONS_DEATH_OOZE);
+        jelly_type = random_choose(MONS_ACID_BLOB, MONS_ROCKSLIME, MONS_QUICKSILVER_OOZE, MONS_AZURE_JELLY, MONS_DEATH_OOZE);
     }
 
     if (monster * jelly = create_monster(mgen_data(jelly_type,

@@ -951,6 +951,7 @@ static int _shatter_mon_dice(const monster *mon)
     {
     // Double damage to stone, metal and crystal.
     case MONS_EARTH_ELEMENTAL:
+    case MONS_ROCKSLIME:
     case MONS_USHABTI:
     case MONS_STATUE:
     case MONS_GARGOYLE:
@@ -2211,6 +2212,7 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
             break;
 
         case MONS_EARTH_ELEMENTAL:
+        case MONS_ROCKSLIME:
         case MONS_USHABTI:
         case MONS_STATUE:
         case MONS_GARGOYLE:
