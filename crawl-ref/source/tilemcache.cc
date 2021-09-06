@@ -353,11 +353,6 @@ bool mcache_monster::get_weapon_offset(tileidx_t mon_tile,
         *ofs_y = 0;
         break;
     // Shift to the left.
-    case TILEP_MONS_GNOLL:
-    case TILEP_MONS_GNOLL_SHAMAN:
-    case TILEP_MONS_GNOLL_SERGEANT:
-    case TILEP_MONS_GRUM:
-    case TILEP_MONS_CRAZY_YIUF:
     case TILEP_MONS_DEEP_ELF_DEATH_MAGE:
     case TILEP_MONS_MERC_SHAMAN:
     case TILEP_MONS_MERC_SHAMAN_II:
@@ -367,6 +362,7 @@ bool mcache_monster::get_weapon_offset(tileidx_t mon_tile,
         break;
     case TILEP_MONS_HOBGOBLIN:
     case TILEP_MONS_ROBIN:
+    case TILEP_MONS_GNOLL_SERGEANT:
     case TILEP_MONS_TIAMAT:
     case TILEP_MONS_TIAMAT_1:
     case TILEP_MONS_TIAMAT_2:
@@ -388,6 +384,10 @@ bool mcache_monster::get_weapon_offset(tileidx_t mon_tile,
     case TILEP_MONS_BIG_KOBOLD:
     case TILEP_MONS_EFREET:
     case TILEP_MONS_VAMPIRE_MAGE:
+    case TILEP_MONS_GNOLL:
+    case TILEP_MONS_CRAZY_YIUF:
+    case TILEP_MONS_GNOLL_SHAMAN:
+    case TILEP_MONS_GRUM:
         *ofs_x = -3;
         *ofs_y = 0;
         break;
@@ -418,7 +418,6 @@ bool mcache_monster::get_weapon_offset(tileidx_t mon_tile,
     case TILEP_MONS_CENTAUR_WARRIOR_MELEE:
     case TILEP_MONS_DEEP_ELF_SORCERER:
     case TILEP_MONS_DEEP_ELF_HIGH_PRIEST:
-    case TILEP_MONS_RUPERT:
     case TILEP_MONS_HELL_KNIGHT:
     case TILEP_MONS_DEATH_KNIGHT:
     case TILEP_MONS_MUMMY:
@@ -501,12 +500,17 @@ bool mcache_monster::get_weapon_offset(tileidx_t mon_tile,
         *ofs_x = -3;
         *ofs_y = -2;
         break;
+    case TILEP_MONS_RUPERT:
+        *ofs_x = -3;
+        *ofs_y = -3;
+        break;
     case TILEP_MONS_SPRIGGAN_AIR_MAGE:
         *ofs_x = -3;
         *ofs_y = -5;
         break;
     case TILEP_MONS_DEEP_ELF_ELEMENTALIST:
     case TILEP_MONS_FORMICID:
+    case TILEP_MONS_IRONBOUND_BEASTMASTER:
         *ofs_x = -2;
         *ofs_y = -1;
         break;
@@ -522,6 +526,10 @@ bool mcache_monster::get_weapon_offset(tileidx_t mon_tile,
     case TILEP_MONS_NIKOLA:
         *ofs_x = -4;
         *ofs_y = -3;
+        break;
+    case TILEP_MONS_IRONBOUND_FROSTHEART:
+        *ofs_x = -4;
+        *ofs_y = -1;
         break;
     case TILEP_MONS_ARACHNE_STAVELESS:
     case TILEP_MONS_MERFOLK_WATER:
