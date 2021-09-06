@@ -981,8 +981,9 @@ NAME:    amulet of the Air
 OBJ:     OBJ_JEWELLERY/AMU_INACCURACY
 COLOUR:  ETC_ELECTRICITY
 TILE:    urand_air
-EV:      5
 BOOL:    elec, fly, rmsl
+INSCRIP: Air
+DESCRIP: It enhances your air magic.
 
 NAME:    ring of Shadows
 INSCRIP: Umbra
