@@ -175,7 +175,7 @@ function callback.golemforge_phase_three(data, triggerable, triggerer, marker, e
   local guardarray = {}
   local wander = mons.behaviour("wander")
   for p in iter.slave_iterator("spawn_point3", 1) do
-    local guard3 = dgn.create_monster(p.x, p.y, "generate_awake animated armour \
+    local guard3 = dgn.create_monster(p.x, p.y, "generate_awake animated armours \
             hd:18 hp:500 col:cyan \
             name:crystal_sniper n_rpl n_des n_spe tile:mons_golemforge_crystal_sniper \
             spells:lehudib's_crystal_spear.30.wizard")
@@ -338,7 +338,7 @@ KMONS: y = crystal guardian
 KMONS: S = lightning spire hd:12 col:lightgreen name:repair_machine n_rpl n_des n_spe \
             tile:mons_golemforge_repair_machine \
             spells:aura_of_healing.70.magical;warning_cry.30.magical
-KMONS: m = animated armour tile:mons_golemforge_armour_golem spells:none \
+KMONS: m = animated armours tile:mons_golemforge_armour_golem spells:none \
             ; double sword randart . buckler randart |\
             broad axe randart . shield randart |\
             eveningstar randart . large shield randart |\
