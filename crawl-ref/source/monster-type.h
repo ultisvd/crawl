@@ -1103,6 +1103,7 @@ enum monster_type                      // menv[].type
     MONS_ANIMATED_ARMOUR_SPELL,
     MONS_ROCKSLIME,
     MONS_QUICKSILVER_OOZE,
+    MONS_SALAMANDER_TYRANT,
 
     NUM_MONSTERS,               // used for polymorph
 
