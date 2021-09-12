@@ -341,6 +341,11 @@ solely on power, and not on the Shields skill. The disc is controlled by the
 caster's mind, and thus will not conflict with the wielding of a two-handed
 weapon.
 %%%%
+Concentrate Venom spell
+
+Intensifies the natural venom of the target monster. Poisonous bites and spit
+become intense enough to slow and asphyxiate.
+%%%%
 Confuse spell
 
 Induces a state of bewilderment and confusion in a creature's mind.

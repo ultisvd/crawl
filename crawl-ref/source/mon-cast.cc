@@ -539,7 +539,11 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
         return foe && (!foe->is_player() || foe->as_player()->weapon() || foe->as_player()->second_weapon()) 
                    && (!foe->is_monster() || foe->as_monster()->weapon());
     }, 16) },
-
+    { SPELL_CONCENTRATE_VENOM, {
+        _always_worthwhile,
+        _fire_simple_beam,
+        _buff_beam_setup(BEAM_CONCENTRATE_VENOM)
+    } },
 };
 
 /// Is the 'monster' actually a proxy for the player?
@@ -988,6 +992,12 @@ static bool _flavour_benefits_monster(beam_type flavour, monster& monster)
     case BEAM_RESISTANCE:
         return !monster.has_ench(ENCH_RESISTANCE);
 
+    case BEAM_CONCENTRATE_VENOM:
+        return !monster.has_ench(ENCH_CONCENTRATE_VENOM)
+            && (monster.has_spell(SPELL_SPIT_POISON)
+                || monster.has_attack_flavour(AF_POISON)
+                || monster.has_attack_flavour(AF_POISON_STRONG));
+
     default:
         return false;
     }
@@ -1020,6 +1030,11 @@ static bool _monster_will_buff(const monster &caster, const monster &targ)
         return true;
 
     const monster_type caster_genus = mons_genus(caster.type);
+
+    // Order level buffs
+    if (caster_genus == MONS_NAGA && mons_genus(targ.type) == MONS_SNAKE)
+        return true;
+
     return mons_genus(targ.type) == caster_genus
            || mons_genus(targ.base_monster) == caster_genus;
 }

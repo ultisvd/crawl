@@ -1098,6 +1098,11 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
         end_still_winds();
         break;
 
+    case ENCH_CONCENTRATE_VENOM:
+        if (!quiet)
+            simple_monster_message(*this, " no longer looks unusually toxic.");
+        break;
+
     default:
         break;
     }
@@ -2174,7 +2179,7 @@ static const char *enchant_names[] =
     "aura_of_healing", "hold_position", "LEGION_BLESSING",
     "barrier", "eringyas rootspike", "ring_of_flames",
     "ring_chaos", "ring_mutation", "ring_fog", "ring_ice", "ring_neg",
-    "ring_acid", "ring_miasma",
+    "ring_acid", "ring_miasma", "concentrate_venom",
     "buggy",
 };
 
@@ -2330,6 +2335,7 @@ int mon_enchant::calc_duration(const monster* mons,
     case ENCH_STILL_WINDS:
     case ENCH_DEATHS_DOOR:
     case ENCH_BARRIER:
+    case ENCH_CONCENTRATE_VENOM:
         cturn = 300 / _mod_speed(25, mons->speed);
         break;
     case ENCH_SLOW:
