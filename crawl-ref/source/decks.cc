@@ -1842,7 +1842,7 @@ static void _mercenary_card(int power)
     const int power_level = _get_power_level(power);
     const monster_type merctypes[] =
     {
-        MONS_BIG_KOBOLD, MONS_MERFOLK, MONS_NAGA,
+        MONS_KOBOLD_BRIGAND, MONS_MERFOLK, MONS_NAGA,
         MONS_TENGU, MONS_DEEP_ELF_MAGE, MONS_ORC_KNIGHT,
         RANDOM_BASE_DEMONSPAWN, MONS_OGRE_MAGE, MONS_MINOTAUR,
         RANDOM_BASE_DRACONIAN, MONS_DEEP_ELF_BLADEMASTER,

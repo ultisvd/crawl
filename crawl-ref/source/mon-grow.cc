@@ -48,7 +48,8 @@ static const monster_level_up mon_grow[] =
     monster_level_up(MONS_ASCLEPIA, MONS_ASCLEPIA_II),   
     monster_level_up(MONS_BRANDAGOTH, MONS_BRANDAGOTH_II),
 
-    monster_level_up(MONS_KOBOLD, MONS_BIG_KOBOLD),
+    monster_level_up(MONS_KOBOLD, MONS_KOBOLD_BRIGAND, 500),
+    monster_level_up(MONS_KOBOLD, MONS_KOBOLD_DEMONOLOGIST),
 
     monster_level_up(MONS_UGLY_THING, MONS_VERY_UGLY_THING),
 

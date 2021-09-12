@@ -1810,7 +1810,7 @@ static void _generate_mercenary_item(item_def& item)
         //아래부턴 일반 몬스터들
 
         50, MONS_KOBOLD,
-        20, MONS_BIG_KOBOLD,
+        20, MONS_KOBOLD_BRIGAND,
 
         20, MONS_NAGA,
         5, MONS_NAGA_WARRIOR,

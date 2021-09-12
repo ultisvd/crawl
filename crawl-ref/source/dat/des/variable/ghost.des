@@ -19,6 +19,7 @@
 ###############################################################################
 
 : crawl_require("dlua/ghost.lua")
+: crawl_require("dlua/vault.lua")
 
 {{
 -- Set up the non-flaming edged weapon "left" by the ghost in
@@ -37,64 +38,30 @@ function setup_hydra_weapon(e)
             ["pain"] = 2, ["distortion"] = 2, ["antimagic"] = 2, ["speed"] = 1}
 
     local quality = crawl.one_chance_in(3) and "randart" or "good_item"
-    local weapon_def = random_item_def(weapons, egos, quality)
+    local weapon_def = dgn.random_item_def(weapons, egos, quality)
     e.kitem("O = " .. weapon_def)
 end
 
--- Set up equipment for monsters with Trog-themed gifts in
--- gammafunk_ghost_wrathful_warriors.
 function wrathful_weapon(class, quality)
-    local weap
-    if class == "kobold" then
-        weap = {["dagger"] = 5, ["short sword"] = 10, ["rapier"] = 5,
-                ["whip"] = 10}
-    elseif class == "sergeant" then
-        weap = {["spear"] = 5, ["trident"] = 10}
-    elseif class == "ogre" then
-        weap = {["dire flail"] = 5, ["great mace"] = 10, ["giant club"] = 10,
-                ["giant spiked club"] = 10}
-    elseif class == "warrior" then
-        weap = ghost_warrior_weap
-    elseif class == "knight" then
-        weap = ghost_knight_weap
-    elseif class == "rider" then
-        weap = {["spear"] = 5, ["trident"] = 10, ["demon trident"] = 2}
-    elseif class == "berserker" then
-        weap = {["rapier"] = 10, ["quick blade"] = 5, ["war axe"] = 5,
-                ["broad axe"] = 10, ["morningstar"] = 10, ["morningstar"] = 10,
-                ["demon whip"] = 5, ["quarterstaff"] = 10, ["lajatang"] = 5}
-    elseif class == "impaler" then
-        weap = {["trident"] = 15, ["demon trident"] = 5}
-    elseif class == "defender" then
-        weap = {["rapier"] = 10, ["quick blade"] = 10, ["morningstar"] = 10,
-                ["demon whip"] = 10, ["lajatang"] = 10}
-    elseif class == "blademaster" then
-        weap = {["rapier"] = 20, ["quick blade"] = 5}
-    else
-        error("Unknown weapon class: " .. class)
-    end
-
     local egos
+    -- Only the egos Trog gifts, using equal weights for good_item but giving
+    -- the more desireable antimagic brand for randarts, which are trying to be
+    -- better quality.
     if quality == "good_item" then
-        -- No egos that Trog hates (pain) or that don't occur on mundane
-        -- weapons, like chaos.
-        egos = {["antimagic"] = 25, ["vorpal"] = 10, ["freezing"] = 10,
-                ["flaming"] = 10, ["venom"] = 10, ["protection"] = 10,
-                ["electrocution"] = 5, ["vampirism"] = 5, ["holy_wrath"] = 5,
-                ["draining"] = 5, ["distortion"] = 5, ["speed"] = 2}
+        egos = {["antimagic"] = 10, ["vorpal"] = 10, ["flaming"] = 10}
     elseif quality == "randart" then
-        -- Allow chaos and make weights more favorable for better brands.
-        egos = {["antimagic"] = 25, ["vorpal"] = 10, ["freezing"] = 10,
-                ["flaming"] = 10, ["vampirism"] = 10, ["draining"] = 10,
-                ["electrocution"] = 10, ["protection"] = 5, ["venom"] = 5,
-                ["holy_wrath"] = 5, ["distortion"] = 5, ["speed"] = 4,
-                ["chaos"] = 4}
+        -- Increased chance for antimagic.
+        egos = {["antimagic"] = 25, ["vorpal"] = 10, ["flaming"] = 10}
     else
         error("Unknown weapon quality: " .. quality)
     end
-
-    return random_item_def(weap, egos, quality, '|')
+	
+    return dgn.monster_weapon(class, egos, quality)
  end
+
+function disto_weapon(class, quality)
+    return dgn.monster_weapon(class, "distortion", quality)
+end
 }}
 
 # Only the below levels and Vaults:1-4 place ghost vaults. A specific ghost
@@ -1548,31 +1515,30 @@ DEPTH:  D:3-13
 KMONS:  pq = plant / fungus
 KFEAT:  q = W
 KMONS:  O = player ghost
-MONS:   kobold, big kobold, kobold demonologist
-KMONS:  D = kobold ; dart ego:curare | dart ego:poisoned . dagger
-KMONS:  E = big kobold ; dart ego:curare | \
-                dart ego:poisoned w:5 . dagger | short sword | whip
-KMONS:  F = kobold ; wand of flame | wand of acid | wand of polymorph | \
-                wand of enslavement | wand of paralysis | \
-                wand of disintegration . dagger
-KMONS:  H = big kobold ; wand of flame | wand of acid | wand of polymorph | \
+MONS:   kobold, kobold brigand, kobold demonologist
+KMONS:  D = kobold ; dart ego:poisoned . dagger | short sword | whip
+KMONS:  E = kobold ; wand of flame | wand of acid | wand of iceblast | wand of polymorph | \
                 wand of enslavement | wand of paralysis | \
                 wand of disintegration . dagger | short sword | whip
-KMONS:  J = kobold ; dagger ego:distortion
-KMONS:  K = big kobold ; dagger ego:distortion | short sword ego:distortion | \
-                whip ego:distortion
+KMONS:  F = kobold brigand ; dart ego:poisoned | dart ego:curare w:5 \
+                wand of flame | wand of acid | wand of iceblast | wand of polymorph | \
+                wand of enslavement | wand of paralysis | \
+                wand of disintegration . dagger | short sword | whip
 # Define some kobolds with more general nasty ego weapons.
 {{
-    local weapons = {["dagger"] = 10, ["short sword"] = 10, ["whip"] = 10}
+    kmons("H = kobold ; " .. disto_weapon("kobold"))
+    kmons("J = kobold brigand ; dart ego:poisoned | dart ego:curare w:5 . " ..
+          disto_weapon("kobold"))
     local egos = {["chaos"] = 10, ["venom"] = 10, ["draining"] = 10,
-                  ["pain"] = 5, ["electrocution"] = 5}
-    local basic_def = random_item_def(weapons, egos, "", "|")
-    local quality = crawl.coinflip() and "randart" or "good_item"
-    good_def = random_item_def(weapons, egos, quality, "|")
-    kmons("L = kobold ; " .. basic_def)
-    kmons("M = big kobold ; " .. basic_def)
-    kmons("N = kobold ; " .. good_def)
-    kmons("P = big kobold ; " .. good_def)
+                  ["pain"] = 5, ["electrocution"] = 5, ["distortion"] = 5}
+    local basic_def = dgn.monster_weapon("kobold", egos)
+    local good_def = dgn.monster_weapon("kobold", egos,
+        crawl.coinflip() and "randart" or "good_item")
+    kmons("K = kobold ; " .. basic_def)
+    kmons("L = kobold brigand ; dart ego:poisoned | dart ego:curare w:5 . " ..
+          basic_def)
+    kmons("M = kobold brigand ; dart ego:poisoned | dart ego:curare w:5 . " ..
+          good_def)
 }}
 # 50% of time put statue/tree/fountain with plants and vertical wall, otherwise
 # add some diagonal wall instead. The second shuffle makes any statue sometimes
@@ -1582,16 +1548,16 @@ SUBST: r = -, Z = T, s = x, G : GGt, T : TTUV, x : xcbv
 : ghost_good_loot(_G)
 : if you.depth() < 6 then
 SUBST:  d = *%, e = %$, fg = -
-NSUBST: - = 2=1 / 4=1. / DEFH / DF.. / NP / JK / 2=JL.. / .
+NSUBST: - = 2=1 / 4=1. / DE / DE.. / H / 2=K. / M / .
 : elseif you.depth() < 9 then
 SUBST:  d = *, e = *%, f = %$--, g = -
-NSUBST: - = 2=2 / 4=2. / EH / EH.. / P / K / 3=KM.. / 3. / .
+NSUBST: - = 2=2 / 4=2. / F / F. / J / 3=L. / M / 3. / .
 : elseif you.depth() < 12 then
 SUBST:  e = *, f = %$, g = -
-NSUBST: - = 2=2 / 2=2. / EH / 2=EH.. / P / K / 3=KM.. / 3 / 2=3. / .
+NSUBST: - = 2=2 / 2=2. / F / 2=F. / J / 3=L. / M / 3 / 2=3. / .
 : else
 SUBST:  f = *, g = %$
-NSUBST: - = E / H / 2=EH.. / 2=P / 2=K / 3=KM.. / 2=3 / 4=3. / .
+NSUBST: - = 2 / F / 2=F. / 2=M / 2=J / 3=L. / 2=3 / 4=3. / .
 : end
 : ghost_setup(_G)
 MAP
@@ -1682,24 +1648,23 @@ KMONS:   D = gnoll ; wand of flame | wand of acid | wand of polymorph | \
 # Define some gnolls with reach weapons.
 {{
     local basic_weapons = {["halberd"] = 1, ["spear"] = 1}
-    local sergeant_weapons = {["trident"] = 1, ["spear"] = 1}
+    local sgt_weapons = {["trident"] = 1, ["spear"] = 1}
     egos = {["venom"] = 15, ["vampirism"] = 5, ["pain"] = 5,
             ["electrocution"] = 5, ["chaos"] = 5}
-
-    local basic_def = random_item_def(basic_weapons, egos, "", "|")
-    local sergeant_basic_def = random_item_def(sergeant_weapons, egos, "", "|")
+			
+    local basic_def = dgn.random_item_def(basic_weapons, egos, nil, "|")
+    local sgt_basic_def = dgn.random_item_def(sgt_weapons, egos, nil, "|")
 
     local quality = crawl.one_chance_in(3) and "randart" or "good_item"
-    local good_def = random_item_def(basic_weapons, egos, quality, "|")
-    local sergeant_good_def = random_item_def(sergeant_weapons, egos, quality,
-                                              "|")
+    local good_def = dgn.random_item_def(basic_weapons, egos, quality, "|")
+    local sgt_good_def = dgn.random_item_def(sgt_weapons, egos, quality, "|")
 
     kmons("E = gnoll ; " .. basic_def .. " . throwing net | nothing")
     kmons("F = gnoll ; " .. good_def .. " . throwing net | nothing")
-    kmons("H = gnoll sergeant ; " .. sergeant_basic_def ..
+    kmons("H = gnoll sergeant ; " .. sgt_basic_def ..
           "    . buckler | shield | nothing w:40" ..
           "    . ring mail | scale mail")
-    kmons("J = gnoll sergeant ; " .. sergeant_good_def ..
+    kmons("J = gnoll sergeant ; " .. sgt_good_def ..
           "    . buckler good_item | buckler randart w:5 " ..
           "        | shield good_item | shield randart w:5 " ..
           "    . ring mail good_item | ring mail randart w:5 " ..
@@ -2015,7 +1980,7 @@ kmons("z = tengu warrior ; " .. wrathful_weapon("warrior", "randart") ..
       "    . buckler good_item | shield good_item")
 }}
 :     if you.depth() < 9 then
-MONS:   big kobold / gnoll sergeant / ogre / orc warrior
+MONS:   kobold brigand / gnoll sergeant / ogre / orc warrior
 MONS:   troll
 MONS:   cyclops
 SUBST:  d = *, e = *%, f = %$, ghij= -
