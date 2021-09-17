@@ -3446,19 +3446,10 @@ static bool _transformed_player_can_join_god(god_type which_god)
     if (which_god == GOD_WYRM && you.form == transformation::lich)
         return false; // The Great Wyrm dislikes lich, because they can't drink
 
-    // all these clauses are written with a ! in front of them, so that
-    // the stuff to the right of that is uniformly "gods that hate this form"
-    switch (you.form)
-    {
-    case transformation::lich:
-    case transformation::eldritch:
-        return !is_good_god(which_god);
-    case transformation::statue:
-    case transformation::wisp:
-        return !(which_god == GOD_YREDELEMNUL);
-    default:
-        return true;
-    }
+    if (is_good_god(which_god) && you.form == transformation::lich)
+        return false;
+
+    return true;
 }
 
 int gozag_service_fee()
@@ -3497,9 +3488,6 @@ bool player_can_join_god(god_type which_god)
         return false;
 
     if (is_good_god(which_god) && you.undead_or_demonic())
-        return false;
-
-    if (which_god == GOD_YREDELEMNUL && you.is_nonliving())
         return false;
 
     if (which_god == GOD_BEOGH && !species_is_orcish(you.species))
