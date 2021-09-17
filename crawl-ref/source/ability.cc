@@ -3242,9 +3242,9 @@ static spret _do_ability(const ability_def& abil, bool fail)
         if (!spell_direction(spd, beam))
             return spret::abort;
 
-        int power = you.skill(SK_INVOCATIONS, 1)
-                    + random2(1 + you.skill(SK_INVOCATIONS, 1))
-                    + random2(1 + you.skill(SK_INVOCATIONS, 1));
+        int power = you.skill(SK_INVOCATIONS, 2)
+                    + random2(1 + you.skill(SK_INVOCATIONS, 2))
+                    + random2(1 + you.skill(SK_INVOCATIONS, 2));
 
         // Since the actual beam is random, check with BEAM_MMISSILE.
         if (!player_tracer(ZAP_DEBUGGING_RAY, power, beam, beam.range))
@@ -3292,12 +3292,10 @@ static spret _do_ability(const ability_def& abil, bool fail)
             beam.origin_spell = SPELL_NO_SPELL; // let zapping reset this
             zap_type ztype =
                 random_choose(ZAP_BOLT_OF_FIRE,
-                              ZAP_FIREBALL,
                               ZAP_LIGHTNING_BOLT,
-                              ZAP_STICKY_FLAME,
-                              ZAP_IRON_SHOT,
+                              ZAP_BOLT_OF_MAGMA,
                               ZAP_BOLT_OF_DRAINING,
-                              ZAP_ORB_OF_ELECTRICITY);
+                              ZAP_CORROSIVE_BOLT);
             zapping(ztype, power, beam);
         }
         break;
