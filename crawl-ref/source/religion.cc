@@ -3509,8 +3509,7 @@ bool player_can_join_god(god_type which_god)
         if (which_god == GOD_FEDHAS ||
             which_god == GOD_BEOGH ||
             which_god == GOD_ZIN ||
-            which_god == GOD_TROG ||
-            which_god == GOD_YREDELEMNUL) {
+            which_god == GOD_TROG) {
             return false;
         }
     }
@@ -3525,7 +3524,6 @@ bool player_can_join_god(god_type which_god)
     if (you.species == SP_AUTOMATON) {
         if (which_god == GOD_BEOGH ||
             which_god == GOD_TROG ||
-            which_god == GOD_YREDELEMNUL ||
             which_god == GOD_KIKUBAAQUDGHA) {
             return false;
         }
@@ -4405,8 +4403,6 @@ bool god_loathes_spell(spell_type spell, god_type god)
     if (spell == SPELL_NECROMUTATION && is_good_god(god))
         return true;
     if (spell == SPELL_ELDRITCH_FORM && is_good_god(god))
-        return true;
-    if (spell == SPELL_STATUE_FORM && god == GOD_YREDELEMNUL)
         return true;
     return false;
 }
