@@ -1376,20 +1376,11 @@ static int _num_mons_wanted()
         return 0;
     }
 
-    int size = 12;
-
-    if (in_pan)
-        size = 8;
-    else if (player_in_branch(BRANCH_CRYPT))
-        size = 10;
-    else if (player_in_hell())
-        size = 23;
+    const int size = branches[you.where_are_you].mon_die_size;
 
     int mon_wanted = roll_dice(3, size);
-
     if (mon_wanted > 60)
         mon_wanted = 60;
-
     return mon_wanted;
 }
 

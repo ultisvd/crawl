@@ -83,6 +83,7 @@
 #include "tileview.h"
 #endif
 #include "unicode.h"
+#include "viewchar.h"
 
 using namespace ui;
 
@@ -3370,9 +3371,12 @@ static bool _get_spell_description(const spell_type spell,
     {
         const int hd = mon_owner->spell_hd();
         const int range = mons_spell_range_for_hd(spell, hd);
-        description += "\nRange : "
-                       + range_string(range, range, mons_char(mon_owner->type))
-                       + "\n";
+        description += "\nRange : ";
+        if (spell == SPELL_CALL_DOWN_LIGHTNING)
+            description += stringize_glyph(mons_char(mon_owner->type)) + "..---->";
+        else
+            description += range_string(range, range, mons_char(mon_owner->type));
+        description += "\n";
 
         // only display this if the player exists (not in the main menu)
         if (crawl_state.need_save && (get_spell_flags(spell) & spflag::MR_check)

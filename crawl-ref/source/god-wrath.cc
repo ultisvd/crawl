@@ -2069,7 +2069,7 @@ static bool _wu_jian_retribution()
 
 static bool _legion_random_summoner(const int count, const int tier)
 {
-    monster_type mon_type = MONS_IRONBRAND_CONVOKER;
+    monster_type mon_type = MONS_IRONBOUND_CONVOKER;
     if (tier >= 2 && count == 0 && coinflip())
         mon_type = MONS_GREATER_MUMMY;
     else if (tier >= 1 && count < 3 && coinflip())

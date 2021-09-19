@@ -565,14 +565,14 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
-    {  MST_IRONHEART_PRESERVER,
+    {  MST_IRONBOUND_PRESERVER,
       {
        { SPELL_INJURY_BOND, 21, MON_SPELL_WIZARD },
        { SPELL_MINOR_HEALING, 41, MON_SPELL_WIZARD },
       }
     },
 
-    {  MST_IRONBRAND_CONVOKER,
+    {  MST_IRONBOUND_CONVOKER,
       {
        { SPELL_WORD_OF_RECALL, 30, MON_SPELL_WIZARD },
        { SPELL_MIGHT_OTHER, 30, MON_SPELL_WIZARD },
@@ -582,6 +582,12 @@ static const mon_spellbook mspell_list[] =
     {  MST_VAULT_WARDEN,
       {
        { SPELL_SEAL_DOORS, 50, MON_SPELL_MAGICAL | MON_SPELL_NO_SILENT },
+      }
+    },
+
+    { MST_IRONBOUND_FROSTHEART,
+      {
+       { SPELL_CREEPING_FROST, 50, MON_SPELL_WIZARD },
       }
     },
 
@@ -1213,6 +1219,18 @@ static const mon_spellbook mspell_list[] =
        { SPELL_LEHUDIBS_CRYSTAL_SPEAR, 12, MON_SPELL_WIZARD },
        { SPELL_HASTE_OTHER, 10, MON_SPELL_WIZARD },
        { SPELL_BLINK, 10, MON_SPELL_WIZARD },
+      }
+    },
+
+    { MST_IRONBOUND_THUNDERHULK,
+      {
+       { SPELL_CALL_DOWN_LIGHTNING, 50, MON_SPELL_MAGICAL },
+      }
+    },
+
+    { MST_IRONBOUND_BEASTMASTER,
+      {
+       { SPELL_GOAD_BEASTS, 40, MON_SPELL_NATURAL },
       }
     },
 

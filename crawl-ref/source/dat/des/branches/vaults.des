@@ -330,7 +330,7 @@ SUBST:    A = v , B = v , C = v , D = v
 SUBST:    I = + , J = + , K = + , L = +
 SUBST:    E = vvm , F = vvm, G = vvm, H = vvm
 KFEAT:    O = enter_vaults
-KMONS:    O = ironheart preserver
+KMONS:    O = ironbound preserver
 NSUBST:   $ = 1:O / *=.$%
 MAP
         @@
