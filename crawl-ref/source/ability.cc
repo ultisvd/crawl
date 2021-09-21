@@ -500,7 +500,7 @@ static const ability_def Ability_List[] =
     { ABIL_TROG_BURN_SPELLBOOKS, "Burn Spellbooks",
       0, 0, 0, 0, {fail_basis::invo}, abflag::none },
     { ABIL_TROG_BERSERK, "Berserk",
-      0, 0, 600, 0, {fail_basis::invo}, abflag::none },
+        0, 0, 0, {fail_basis::invo, 45, 0, 2}, abflag::none },
     { ABIL_TROG_REGEN_MR, "Trog's Hand",
       0, 0, 200, 2, {fail_basis::invo, piety_breakpoint(2), 0, 1}, abflag::berserk_ok },
     { ABIL_TROG_BROTHERS_IN_ARMS, "Brothers in Arms",
