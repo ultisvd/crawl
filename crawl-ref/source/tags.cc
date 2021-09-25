@@ -3050,7 +3050,7 @@ static void tag_read_you(reader &th)
         if (you.species == SP_VINE_STALKER)
         {
             you.mutation[MUT_NO_DEVICE_HEAL] =
-            you.innate_mutation[MUT_NO_DEVICE_HEAL] = 3;
+            you.innate_mutation[MUT_NO_DEVICE_HEAL] = 2;
         }
 
         if (you.species == SP_VINE_STALKER
@@ -3236,6 +3236,23 @@ static void tag_read_you(reader &th)
     {
         you.mutation[MUT_ACID_RESISTANCE] = 1;
         you.innate_mutation[MUT_ACID_RESISTANCE] = 1;
+    }
+
+    if (th.getMinorVersion() < TAG_MINOR_COMPRESS_BADMUTS)
+    {
+        if (you.species == SP_TWO_HEADED_OGRE) {
+            you.mutation[MUT_SCREAM] = 2;
+            you.innate_mutation[MUT_SCREAM] = 2;
+        }
+        else if (you.mutation[MUT_SCREAM] > 2)
+            you.mutation[MUT_SCREAM] = 2;
+
+        if (you.species == SP_VINE_STALKER) {
+            you.mutation[MUT_NO_DEVICE_HEAL] = 2;
+            you.innate_mutation[MUT_NO_DEVICE_HEAL] = 2;
+        }
+        else if (you.mutation[MUT_NO_DEVICE_HEAL] > 2)
+            you.mutation[MUT_NO_DEVICE_HEAL] = 2;
     }
 
     if (th.getMinorVersion() < TAG_MINOR_SACRIFICE_NECK

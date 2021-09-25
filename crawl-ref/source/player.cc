@@ -6094,7 +6094,7 @@ string player::shout_verb(bool directed) const
     if (!get_form()->shout_verb.empty())
         return get_form()->shout_verb;
 
-    const int screaminess = max(get_mutation_level(MUT_SCREAM) - 1, 0);
+    const int screaminess = get_mutation_level(MUT_SCREAM);
 
     if (species == SP_GNOLL)
         return dog_shout_verbs[screaminess];
@@ -6116,10 +6116,7 @@ int player::shout_volume() const
 {
     const int base_noise = 12 + get_form()->shout_volume_modifier;
 
-    if (get_mutation_level(MUT_SCREAM))
-        return base_noise + 2 * (get_mutation_level(MUT_SCREAM) - 1);
-
-    return base_noise;
+    return base_noise + 2 * (get_mutation_level(MUT_SCREAM));
 }
 
 void player::god_conduct(conduct_type thing_done, int level)
@@ -8688,11 +8685,11 @@ bool player::wear_barding(const int subtype) const {
 
 static int _get_device_heal_factor()
 {
-    // healing factor is expressed in thirds, so default is 3/3 -- 100%.
-    int factor = 3;
+    // healing factor is expressed in halves, so default is 2/2 -- 100%.
+    int factor = 2;
 
     // start with penalties
-    factor -= player_equip_unrand(UNRAND_VINES) ? 3 : 0;
+    factor -= player_equip_unrand(UNRAND_VINES) ? 2 : 0;
     factor -= you.mutation[MUT_NO_DEVICE_HEAL];
 
     // then apply bonuses - Kryia's doubles device healing
@@ -8706,7 +8703,7 @@ void print_device_heal_message()
 {
     // Don't give multiple messages in weird cases with both enhanced
     // and reduced healing.
-    if (_get_device_heal_factor() > 3)
+    if (_get_device_heal_factor() > 2)
     {
         if (player_equip_unrand(UNRAND_KRYIAS))
         {
@@ -8720,7 +8717,7 @@ void print_device_heal_message()
     }
     else if (_get_device_heal_factor() == 0)
         mpr("Your system rejects the healing.");
-    else if (_get_device_heal_factor() < 3)
+    else if (_get_device_heal_factor() < 2)
         mpr("Your system partially rejects the healing.");
 }
 
@@ -8731,7 +8728,7 @@ bool player::can_device_heal()
 
 int player::scale_device_healing(int healing_amount)
 {
-    return div_rand_round(healing_amount * _get_device_heal_factor(), 3);
+    return div_rand_round(healing_amount * _get_device_heal_factor(), 2);
 }
 
 // Lava orcs!

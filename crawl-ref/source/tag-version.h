@@ -249,6 +249,7 @@ enum tag_minor_version
     TAG_MINOR_UPGRADE_SEEN_WEAPON, // Upgrade Seen weapon 32bit to 64bit
     TAG_MINOR_REALLY_UNSTACK_EVOKERS, // Unstack all evokers
     TAG_MINOR_APPENDAGE,           // Change beastly appendage
+    TAG_MINOR_COMPRESS_BADMUTS,    // Reduce some mutations to 2 levels
 #endif
     NUM_TAG_MINORS,
     TAG_MINOR_VERSION = NUM_TAG_MINORS - 1

@@ -460,20 +460,20 @@ static const mutation_def mut_data[] =
 },
 #endif
 
-{ MUT_SCREAM, 6, 3, mutflag::bad | mutflag::xom, false,
+{ MUT_SCREAM, 6, 2, mutflag::bad | mutflag::xom, false,
   "screaming",
 
   {"You occasionally shout uncontrollably at your foes.",
-   "You sometimes yell uncontrollably at your foes.",
-   "You frequently scream uncontrollably at your foes."},
+   "You frequently scream uncontrollably at your foes.",
+   ""},
 
   {"You feel the urge to shout.",
-   "You feel a strong urge to yell.",
-   "You feel a strong urge to scream."},
+   "You feel a strong urge to scream.",
+   ""},
 
   {"Your urge to shout disappears.",
-   "Your urge to yell lessens.",
-   "Your urge to scream lessens."},
+   "Your urge to scream lessens.",
+   ""},
 },
 
 { MUT_NOISE_DAMPENING, 2, 1, mutflag::good, false,
@@ -1276,16 +1276,16 @@ static const mutation_def mut_data[] =
   "no device heal",
 
   {"Potions and wands are less effective at restoring your health.",
-   "Potions and wands are poor at restoring your health.",
-   "Potions and wands cannot restore your health."},
+   "Potions and wands cannot restore your health.",
+   ""},
 
   {"Your system partially rejects the healing effects of potions and wands.",
-   "Your system mostly rejects the healing effects of potions and wands.",
-   "Your system completely rejects the healing effects of potions and wands."},
+   "Your system completely rejects the healing effects of potions and wands.",
+   ""},
 
   {"Your system completely accepts the healing effects of potions and wands.",
-   "Your system mostly accepts the healing effects of potions and wands.",
-   "Your system partly accepts the healing effects of potions and wands."},
+   "Your system partly accepts the healing effects of potions and wands.",
+   ""},
 },
 
 // Scale mutations
