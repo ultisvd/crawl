@@ -2426,7 +2426,7 @@ static int _player_scale_evasion(int prescaled_ev, const int scale)
  * What is the player's bonus to EV from dodging when not paralyzed, after
  * accounting for size & body armour penalties?
  *
- * First, calculate base dodge bonus (linear with dodging * stepdowned dex),
+ * First, calculate base dodge bonus (linear with dodging * dex),
  * and armour dodge penalty (base armour evp, increased for small races &
  * decreased for large, then with a magic "3" subtracted from it to make the
  * penalties not too harsh).
@@ -2448,11 +2448,9 @@ static int _player_scale_evasion(int prescaled_ev, const int scale)
  */
 static int _player_armour_adjusted_dodge_bonus(int scale)
 {
-    const int ev_dex = stepdown(you.dex(), 18, ROUND_CLOSE, MAX_STAT_VALUE);
-
     const int dodge_bonus =
-        (70 + you.skill(SK_DODGING, 10) * ev_dex) * scale
-        / (20 - _player_evasion_size_factor()) / 10;
+        (800 + you.skill(SK_DODGING, 10) * you.dex() * 8) * scale
+        / (20 - _player_evasion_size_factor()) / 10 / 10;
 
     const int armour_dodge_penalty = you.unadjusted_body_armour_penalty() - 3;
     if (armour_dodge_penalty <= 0)
@@ -2481,20 +2479,17 @@ static int _player_evasion(ev_ignore_type evit)
 
     const int vertigo_penalty = you.duration[DUR_VERTIGO] ? 5 * scale : 0;
 
-    const int prestepdown_evasion =
+    const int natural_evasion =
         size_base_ev
         + _player_armour_adjusted_dodge_bonus(scale)
         - _player_adjusted_evasion_penalty(scale)
         - you.adjusted_shield_penalty(scale)
         - vertigo_penalty;
 
-    const int poststepdown_evasion =
-        stepdown_value(prestepdown_evasion, 20*scale, 30*scale, 60*scale, -1);
-
     const int evasion_bonuses = _player_evasion_bonuses() * scale;
 
     const int final_evasion =
-        _player_scale_evasion(poststepdown_evasion, scale) + evasion_bonuses;
+        _player_scale_evasion(natural_evasion, scale) + evasion_bonuses;
 
     return unscale_round_up(final_evasion, scale);
 }
