@@ -692,7 +692,7 @@ string manual_skill_names(bool short_text)
         return skill_names(skills);
 }
 
-static const pop_entry pop_spiders[] =
+static const vector<pop_entry> pop_spiders =
 { // Sack of Spiders
   {  0,  13,   40, FALL, MONS_WORKER_ANT },
   {  0,  13,   80, FALL, MONS_SOLDIER_ANT },
@@ -703,7 +703,6 @@ static const pop_entry pop_spiders[] =
   { 13,  29,  110, PEAK, MONS_TARANTELLA },
   { 15,  29,  120, PEAK, MONS_WOLF_SPIDER },
   { 21,  27,   18, RISE, MONS_GHOST_MOTH },
-  { 0,0,0,FLAT,MONS_0 }
 };
 
 static bool _box_of_beasts()
@@ -2129,7 +2128,7 @@ static spret _tremorstone()
     return spret::success;
 }
 
-random_pick_entry<cloud_type> condenser_clouds[] =
+static const vector<random_pick_entry<cloud_type>> condenser_clouds =
 {
   { 0,   50, 200, FALL, CLOUD_MEPHITIC },
   { 0,  100, 125, PEAK, CLOUD_FIRE },
@@ -2137,8 +2136,7 @@ random_pick_entry<cloud_type> condenser_clouds[] =
   { 0,  100, 125, PEAK, CLOUD_POISON },
   { 0,  110, 50, RISE, CLOUD_NEGATIVE_ENERGY },
   { 0,  110, 50, RISE, CLOUD_STORM },
-  { 0,  110, 50, RISE, CLOUD_ACID },
-  { 0,0,0,FLAT,CLOUD_NONE }
+  { 0,  110, 50, RISE, CLOUD_ACID }
 };
 
 static spret _condenser()

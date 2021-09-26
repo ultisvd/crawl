@@ -665,8 +665,7 @@ void holy_flames(monster* caster, actor* defender)
                                    " is surrounded by blessed fire!");
     }
 }
-
-random_pick_entry<cloud_type> cloud_cone_clouds[] =
+static const vector<random_pick_entry<cloud_type>> cloud_cone_clouds =
 {
   { 0,   50, 200, FALL, CLOUD_MEPHITIC },
   { 0,  100, 125, PEAK, CLOUD_FIRE },
@@ -675,7 +674,6 @@ random_pick_entry<cloud_type> cloud_cone_clouds[] =
   { 30, 100, 125, RISE, CLOUD_NEGATIVE_ENERGY },
   { 40, 100, 135, RISE, CLOUD_STORM },
   { 50, 100, 175, RISE, CLOUD_ACID },
-  { 0,0,0,FLAT,CLOUD_NONE }
 };
 
 spret cast_cloud_cone(const actor *caster, int pow, const coord_def &pos,
