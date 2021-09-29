@@ -3800,7 +3800,7 @@ bool gozag_call_merchant()
         // first index.
         if (type == SHOP_FOOD)
             continue;
-        if (type == SHOP_DISTILLERY && (you.species == SP_MUMMY || you.species == SP_LICH ||  you.species == SP_WIGHT))
+        if (type == SHOP_DISTILLERY && (you.species == SP_MUMMY ||  you.species == SP_WIGHT))
             continue;
         if (type == SHOP_EVOKABLES && you.get_mutation_level(MUT_NO_ARTIFICE))
             continue;
@@ -4397,7 +4397,8 @@ static const sacrifice_def &_get_sacrifice_def(ability_type sac)
     return *sacrifice_data_map[sac];
 }
 
-/// A map between sacrifice_def.sacrifice_vector strings & possible mut lists
+/// A map between sacrifice_def.sacrifice_vector strings & possible mut lists.
+/// Abilities that map to a single mutation are not here!
 static map<const char*, vector<mutation_type>> sacrifice_vector_map =
 {
     /// Mutations granted by ABIL_RU_SACRIFICE_HEALTH
@@ -4459,10 +4460,61 @@ static const vector<mutation_type> _arcane_sacrifice_lists[] =
     _major_arcane_sacrifices,
 };
 
+// this function is for checks that can be done with the mutation_type alone.
+static bool _sac_mut_maybe_valid(mutation_type mut)
+{
+    // can't give the player this if they're already at max
+    if (you.get_mutation_level(mut) >= mutation_max_levels(mut))
+        return false;
+
+    // can't give the player this if they have an innate mut that conflicts
+    if (mut_check_conflict(mut, true))
+        return false;
+
+    // Don't offer sacrifices of skills that a player already can't use.
+    if (!can_sacrifice_skill(mut))
+        return false;
+
+    // Special case a few weird interactions:
+
+    // Don't offer to sacrifice summoning magic when already hated by all.
+    if (mut == MUT_NO_SUMMONING_MAGIC
+        && you.get_mutation_level(MUT_NO_LOVE))
+    {
+        return false;
+    }
+
+    // Vampires can't get inhibited regeneration for some reason related
+    // to their existing regen silliness.
+    // Neither can deep dwarf, for obvious reasons.
+    if (mut == MUT_INHIBITED_REGENERATION&& you.species == SP_VAMPIRE)
+    {
+        return false;
+    }
+
+    // demonspawn can't get frail if they have a robust facet
+    if (you.species == SP_DEMONSPAWN && mut == MUT_FRAIL
+        && any_of(begin(you.demonic_traits), end(you.demonic_traits),
+            [](player::demon_trait t)
+            { return t.mutation == MUT_ROBUST; }))
+    {
+        return false;
+    }
+
+    // No potion heal doesn't affect mummies since they can't quaff potions
+    if (mut == MUT_NO_DEVICE_HEAL && (you.species == SP_MUMMY || you.species == SP_WIGHT))
+        return false;
+
+    return true;
+}
+
+
 /**
  * Choose a random mutation from the given list, only including those that are
  * valid choices for a Ru sacrifice. (Not already at the max level, not
  * conflicting with an innate mut.)
+ * N.b. this is *only* used for choosing among the sublists for sac health,
+ * essence, and purity.
  *
  * @param muts      The list of possible sacrifice mutations.
  * @return          A mutation from the list, or MUT_NON_MUTATION if no valid
@@ -4474,33 +4526,7 @@ static mutation_type _random_valid_sacrifice(const vector<mutation_type> &muts)
     mutation_type chosen_sacrifice = MUT_NON_MUTATION;
     for (auto mut : muts)
     {
-        // can't give the player this if they're already at max
-        if (you.get_mutation_level(mut) >= mutation_max_levels(mut))
-            continue;
-
-        // can't give the player this if they have an innate mut that conflicts
-        if (mut_check_conflict(mut, true))
-            continue;
-
-        // Special case a few weird interactions:
-
-        // Vampires can't get inhibited regeneration for some reason related
-        // to their existing regen silliness.
-        // Neither can deep dwarf, for obvious reasons.
-        if (mut == MUT_INHIBITED_REGENERATION && you.species == SP_VAMPIRE)
-            continue;
-
-        // demonspawn can't get frail if they have a robust facet
-        if (you.species == SP_DEMONSPAWN && mut == MUT_FRAIL
-            && any_of(begin(you.demonic_traits), end(you.demonic_traits),
-                      [] (player::demon_trait t)
-                      { return t.mutation == MUT_ROBUST; }))
-        {
-            continue;
-        }
-
-        // No potion heal doesn't affect mummies since they can't quaff potions
-        if (mut == MUT_NO_DEVICE_HEAL && you.species == SP_MUMMY || you.species == SP_LICH ||  you.species == SP_WIGHT)
+        if (!_sac_mut_maybe_valid(mut))
             continue;
 
         // The Grunt Algorithm
@@ -4589,12 +4615,16 @@ static bool _player_sacrificed_arcana()
  */
 static bool _sacrifice_is_possible(sacrifice_def &sacrifice)
 {
+    // for sacrifices other than health, essence, and arcana there is a
+    // deterministic mapping between the sacrifice_def and a mutation_type.
     if (sacrifice.mutation != MUT_NON_MUTATION
-        && you.get_mutation_level(sacrifice.mutation))
+        && !_sac_mut_maybe_valid(sacrifice.mutation))
     {
         return false;
     }
 
+    // For health, essence, and arcana, we still need to choose from the
+    // sublists in sacrifice_vector_map.
     if (sacrifice.sacrifice_vector)
     {
         const char* key = sacrifice.sacrifice_vector;
@@ -4608,6 +4638,7 @@ static bool _sacrifice_is_possible(sacrifice_def &sacrifice)
             return false;
     }
 
+    // finally, sacrifices may have custom validity checks.
     if (sacrifice.valid != nullptr && !sacrifice.valid())
         return false;
 
@@ -4666,6 +4697,12 @@ static int _piety_for_skill(skill_type skill)
     // them more piety for waiting longer before taking the sacrifice.
     if (you.species == SP_GNOLL)
         return 0;
+
+    // This should be mostly redundant with other checks, but it's a useful
+    // sanitizer
+    if (is_useless_skill(skill))
+        return 0;
+
     return skill_exp_needed(you.skills[skill], skill, you.species) / 500;
 }
 
@@ -4763,13 +4800,13 @@ int get_sacrifice_piety(ability_type sac, bool include_skill)
             if (mut == MUT_LOW_MAGIC)
             {
                 piety_gain += 10 + max(you.skill_rdiv(SK_INVOCATIONS, 1, 2),
-                                       max( you.skill_rdiv(SK_SPELLCASTING, 1, 2),
-                                            you.skill_rdiv(SK_EVOCATIONS, 1, 2)));
+                                       you.skill_rdiv(SK_SPELLCASTING, 1, 2));
             }
             else if (mut == MUT_MAGICAL_VULNERABILITY)
-                piety_gain += 28;
+                piety_gain += 38;
             else
-                piety_gain += 2 + _get_stat_piety(STAT_INT, 6);
+                piety_gain += 2 + _get_stat_piety(STAT_INT, 6)
+                + you.skill_rdiv(SK_SPELLCASTING, 1, 2);
             break;
         case ABIL_RU_SACRIFICE_PURITY:
             if (mut == MUT_WEAK || mut == MUT_DOPEY || mut == MUT_CLUMSY)
@@ -4797,11 +4834,26 @@ int get_sacrifice_piety(ability_type sac, bool include_skill)
             if (you.get_mutation_level(MUT_NO_LOVE))
                 piety_gain -= 10; // You've already lost some value here
             break;
+        case ABIL_RU_SACRIFICE_SKILL:
+            // give a small bonus if sacrifice skill is taken multiple times
+            piety_gain += 7 * you.get_mutation_level(mut);
+            break;
         case ABIL_RU_SACRIFICE_NIMBLENESS:
             if (you.get_mutation_level(MUT_NO_ARMOUR))
                 piety_gain += 20;
             else if (species_apt(SK_ARMOUR) == UNUSABLE_SKILL)
                 piety_gain += 28; // this sacrifice is worse for these races
+            break;
+            // words and drink cut off a lot of options if taken together
+        case ABIL_RU_SACRIFICE_DRINK:
+            if (you.get_mutation_level(MUT_NO_DRINK))
+                piety_gain += 10;
+            break;
+        case ABIL_RU_SACRIFICE_WORDS:
+            if (you.get_mutation_level(MUT_NO_DRINK))
+                piety_gain += 10;
+            else if (you.species == SP_MUMMY || you.species == SP_WIGHT)
+                piety_gain += 15; // extra bad for mummies and wights
             break;
         case ABIL_RU_SACRIFICE_DURABILITY:
             if (you.get_mutation_level(MUT_NO_DODGING))
@@ -4822,17 +4874,17 @@ int get_sacrifice_piety(ability_type sac, bool include_skill)
             break;
         case ABIL_RU_SACRIFICE_EXPERIENCE:
             if (you.get_mutation_level(MUT_COWARDICE))
-                piety_gain += 15;
+                piety_gain += 12;
             // Ds are highly likely to miss at least one mutation. This isn't
             // absolutely certain, but it's very likely and they should still
             // get a bonus for the risk. Could check the exact mutation
             // schedule, but this seems too leaky.
             if (you.species == SP_DEMONSPAWN)
-                piety_gain += 28;
+                piety_gain += 16;
             break;
         case ABIL_RU_SACRIFICE_COURAGE:
-            if (you.get_mutation_level(MUT_INEXPERIENCED))
-                piety_gain += 15;
+            piety_gain += 12 * you.get_mutation_level(MUT_INEXPERIENCED);
+            break;
 
         default:
             break;
@@ -5175,7 +5227,7 @@ static void _extra_sacrifice_code(ability_type sac)
         }
     }
     else if (sac_def.sacrifice == ABIL_RU_SACRIFICE_EXPERIENCE)
-        adjust_level(-RU_SAC_XP_LEVELS);
+        level_change();
     else if (sac_def.sacrifice == ABIL_RU_SACRIFICE_SKILL)
     {
         uint8_t saved_skills[NUM_SKILLS];
@@ -5444,7 +5496,7 @@ void ru_reset_sacrifice_timer(bool clear_timer, bool faith_penalty)
 
     // raise the delay if there's an active sacrifice, and more so the more
     // often you pass on a sacrifice and the more piety you have.
-    const int base_delay = 80;
+    const int base_delay = 90;
     int delay = you.props[RU_SACRIFICE_DELAY_KEY].get_int();
     int added_delay;
     if (clear_timer)
