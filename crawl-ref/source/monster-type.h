@@ -135,7 +135,7 @@ enum monster_type                      // menv[].type
     MONS_GOLDEN_DRAGON,
     MONS_PEARL_DRAGON,
 
-    MONS_OOZE,
+    MONS_ENDOPLASM,
     MONS_JELLY,
 #if TAG_MAJOR_VERSION == 34
     MONS_BROWN_OOZE,

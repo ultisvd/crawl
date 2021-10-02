@@ -1418,7 +1418,7 @@ Une plante très dangereuse qui éloigne les prédateurs en leur pulvérisant du
 vitriol corrosif dessus. Même les aventuriers expérimentés gardent à grande
 distance d'eux la plante oklob.
 %%%%
-ooze
+endoplasm
 
 Un globe de bourbe grise qui a en quelque sorte développé une conscience
 rudimentaire et une mobilité limitée.

@@ -1594,7 +1594,7 @@ KPROP:   >'Z1 = no_tele_into
 KFEAT:   Z = zot trap
 SHUFFLE: vXc
 NSUBST:  { = 1:{ / *:.
-MONS:    generate_awake ooze
+MONS:    generate_awake endoplasm
 MAP
      v..@..v
     vvv...vvv
@@ -2190,7 +2190,7 @@ ENDMAP
 NAME:    onia_arrival_handbag
 TAGS:    arrival
 ORIENT:  float
-MONS:    w:30 rat / ooze / ball python
+MONS:    w:30 rat / endoplasm / ball python
 SHUFFLE: {[, [<(
 SUBST:   (=.,[=.
 MAP

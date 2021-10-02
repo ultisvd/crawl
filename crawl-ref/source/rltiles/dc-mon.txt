@@ -790,7 +790,7 @@ sky_beast MONS_SKY_BEAST
 %sdir mon/unique
 dissolution MONS_DISSOLUTION
 %sdir mon/amorphous
-ooze MONS_OOZE
+endoplasm MONS_ENDOPLASM
 %rim 0
 jelly MONS_JELLY
 small_jelly MONS_SMALL_JELLY

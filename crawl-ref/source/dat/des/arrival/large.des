@@ -220,7 +220,7 @@ NAME:   erik_arrival_gehennom
 TAGS:   arrival no_monster_gen no_rotate
 ORIENT: float
 ITEM:   stone
-MONS:   rat, goblin, kobold, ooze
+MONS:   rat, goblin, kobold, endoplasm
 MAP
 xxxxxxxxxxx@xxxxxxxxxxxxxxxxxx
 x.........l.l................x

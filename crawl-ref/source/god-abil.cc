@@ -2379,7 +2379,7 @@ static bool _is_grid_corrosion_able(const coord_def &c)
 static monster_type _get_corrosion_jelly() {
     return random_choose_weighted<monster_type>(
          500, MONS_JELLY,
-         100, MONS_OOZE,
+         100, MONS_ENDOPLASM,
          // no CYAN (silence)
          100, MONS_SLIME_CREATURE,
          60, MONS_ACID_BLOB,

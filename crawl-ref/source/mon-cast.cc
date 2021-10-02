@@ -4929,7 +4929,7 @@ static bool _mons_cast_freeze(monster* mons)
                               target->conj_verb("are").c_str());
     }
 
-    target->hurt(mons, damage, BEAM_COLD, KILLED_BY_BEAM, "", "by Freeze");
+    target->hurt(mons, damage, BEAM_COLD, KILLED_BY_FREEZING);
 
     if (target->alive())
     {
