@@ -20,6 +20,7 @@
 #include "ng-setup.h"
 #include "output.h"
 #include "player.h"
+#include "spl-book.h"
 #include "stringutil.h"
 
 #include "job-data.h"
@@ -160,6 +161,11 @@ void give_job_skills(job_type job)
         }
         you.skills[skill] += amount;
     }
+}
+
+vector<spell_type> get_job_spells(job_type job)
+{
+    return _job_def(job).library;
 }
 
 void debug_jobdata()

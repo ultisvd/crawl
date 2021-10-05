@@ -27,7 +27,7 @@ static string _gen_randbook_owner(god_type god, spschool disc1,
                                   const vector<spell_type> &spells);
 
 /// How many spells should be in a random theme book?
-int theme_book_size() { return random2avg(7, 3) + 2; }
+int theme_book_size() { return random2avg(4, 3) + 2; }
 
 /// A discipline chooser that only ever returns the given discipline.
 function<spschool()> forced_book_theme(spschool theme)
@@ -93,22 +93,6 @@ spschool matching_book_theme(const vector<spell_type> &forced_spells)
     return *discipline;
 }
 
-/// Is the given spell found in rarebooks?
-static bool _is_rare_spell(spell_type spell)
-{
-    for (int i = 0; i < NUM_FIXED_BOOKS; ++i)
-    {
-        const book_type book = static_cast<book_type>(i);
-        if (is_rare_book(book))
-            for (spell_type rare_spell : spellbook_template(book))
-                if (rare_spell == spell)
-                    return true;
-    }
-
-    return false;
-}
-
-
 /**
  * Can we include the given spell in our spellbook?
  *
@@ -118,13 +102,9 @@ static bool _is_rare_spell(spell_type spell)
  */
 static bool _agent_spell_filter(int agent, spell_type spell)
 {
-    // Only use spells available in books you might find lying about
-    // the dungeon; rarebook spells are restricted to Sif-made books.
-    if (spell_rarity(spell) == -1
-        && (agent != GOD_SIF_MUNA || !_is_rare_spell(spell)))
-    {
+    // Only use actual player spells.
+    if (!is_player_book_spell(spell))
         return false;
-    }
 
     // Don't include spells a god dislikes, if this is an acquirement
     // or a god gift.
@@ -375,33 +355,6 @@ static void _get_spell_list(vector<spell_type> &spells, int level,
                             int &god_discard, int &uncastable_discard,
                             bool avoid_known = false)
 {
-    // For randarts handed out by Sif Muna, spells contained in the
-    // special books are fair game.
-    // We store them in an extra vector that (once sorted) can later
-    // be checked for each spell with a rarity -1 (i.e. not normally
-    // appearing randomly).
-    vector<spell_type> special_spells;
-    if (god == GOD_SIF_MUNA)
-    {
-        for (int i = 0; i < NUM_FIXED_BOOKS; ++i)
-        {
-            const book_type book = static_cast<book_type>(i);
-            if (is_rare_book(book))
-            {
-                for (spell_type spell : spellbook_template(book))
-                {
-                    if (spell_rarity(spell) != -1)
-                        continue;
-
-                    special_spells.push_back(spell);
-                }
-            }
-        }
-
-        sort(special_spells.begin(), special_spells.end());
-    }
-
-    int specnum = 0;
     for (int i = 0; i < NUM_SPELLS; ++i)
     {
         const spell_type spell = (spell_type) i;
@@ -409,21 +362,9 @@ static void _get_spell_list(vector<spell_type> &spells, int level,
         if (!is_valid_spell(spell))
             continue;
 
-        // Only use spells available in books you might find lying about
-        // the dungeon.
-        if (spell_rarity(spell) == -1)
-        {
-            bool skip_spell = true;
-            while ((unsigned int) specnum < special_spells.size()
-                   && spell == special_spells[specnum])
-            {
-                specnum++;
-                skip_spell = false;
-            }
-
-            if (skip_spell)
-                continue;
-        }
+        // Only use actual player spells.
+        if (!is_player_book_spell(spell))
+            continue;
 
         if (avoid_known && you.spell_library[spell])
             continue;
@@ -553,9 +494,10 @@ static string _gen_randlevel_name(int level, god_type god)
  *
  * @param book[out]    The book in question.
  * @param level        The level of the spells. If -1, choose a level randomly.
+ * @param god            Is this a gift from Sif Muna?
  * @return             Whether the book was successfully transformed.
  */
-bool make_book_level_randart(item_def &book, int level)
+bool make_book_level_randart(item_def &book, int level, bool sif)
 {
     ASSERT(book.base_type == OBJ_BOOKS);
 
@@ -578,6 +520,10 @@ bool make_book_level_randart(item_def &book, int level)
     // Number of spells: 5 | 5 | 5 | 6 | 6 | 6 | 4 | 2 | 1
     int num_spells = max(1, min(5 + (level - 1)/3,
                                 18 - 2*level));
+    // Sif Muna retains the old randbook sizes.
+    // Other level randbooks shrink to modern book sizes.
+    if (!sif)
+        num_spells = max(1, div_rand_round(num_spells * 3, 5));
     ASSERT_RANGE(num_spells, 0 + 1, RANDBOOK_SIZE + 1);
 
     book.sub_type = BOOK_RANDART_LEVEL;

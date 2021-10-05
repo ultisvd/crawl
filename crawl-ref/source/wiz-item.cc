@@ -51,9 +51,9 @@
 #ifdef WIZARD
 static void _make_all_books()
 {
-    for (int i = 0; i < NUM_FIXED_BOOKS; ++i)
+    for (int i = 0; i < NUM_BOOKS; ++i)
     {
-        if (item_type_removed(OBJ_BOOKS, i))
+        if (!book_exists((book_type)i))
             continue;
         int thing = items(false, OBJ_BOOKS, i, 0, 0, AQ_WIZMODE);
         if (thing == NON_ITEM)
@@ -1096,9 +1096,8 @@ static void _debug_acquirement_stats(FILE *ostat)
             if (!you_can_memorise(spell))
                 continue;
 
-            // Only use spells available in books you might find lying about
-            // the dungeon.
-            if (spell_rarity(spell) == -1)
+            // Only use actual player spells.
+            if (!is_player_book_spell(spell))
                 continue;
 
             const bool seen = you.spell_library[spell];

@@ -79,9 +79,9 @@
        "manual of charms", "potion of curing", "wand of clouds", "condenser vane" }
 
       elseif s == "D" then i = { "book of death", "book of debilitation",
-       "book of dreams", "book of the dragon", "dagger", "demon blade",
-       "demon trident", "demon whip", "dire flail", "double sword",
-       "ring of dexterity", "manual of dodging", "wand of disintegration",
+       "book of dreams", "book of the dragon", "book of the dryads", "dagger",
+       "demon blade", "demon trident", "demon whip", "dire flail", 
+       "double sword", "ring of dexterity", "manual of dodging", "wand of disintegration",
        "staff of death", "wand of digging", "dart", "disc of storms" }
 
       elseif s == "E" then i = { "book of enchantments", "manual of evocations",
@@ -110,7 +110,8 @@
       elseif s == "I" then i = { "amulet of inaccuracy", "ring of ice",
        "scroll of immolation", "ice dragon scales", "book of ice",
        "potion of invisibility", "ring of intelligence", "scroll of identify",
-       "wand of iceblast", "manual of invocations", "manual of ice magic" }
+       "wand of iceblast", "manual of invocations", "manual of ice magic",
+       "inescapable atlas", "book of iron" }
 
       elseif s == "J" then i = { "javelin" }
 
@@ -149,7 +150,7 @@
        "wand of random effects" }
 
       elseif s == "S" then i = { "scarf", "scimitar", "short sword",
-       "sling bullet", "scale mail", "book of summonings", "book of the sky",
+       "sling bullet", "scale mail", "book of summonings", "book of storms", "book of the sky",
        "ring of see invisible", "ring of slaying", "spear", "ring of stealth",
        "ring of strength", "manual of stealth", "sack of spiders",
        "scroll of summoning", "scythe", "book of spatial translocations",
@@ -167,7 +168,8 @@
        "manual of translocations", "manual of transmutations",
        "trident", "throwing net", "tin of tremorstones" }
 
-      elseif s == "U" then i = { "book of unlife", "manual of unarmed combat" }
+      elseif s == "U" then i = { "book of unlife", "manual of unarmed combat", 
+       "the unrestrained analects" }
 
       elseif s == "V" then i = { "scroll of vulnerability" }
 

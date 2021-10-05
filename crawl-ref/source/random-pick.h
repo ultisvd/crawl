@@ -33,7 +33,7 @@ class random_picker
 public:
     virtual ~random_picker();
     T pick(const vector<random_pick_entry<T>>& weights, int level, T none);
-    int probability_at(T entry, const vector<random_pick_entry<T>>& weights, int level);
+    int probability_at(T entry, const vector<random_pick_entry<T>>& weights, int level, int scale = 100);
     int rarity_at(const random_pick_entry<T>& pop,
                   int depth);
     virtual bool veto(T) { return false; }
@@ -83,7 +83,7 @@ T random_picker<T, max>::pick(const vector<random_pick_entry<T>>& weights, int l
 
 template <typename T, int max>
 int random_picker<T, max>::probability_at(T entry,
-                    const vector<random_pick_entry<T>>& weights, int level)
+                    const vector<random_pick_entry<T>>& weights, int level, int scale)
 {
     int totalrar = 0;
     int entry_rarity = 0;
@@ -106,7 +106,7 @@ int random_picker<T, max>::probability_at(T entry,
 
     if (totalrar == 0)
         return 0;
-    return entry_rarity * 100 / totalrar;
+    return entry_rarity * scale / totalrar;
 }
 
 

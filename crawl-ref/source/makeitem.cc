@@ -1492,23 +1492,6 @@ static void _generate_scroll_item(item_def& item, int force_type,
     item.plus = 0;
 }
 
-/// Choose a random spellbook type for the given level.
-static book_type _choose_book_type(int item_level)
-{
-    const book_type book = static_cast<book_type>(random2(NUM_FIXED_BOOKS));
-    if (item_type_removed(OBJ_BOOKS, book))
-        return _choose_book_type(item_level); // choose something else
-
-    // If this book is really rare for this depth, continue trying.
-    const int rarity = book_rarity(book);
-    ASSERT(rarity != 100); // 'removed item' - ugh...
-
-    if (!one_chance_in(100) && x_chance_in_y(rarity-1, item_level+1))
-        return _choose_book_type(item_level); // choose something else
-
-    return book;
-}
-
 /// Choose a random skill for a manual to be generated for.
 static skill_type _choose_manual_skill()
 {
@@ -1538,7 +1521,7 @@ static void _generate_book_item(item_def& item, bool allow_uniques,
     else if (item_level > 6 && x_chance_in_y(21 + item_level, 4000))
         item.sub_type = BOOK_MANUAL; // skill manual - rare!
     else
-        item.sub_type = _choose_book_type(item_level);
+        item.sub_type = choose_book_type(item_level);
 
     if (item.sub_type == BOOK_MANUAL)
     {
@@ -2037,13 +2020,13 @@ int items(bool allow_uniques,
     else
     {
         ASSERT(force_type == OBJ_RANDOM);
-        // Total weight: 1960
+        // Total weight: 1980
         item.base_type = random_choose_weighted(
                                      1, OBJ_RODS,
                                      9, OBJ_STAVES,
-                                    30, OBJ_BOOKS,
                                     50, OBJ_JEWELLERY,
                                     70, OBJ_WANDS,
+                                    50, OBJ_BOOKS,
                                    140, OBJ_FOOD,
                                    212, OBJ_ARMOUR,
                                    212, OBJ_WEAPONS,

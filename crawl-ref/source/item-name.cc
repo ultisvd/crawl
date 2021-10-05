@@ -206,8 +206,7 @@ string item_def::name(description_level_type descrip, bool terse, bool ident,
             descrip = DESC_A;
     }
 
-    if (base_type == OBJ_BOOKS && (ident || item_type_known(*this))
-        && book_has_title(*this))
+    if (base_type == OBJ_BOOKS && book_has_title(*this))
     {
         if (descrip != DESC_DBNAME)
             descrip = DESC_PLAIN;
@@ -1172,37 +1171,31 @@ static const char* _book_type_name(int booktype)
     case BOOK_FLAMES:                 return "Flames";
     case BOOK_FROST:                  return "Frost";
     case BOOK_FROST2:                 return "Frost Second Volume";
-    case BOOK_SUMMONINGS:             return "Summonings";
+    case BOOK_DRYADS:                 return "the Dryads";
     case BOOK_FIRE:                   return "Fire";
     case BOOK_ICE:                    return "Ice";
     case BOOK_SPATIAL_TRANSLOCATIONS: return "Spatial Translocations";
-    case BOOK_ENCHANTMENTS:           return "Enchantments";
-    case BOOK_TEMPESTS:               return "the Tempests";
+    case BOOK_HEXES:                  return "Hexes";
+    case BOOK_LIGHTNING:              return "Lightning";
     case BOOK_DEATH:                  return "Death";
     case BOOK_MISFORTUNE:             return "Misfortune";
     case BOOK_CHANGES:                return "Changes";
     case BOOK_TRANSFIGURATIONS:       return "Transfigurations";
     case BOOK_BATTLE:                 return "Battle";
-    case BOOK_CLOUDS:                 return "Clouds";
+    case BOOK_VAPOURS:                return "Vapours";
     case BOOK_NECROMANCY:             return "Necromancy";
     case BOOK_CALLINGS:               return "Callings";
     case BOOK_MALEDICT:               return "Maledictions";
     case BOOK_AIR:                    return "Air";
     case BOOK_SKY:                    return "the Sky";
     case BOOK_WARP:                   return "the Warp";
-#if TAG_MAJOR_VERSION == 34
     case BOOK_ENVENOMATIONS:          return "Envenomations";
-#endif
     case BOOK_ANNIHILATIONS:          return "Annihilations";
     case BOOK_UNLIFE:                 return "Unlife";
-#if TAG_MAJOR_VERSION == 34
     case BOOK_CONTROL:                return "Control";
-#endif
     case BOOK_GEOMANCY:               return "Geomancy";
     case BOOK_EARTH:                  return "the Earth";
-#if TAG_MAJOR_VERSION == 34
     case BOOK_WIZARDRY:               return "Wizardry";
-#endif
     case BOOK_AKASHIC_RECORD:         return "Akashic Record";
     case BOOK_POWER:                  return "Power";
     case BOOK_CANTRIPS:               return "Cantrips";
@@ -1215,9 +1208,45 @@ static const char* _book_type_name(int booktype)
     case BOOK_BEASTS:                 return "Beasts";
     case BOOK_THE_MEMOIRS_OF_THE_VIRTUOSO:  return "Virtuoso";
     case BOOK_STALKING:               return "Stalking";
-    case BOOK_WAR_CHANTS2:            return "War Chants";
+    case BOOK_WAR_CHANTS:             return "War Chants";
     case BOOK_VALOR:                  return "Valor";
     case BOOK_AID:                    return "Aid";
+    case BOOK_SPECTACLE:              return "Spectacle";
+    case BOOK_WINTER:                 return "Winter";
+    case BOOK_SPHERES:                return "the Spheres";
+    case BOOK_ARMAMENTS:              return "Armaments";
+    case BOOK_PAIN:                   return "Pain";
+    case BOOK_DECAY:                  return "Decay";
+    case BOOK_DISPLACEMENT:           return "Displacement";
+    case BOOK_RIME:                   return "Rime";
+    case BOOK_STONE:                  return "Stone";
+    case BOOK_SENSES:                 return "the Senses";
+    case BOOK_BLASTING:               return "Blasting";
+    case BOOK_IRON:                   return "Iron";
+    case BOOK_TUNDRA:                 return "the Tundra";
+    case BOOK_MOON:                   return "the Moon";
+    case BOOK_STORMS:                 return "Storms";
+    case BOOK_WEAPONS:                return "Weapons";
+    case BOOK_SLOTH:                  return "Sloth";
+    case BOOK_BLOOD:                  return "Blood";
+    case BOOK_DANGEROUS_FRIENDS:      return "Dangerous Friends";
+    case BOOK_TOUCH:                  return "Touch";
+    case BOOK_CHAOS:                  return "Chaos";
+    case BOOK_HUNTER:                 return "the Hunter";
+    case BOOK_ENCHANTMENTS:           return "Enchantments";
+    case BOOK_TOXIC:                  return "Toxic";
+    case BOOK_TEMPESTS:               return "the Tempests";
+    case BOOK_SUMMONINGS:             return "Summonings";
+    case BOOK_PANDEMONIUM:            return "Pandemonium";
+    case BOOK_LIQUEFACTION:           return "Liquefaction";
+    case BOOK_MINOR_BUFF:             return "Minor Buff";
+    case BOOK_SHIELDS:                return "Shields";
+    case BOOK_DARTS:                  return "Darts";
+    case BOOK_MESMERISE:              return "Mesmerise";
+    case BOOK_SPY:                    return "Spy";
+    case BOOK_BATTLEMAGE:             return "Battlemage";
+    case BOOK_PLAGUES:                return "Plagues";
+    case BOOK_BETRAYAL:               return "Betrayal";
     case BOOK_RANDART_LEVEL:          return "Fixed Level";
     case BOOK_RANDART_THEME:          return "Fixed Theme";
     default:                          return "Bugginess";
@@ -1339,36 +1368,54 @@ string sub_type_string(const item_def &item, bool known)
     case OBJ_POTIONS: return potion_type_name(sub_type);
     case OBJ_BOOKS:
     {
-        if (sub_type == BOOK_MANUAL)
+        switch (sub_type)
         {
+        case BOOK_MANUAL:
+            {
             if (!known)
                 return "manual";
             string bookname = "manual of ";
             bookname += skill_name(static_cast<skill_type>(item.plus));
             return bookname;
-        }
-        else if (sub_type == BOOK_NECRONOMICON)
+            }
+        case BOOK_NECRONOMICON:
             return "Necronomicon";
-        else if (sub_type == BOOK_GRAND_GRIMOIRE)
+        case BOOK_GRAND_GRIMOIRE:
             return "Grand Grimoire";
-#if TAG_MAJOR_VERSION == 34
-        else if (sub_type == BOOK_BUGGY_DESTRUCTION)
+        case BOOK_BUGGY_DESTRUCTION:
             return "tome of obsoleteness";
-#endif
-        else if (sub_type == BOOK_YOUNG_POISONERS)
+        case BOOK_EVERBURNING:
+            // Aus. English apparently follows the US spelling, not UK.
+            return "Everburning Encyclopedia";
+        case BOOK_OZOCUBU:
+            return "Ozocubu's Autobiography";
+        case BOOK_YOUNG_POISONERS:
             return "Young Poisoner's Handbook";
-        else if (sub_type == BOOK_FEN)
+        case BOOK_FEN:
             return "Fen Folio";
-        else if (sub_type == BOOK_AKASHIC_RECORD)
+        case BOOK_NEARBY:
+            return "Inescapable Atlas";
+        case BOOK_THERE_AND_BACK:
+            return "There-And-Back Book";
+        case BOOK_BIOGRAPHIES_II:
+            return "Great Wizards, Vol. II";
+        case BOOK_BIOGRAPHIES_VII:
+            return "Great Wizards, Vol. VII";
+        case BOOK_TRISMEGISTUS:
+            return "Trismegistus Codex";
+        case BOOK_UNRESTRAINED:
+            return "the Unrestrained Analects";
+        case BOOK_AKASHIC_RECORD:
             return "Akashic Record";
-        else if (sub_type == BOOK_THE_MEMOIRS_OF_THE_VIRTUOSO)
+        case BOOK_THE_MEMOIRS_OF_THE_VIRTUOSO:
             return "The Memoirs of the Virtuoso";
-        else if (sub_type == BOOK_VALOR)
+        case BOOK_VALOR:
             return "tome of Valor";
-        else if (sub_type == BOOK_AID)
+        case BOOK_AID:
             return "How To Aid your minions";
-
-        return string("book of ") + _book_type_name(sub_type);
+        default:
+            return string("book of ") + _book_type_name(sub_type);
+        }
     }
     case OBJ_STAVES: return staff_type_name(static_cast<stave_type>(sub_type));
     case OBJ_RODS:   return rod_type_name(static_cast<rod_type>(sub_type));
@@ -2227,14 +2274,13 @@ bool item_type_has_ids(object_class_type base_type)
     COMPILE_CHECK(NUM_SCROLLS    < MAX_SUBTYPES);
     COMPILE_CHECK(NUM_JEWELLERY  < MAX_SUBTYPES);
     COMPILE_CHECK(NUM_POTIONS    < MAX_SUBTYPES);
-    COMPILE_CHECK(NUM_BOOKS      < MAX_SUBTYPES);
     COMPILE_CHECK(NUM_STAVES     < MAX_SUBTYPES);
     COMPILE_CHECK(NUM_MISCELLANY < MAX_SUBTYPES);
     COMPILE_CHECK(NUM_RODS       < MAX_SUBTYPES);
 
     return base_type == OBJ_WANDS || base_type == OBJ_SCROLLS
         || base_type == OBJ_JEWELLERY || base_type == OBJ_POTIONS
-        || base_type == OBJ_STAVES || base_type == OBJ_BOOKS;
+        || base_type == OBJ_STAVES;
 }
 
 bool item_brand_known(const item_def& item)
@@ -2651,9 +2697,6 @@ void check_item_knowledge(bool unknown_items)
             if (i == OBJ_JEWELLERY && j >= NUM_RINGS && j < AMU_FIRST_AMULET)
                 continue;
 
-            if (i == OBJ_BOOKS && (j > MAX_FIXED_BOOK || !unknown_items))
-                continue;
-
             if (item_type_removed(i, j))
                 continue;
 
@@ -2720,7 +2763,6 @@ void check_item_knowledge(bool unknown_items)
             { OBJ_BOOKS, BOOK_MANUAL },
             { OBJ_RODS, NUM_RODS },
             { OBJ_GOLD, 1 },
-            { OBJ_BOOKS, NUM_BOOKS },
             { OBJ_RUNES, NUM_RUNE_TYPES },
         };
         for (auto e : misc_list)

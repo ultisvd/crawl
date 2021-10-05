@@ -901,7 +901,11 @@ static int _spell_weight(spell_type spell)
 // weights of all unknown spells in the book.
 static int _book_weight(book_type book)
 {
-    ASSERT_RANGE(book, 0, MAX_FIXED_BOOK + 1);
+    ASSERT_RANGE(book, 0, NUM_BOOKS);
+    ASSERT(book != BOOK_MANUAL);
+    ASSERT(book != BOOK_RANDART_LEVEL);
+    ASSERT(book != BOOK_RANDART_THEME);
+
 
     int total_weight = 0;
     for (spell_type stype : spellbook_template(book))
@@ -1046,16 +1050,13 @@ static bool _do_book_acquirement(item_def &book, int agent)
         int total_weights = 0;
 
         // Pick a random spellbook according to unknown spells contained.
-        int weights[MAX_FIXED_BOOK + 1] = { 0 };
-        for (int bk = 0; bk <= MAX_FIXED_BOOK; bk++)
+        int weights[NUM_BOOKS] = { 0 };
+        for (int bk = 0; bk < NUM_BOOKS; bk++)
         {
             const auto bkt = static_cast<book_type>(bk);
 
-            if (is_rare_book(bkt) && agent == GOD_SIF_MUNA
-                || item_type_removed(OBJ_BOOKS, bk))
-            {
+            if (!book_exists(bkt))
                 continue;
-            }
 
             weights[bk]    = _book_weight(bkt);
             total_weights += weights[bk];
@@ -1081,7 +1082,7 @@ static bool _do_book_acquirement(item_def &book, int agent)
             max(1, (_skill_rdiv(SK_SPELLCASTING) + 2) / 3);
 
         book.sub_type  = BOOK_RANDART_LEVEL;
-        if (!make_book_level_randart(book, level))
+        if (!make_book_level_randart(book, level, agent == GOD_SIF_MUNA))
             return false;
         break;
     }
@@ -1283,14 +1284,6 @@ static string _why_reject(const item_def &item, int agent)
         return "Destroying pain weapon after Necro sac!";
     }
 
-    // Sif Muna shouldn't gift special books.
-    // (The spells therein are still fair game for randart books.)
-    if (agent == GOD_SIF_MUNA
-        && is_rare_book(static_cast<book_type>(item.sub_type)))
-    {
-        ASSERT(item.base_type == OBJ_BOOKS);
-        return "Destroying sif-gifted rarebook!";
-    }
 
     return ""; // all OK
 }

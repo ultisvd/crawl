@@ -16,10 +16,10 @@
 
 class formatted_string;
 
-int  book_rarity(book_type which_book);
-int  spell_rarity(spell_type which_spell);
-bool is_rare_book(book_type type);
-void init_spell_rarities();
+bool book_exists(book_type which_book);
+#ifdef DEBUG
+void validate_spellbooks();
+#endif
 bool is_player_spell(spell_type which_spell);
 bool is_player_book_spell(spell_type which_spell);
 bool is_wand_spell(spell_type spell);
@@ -33,6 +33,8 @@ bool player_has_available_spells();
 bool learn_spell();
 bool learn_spell(spell_type spell, bool wizard = false);
 
+bool library_add_spells(vector<spell_type> spells);
+
 string desc_cannot_memorise_reason(spell_type spell);
 
 spell_type spell_in_wand(wand_type wand);
@@ -45,3 +47,5 @@ bool has_spells_to_memorise(bool silent = true);
 vector<spell_type> get_sorted_spell_list(bool silent = false,
                                          bool memorise_only = true);
 spret divine_exegesis(bool fail);
+
+book_type choose_book_type(int item_level);

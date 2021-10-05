@@ -3874,6 +3874,27 @@ static void tag_read_you(reader &th)
 
 }
 
+#if TAG_MAJOR_VERSION == 34
+/// _cleanup_book_ids handles unmarshalling of old ID data for books.
+static void _cleanup_book_ids(reader & th, int n_subtypes)
+{
+    if (th.getMinorVersion() >= TAG_MINOR_BOOK_UNID
+        || th.getMinorVersion() < TAG_MINOR_BOOK_ID)
+    {
+        return;
+    }
+
+    const bool ubyte = th.getMinorVersion() < TAG_MINOR_ID_STATES;
+    for (int j = 0; j < n_subtypes; ++j)
+    {
+        if (ubyte)
+            unmarshallUByte(th);
+        else
+            unmarshallBoolean(th);
+    }
+}
+#endif
+
 static void tag_read_you_items(reader &th)
 {
     int count, count2;
@@ -3979,18 +4000,19 @@ static void tag_read_you_items(reader &th)
     for (int i = 0; i < iclasses; ++i)
     {
         if (!item_type_has_ids((object_class_type)i))
+        {
+#if TAG_MAJOR_VERSION == 34
+            if (i == OBJ_BOOKS)
+                _cleanup_book_ids(th, count2);
+#endif
             continue;
+        }
         for (int j = 0; j < count2; ++j)
         {
 #if TAG_MAJOR_VERSION == 34
             if (th.getMinorVersion() < TAG_MINOR_ID_STATES)
             {
-                uint8_t x;
-
-                if (th.getMinorVersion() < TAG_MINOR_BOOK_ID && i == OBJ_BOOKS)
-                    x = ID_UNKNOWN_TYPE;
-                else
-                    x = unmarshallUByte(th);
+                const uint8_t x = unmarshallUByte(th);
 
                 ASSERT(x < NUM_ID_STATE_TYPES);
                 if (x > ID_UNKNOWN_TYPE)
@@ -4926,7 +4948,7 @@ void unmarshallItem(reader &th, item_def &item)
     if (th.getMinorVersion() < TAG_MINOR_WAR_CHANT)
     {
         if (item.base_type == OBJ_BOOKS) {
-            if (item.sub_type >= BOOK_WAR_CHANTS2) {
+            if (item.sub_type >= BOOK_WAR_CHANTS) {
                 item.sub_type++;
             }
         }

@@ -1612,6 +1612,7 @@ static bool _handle_uskayaw_ability_unlocks()
 static bool _gift_sif_kiku_gift(bool forced)
 {
     bool success = false;
+    int item_index = NON_ITEM;
     book_type gift = NUM_BOOKS;
     // Break early if giving a gift now means it would be lost.
     if (!feat_has_solid_floor(grd(you.pos())))
@@ -1652,7 +1653,7 @@ static bool _gift_sif_kiku_gift(bool forced)
         // because the player already has seen all spells.
         if (you_worship(GOD_SIF_MUNA))
         {
-            int item_index = acquirement_create_item(OBJ_BOOKS, you.religion,
+            item_index = acquirement_create_item(OBJ_BOOKS, you.religion,
                                                      true, you.pos());
             success = (item_index != NON_ITEM);
         }
@@ -1691,7 +1692,10 @@ static bool _gift_sif_kiku_gift(bool forced)
         you.num_total_gifts[you.religion]++;
         // Timeouts are meaningless for Kiku and the Agraphede.
         if (!you_worship(GOD_KIKUBAAQUDGHA) || !you_worship(GOD_AGRAPHEDE))
-            _inc_gift_timeout(40 + random2avg(19, 2));
+        {
+            const int n_spells = spells_in_book(env.item[item_index]).size();
+            _inc_gift_timeout(10 + n_spells * 6 + random2avg(19, 2));
+        }
         take_note(Note(NOTE_GOD_GIFT, you.religion));
     }
 

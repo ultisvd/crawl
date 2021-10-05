@@ -800,40 +800,20 @@ unsigned int item_value(item_def item, bool ident)
 
     case OBJ_BOOKS:
     {
-        valued = 150;
+        valued = 0;
         const book_type book = static_cast<book_type>(item.sub_type);
+        if (book == BOOK_MANUAL)
+            return 800;
 #if TAG_MAJOR_VERSION == 34
         if (book == BOOK_BUGGY_DESTRUCTION)
             break;
 #endif
-
-        if (item_type_known(item))
-        {
-            double rarity = 0;
-            if (is_random_artefact(item))
-            {
-                const vector<spell_type>& spells = spells_in_book(item);
-
-                int rarest = 0;
-                for (spell_type spell : spells)
-                {
-                    rarity += spell_rarity(spell);
-                    if (spell_rarity(spell) > rarest)
-                        rarest = spell_rarity(spell);
-                }
-                rarity += rarest * 2;
-                rarity /= spells.size();
-
-                // Surcharge for large books.
-                if (spells.size() > 6)
-                    rarity *= spells.size() / 6;
-
-            }
-            else
-                rarity = book_rarity(book);
-
-            valued += (int)(rarity * 50.0);
-        }
+        int levels = 0;
+        const vector<spell_type> spells = spells_in_book(item);
+        for (spell_type spell : spells)
+            levels += spell_difficulty(spell);
+        // Level 9 spells are worth 4x level 1 spells.
+        valued += levels * 20 + spells.size() * 20;
         break;
     }
 

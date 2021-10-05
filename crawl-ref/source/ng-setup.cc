@@ -184,18 +184,6 @@ item_def* newgame_make_item(object_class_type base,
 
     origin_set_startequip(item);
 
-    // Wanderers may or may not already have a spell. - bwr
-    // Also, when this function gets called their possible randbook
-    // has not been initialised and will trigger an ASSERT.
-    if (item.base_type == OBJ_BOOKS && you.char_class != JOB_WANDERER)
-    {
-        spell_type which_spell = spells_in_book(item)[0];
-        if (!spell_is_useless(which_spell, false, true)
-            && spell_difficulty(which_spell) <= 1)
-        {
-            add_spell_to_memory(which_spell);
-        }
-    }
 
     return &item;
 }
@@ -242,6 +230,22 @@ static void _give_ammo(weapon_type weapon, int plus)
         break;
     default:
         break;
+    }
+}
+
+static void _give_job_spells(job_type job)
+{
+    vector<spell_type> spells = get_job_spells(job);
+    if (spells.empty())
+        return;
+
+    library_add_spells(spells);
+
+    const spell_type first_spell = spells[0];
+    if (!spell_is_useless(first_spell, false, true)
+        && spell_difficulty(first_spell) <= 1)
+    {
+        add_spell_to_memory(first_spell);
     }
 }
 
@@ -370,6 +374,7 @@ void give_items_skills(const newgame_def& ng)
     
 
     give_job_skills(you.char_class);
+    _give_job_spells(you.char_class);
 
     if (job_gets_ranged_weapons(you.char_class))
         _give_ammo(ng.weapon, you.char_class == JOB_HUNTER ? 1 : 0);
@@ -603,9 +608,6 @@ static void _setup_generic(const newgame_def& ng)
 
     // Must be after _give_basic_knowledge
     add_held_books_to_library();
-
-    if (you.char_class == JOB_WANDERER)
-        memorise_wanderer_spell();
 
     // A first pass to link the items properly.
     for (int i = 0; i < ENDOFPACK; ++i)
