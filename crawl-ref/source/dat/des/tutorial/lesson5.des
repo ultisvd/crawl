@@ -32,7 +32,7 @@ FTILE:   ABCDEFHI = tutorial_pad
 KPROP:   b_ = bloody / nothing
 KFEAT:   _ = altar_trog
 ITEM:    mace mundane not_cursed
-ITEM:    book of clouds
+ITEM:    book of vapours
 MONS:    rat always_corpse
 MONS:    hobgoblin ; short sword ego:none not_cursed | w:5 mace ego:none not_cursed
 MONS:    gnoll ; mace ego:none not_cursed
