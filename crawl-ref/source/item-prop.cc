@@ -39,6 +39,8 @@
 #include "xom.h"
 #include "xp-evoker-data.h"
 
+// Returns the mask of interesting identify bits for this item
+// (e.g., missiles don't have know-type).
 static iflags_t _full_ident_mask(const item_def& item);
 
 // XXX: Name strings in most of the following are currently unused!
@@ -1111,17 +1113,9 @@ static iflags_t _full_ident_mask(const item_def& item)
     case OBJ_ORBS:
     case OBJ_RUNES:
     case OBJ_GOLD:
+    case OBJ_BOOKS:
         flagset = 0;
         break;
-    case OBJ_BOOKS:
-#if TAG_MAJOR_VERSION == 34
-        if (item.sub_type == BOOK_BUGGY_DESTRUCTION)
-        {
-            flagset = 0;
-            break;
-        }
-        // Intentional fall-through.
-#endif
     case OBJ_SCROLLS:
     case OBJ_POTIONS:
     case OBJ_WANDS:

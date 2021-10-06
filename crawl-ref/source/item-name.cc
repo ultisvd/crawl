@@ -1135,32 +1135,6 @@ static string misc_type_name(const item_def* item)
     }
 }
 
-static bool _book_visually_special(uint32_t s)
-{
-    return s & 128; // one in ten books; c.f. item_colour()
-}
-
-static const char* book_secondary_string(uint32_t s)
-{
-    if (!_book_visually_special(s))
-        return "";
-
-    static const char* const secondary_strings[] = {
-        "", "chunky ", "thick ", "thin ", "wide ", "glowing ",
-        "dog-eared ", "oblong ", "runed ", "", "", ""
-    };
-    return secondary_strings[(s / NDSC_BOOK_PRI) % ARRAYSZ(secondary_strings)];
-}
-
-static const char* book_primary_string(uint32_t p)
-{
-    static const char* const primary_strings[] = {
-        "paperback", "hardcover", "leatherbound", "metal-bound", "papyrus",
-    };
-    COMPILE_CHECK(NDSC_BOOK_PRI == ARRAYSZ(primary_strings));
-
-    return primary_strings[p % ARRAYSZ(primary_strings)];
-}
 
 static const char* _book_type_name(int booktype)
 {
@@ -2102,18 +2076,10 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
         if (is_random_artefact(*this) && !dbname && !basename)
         {
             buff << get_artefact_name(*this);
-            if (!know_type)
-                buff << "book";
             break;
         }
         if (basename)
             buff << (item_typ == BOOK_MANUAL ? "manual" : "book");
-        else if (!know_type)
-        {
-            buff << book_secondary_string(rnd)
-                 << book_primary_string(rnd) << " "
-                 << (item_typ == BOOK_MANUAL ? "manual" : "book");
-        }
         else
             buff << sub_type_string(*this, !dbname);
         break;
@@ -2295,23 +2261,19 @@ bool item_type_known(const item_def& item)
     if (item_ident(item, ISFLAG_KNOW_TYPE))
         return true;
 
+    switch (item.base_type)
+    {
+    case OBJ_MISCELLANY:
+    case OBJ_MISSILES:
+    case OBJ_BOOKS:
+        return true;
+    default:
+        break;
+    }
+
     // Artefacts have different descriptions from other items,
     // so we can't use general item knowledge for them.
     if (is_artefact(item))
-        return false;
-
-    if (item.base_type == OBJ_MISSILES)
-        return true;
-
-    if (item.base_type == OBJ_MISCELLANY)
-        return true;
-
-#if TAG_MAJOR_VERSION == 34
-    if (item.is_type(OBJ_BOOKS, BOOK_BUGGY_DESTRUCTION))
-        return true;
-#endif
-
-    if (item.is_type(OBJ_BOOKS, BOOK_MANUAL))
         return false;
 
     if (item.is_type(OBJ_FOOD, FOOD_CHUNK))
@@ -2537,6 +2499,8 @@ public:
             name = pluralise(item->name(DESC_DBNAME));
         else if (item->is_type(OBJ_BOOKS, BOOK_MANUAL))
             name = "manuals";
+        else if (item->is_type(OBJ_BOOKS, 0))
+            name = "spellbooks";
         else if (item->base_type == OBJ_RODS || item->base_type == OBJ_GOLD)
         {
             name = lowercase_string(item_class_name(item->base_type));
@@ -2763,6 +2727,7 @@ void check_item_knowledge(bool unknown_items)
             { OBJ_BOOKS, BOOK_MANUAL },
             { OBJ_RODS, NUM_RODS },
             { OBJ_GOLD, 1 },
+            { OBJ_BOOKS, 0 },
             { OBJ_RUNES, NUM_RUNE_TYPES },
         };
         for (auto e : misc_list)
@@ -4056,9 +4021,9 @@ bool is_useless_item(const item_def &item, bool temp)
         }
 
     case OBJ_BOOKS:
-        if (!item_type_known(item))
+        if (item.sub_type == NUM_BOOKS)
             return false;
-        if (item_type_known(item) && item.sub_type != BOOK_MANUAL)
+        if (item.sub_type != BOOK_MANUAL)
         {
             // Spellbooks are useless if all spells are either in the library
             // already or are uncastable.
