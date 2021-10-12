@@ -1550,7 +1550,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
                                 // it nevertheless requires line-of-fire.
                                 || spell == SPELL_APPORTATION;
 
-        const int range = calc_spell_range(spell, powc, allow_fail);
+        const int range = calc_spell_range(spell, powc, is_auto_target?true:allow_fail);
 
         unique_ptr<targeter> hitfunc = spell_targeter(spell, powc, range);
 
