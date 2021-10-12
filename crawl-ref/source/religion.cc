@@ -1691,7 +1691,7 @@ static bool _gift_sif_kiku_gift(bool forced)
         you.num_current_gifts[you.religion]++;
         you.num_total_gifts[you.religion]++;
         // Timeouts are meaningless for Kiku and the Agraphede.
-        if (!you_worship(GOD_KIKUBAAQUDGHA) || !you_worship(GOD_AGRAPHEDE))
+        if (!you_worship(GOD_KIKUBAAQUDGHA) && !you_worship(GOD_AGRAPHEDE))
         {
             const int n_spells = spells_in_book(env.item[item_index]).size();
             _inc_gift_timeout(10 + n_spells * 6 + random2avg(19, 2));
