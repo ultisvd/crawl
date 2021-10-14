@@ -1855,6 +1855,7 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_BLINK_CLOSE:
     case SPELL_TOMB_OF_DOROKLOHE:
     case SPELL_CHAIN_LIGHTNING:    // the only user is reckless
+    case SPELL_CHAIN_OF_CHAOS:
     case SPELL_SUMMON_EYEBALLS:
     case SPELL_SUMMON_BUTTERFLIES:
 #if TAG_MAJOR_VERSION == 34
@@ -3458,6 +3459,11 @@ static bool _trace_los(monster* agent, bool (*vulnerable)(actor*))
         }
     }
     return mons_should_fire(tracer);
+}
+
+static bool _dummy_vulnerable(actor*)
+{
+    return true;
 }
 
 static bool _tornado_vulnerable(actor* victim)
@@ -6753,6 +6759,11 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         cast_chain_spell(spell_cast, splpow, mons);
         return;
 
+    case SPELL_CHAIN_OF_CHAOS:
+        cast_chain_spell(spell_cast, splpow, mons);
+        return;
+
+
     case SPELL_SUMMON_EYEBALLS:
         sumcount2 = 1 + random2(mons->spell_hd(spell_cast) / 7 + 1);
 
@@ -8562,6 +8573,12 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
     case SPELL_CHAIN_LIGHTNING:
         return !_trace_los(mon, _elec_vulnerable)
                 || you.visible_to(mon) && friendly; // don't zap player
+
+    case SPELL_CHAIN_OF_CHAOS:
+        return !_trace_los(mon, _dummy_vulnerable)
+            || you.visible_to(mon)
+            && friendly;
+
     case SPELL_CORRUPTING_PULSE:
         return !_trace_los(mon, _mutation_vulnerable)
                || you.visible_to(mon)
