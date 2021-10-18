@@ -4564,6 +4564,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_STUNNING_BURST, "Stunning Burst",
+    spschool::conjuration | spschool::air,
+    spflag::target | spflag::needs_tracer | spflag::monster,
+    4,
+    200,
+    LOS_RADIUS, LOS_RADIUS,
+    8, 8,
+    TILEG_GENERIC_MONSTER_SPELL,
+},
+
+{
     SPELL_NO_SPELL, "nonexistent spell",
     spschool::none,
     spflag::testing,

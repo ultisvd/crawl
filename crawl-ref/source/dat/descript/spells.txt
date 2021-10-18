@@ -1601,6 +1601,12 @@ Strip Resistance spell
 Greatly reduces the target's magic resistance, making them more vulnerable to
 hostile enchantments.
 %%%%
+Stunning Burst spell
+
+Fires a weak electrical burst which, on impact, causes very brief paralysis.
+Willpower is of no use against this effect, but resistance to electricity can
+sometimes prevent it.
+%%%%
 Sublimation of Blood spell
 
 Converts some of the caster's blood into magical energy. The process is painful

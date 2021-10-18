@@ -1482,6 +1482,7 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
         }
         break;
 
+    case BEAM_STUN_BOLT:
     case BEAM_ELECTRICITY:
     case BEAM_ROD_ELEC:
         hurted = resist_adjust_damage(mons, pbolt.flavour, hurted);
@@ -4255,6 +4256,16 @@ void bolt::affect_player()
     // poison effects etc work properly.
     check_your_resists(pre_res_dam, flavour, "", this, true);
 
+    if (flavour == BEAM_STUN_BOLT
+        && !you.duration[DUR_PARALYSIS]
+        && (you.res_elec() <= 0 || coinflip()))
+    {
+        const bool was_parad = you.duration[DUR_PARALYSIS];
+        you.paralyse(agent(), 1);
+        was_affected = (!was_parad && you.duration[DUR_PARALYSIS]) || was_affected;
+
+    }
+
     if (flavour == BEAM_MIASMA && final_dam > 0)
         was_affected = miasma_player(agent(), name);
 
@@ -4944,6 +4955,15 @@ void bolt::monster_post_hit(monster* mon, int dmg)
         if (you.see_cell(mon->pos()))
             mprf("%s!", effect.desc);
         effect.effect(*mon, *this);
+    }
+
+    if (flavour == BEAM_STUN_BOLT
+        && !mon->has_ench(ENCH_PARALYSIS)
+        && mon->res_elec() <= 0
+        && !mon->stasis())
+    {
+        simple_monster_message(*mon, " is paralysed.");
+        mon->add_ench(mon_enchant(ENCH_PARALYSIS, 1, agent(), BASELINE_DELAY));
     }
 }
 
@@ -7070,6 +7090,7 @@ static string _beam_type_name(beam_type type)
     case BEAM_FRAG:                  return "fragments";
     case BEAM_LAVA:                  return "magma";
     case BEAM_ICE:                   return "ice";
+    case BEAM_STUN_BOLT:             return "stunning bolt";
     case BEAM_DEVASTATION:           return "devastation";
     case BEAM_RANDOM:                return "random";
     case BEAM_CHAOS:                 return "chaos";
