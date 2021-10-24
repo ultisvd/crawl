@@ -22,6 +22,7 @@
 #include "player.h"
 #include "random.h" // for midpoint_msg.offset() in duration-data
 #include "religion.h"
+#include "spl-damage.h" // COUPLING_TIME_KEY
 #include "skills.h"
 #include "spl-selfench.h"
 #include "spl-summoning.h" // NEXT_DOOM_HOUND_KEY in duration-data
@@ -126,6 +127,16 @@ static string _ray_text()
         default:
             return "Ray";
     }
+}
+
+static vector<string> _charge_strings = { "Charge-", "Charge/",
+                                          "Charge|", "Charge\\" };
+
+static string _charge_text()
+{
+    static int charge_index = 0;
+    charge_index = (charge_index + 1) % 4;
+    return _charge_strings[charge_index];
 }
 
 /**
@@ -789,6 +800,7 @@ bool fill_status_info(int status, status_info& inf)
         }
     }
     break;
+
     case DUR_WILL_OF_EARTH:
         inf.light_text
             = make_stringf("Earth (%u)",
@@ -821,6 +833,13 @@ bool fill_status_info(int status, status_info& inf)
             inf.light_text = make_stringf("Barrier (%u)", you.attribute[ATTR_BARRIER]);
             inf.short_text = "hermetic barrier";
             inf.long_text = "You are protected by hermetic barrier.";
+        }
+        break;
+    case STATUS_MAXWELLS:
+        if (you.props.exists(COUPLING_TIME_KEY))
+        {
+            inf.light_colour = LIGHTCYAN;
+            inf.light_text = _charge_text().c_str();
         }
         break;
     default:

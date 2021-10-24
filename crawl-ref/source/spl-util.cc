@@ -1652,6 +1652,9 @@ bool spell_no_hostile_in_range(spell_type spell, bool rod)
     case SPELL_MANIFOLD_ASSAULT:
         return cast_manifold_assault(-1, false, false) == spret::abort;
 
+    case SPELL_MAXWELLS_COUPLING:
+        return cast_maxwells_coupling(-1, false, true) == spret::abort;
+
     default:
         break;
     }

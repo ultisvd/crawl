@@ -8,6 +8,8 @@ struct bolt;
 struct dice_def;
 class dist;
 
+#define COUPLING_TIME_KEY "maxwells_charge_time"
+
 void setup_fire_storm(const actor *source, int pow, bolt &beam);
 spret cast_fire_storm(int pow, bolt &beam, bool fail);
 bool cast_smitey_damnation(int pow, bolt &beam);
@@ -98,6 +100,11 @@ void actor_apply_toxic_bog(actor *act);
 
 spret cast_frozen_ramparts(int pow, bool fail);
 dice_def ramparts_damage(int pow, bool random = true);
+bool wait_spell_active(spell_type spell);
+vector<monster*> find_maxwells_possibles();
+spret cast_maxwells_coupling(int pow, bool fail, bool tracer = false);
+void handle_maxwells_coupling();
+void end_maxwells_coupling();
 spret cast_hailstorm(int pow, bool fail, bool tracer = false);
 
 spret cast_starburst(int pow, bool fail, bool tracer=false);

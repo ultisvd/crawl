@@ -23,6 +23,7 @@
 #include "english.h"
 #include "env.h"
 #include "fight.h"
+#include "fineff.h"
 #include "food.h"
 #include "fprop.h"
 #include "god-abil.h"
@@ -3007,6 +3008,19 @@ spret cast_searing_ray(int pow, bolt &beam, bool fail)
 
 void handle_searing_ray()
 {
+    if (you.attribute[ATTR_SEARING_RAY] == 0)
+        return;
+
+    // Convert prepping value into stage one value (so it can fire next turn)
+    if (you.attribute[ATTR_SEARING_RAY] == -1)
+    {
+        you.attribute[ATTR_SEARING_RAY] = 1;
+        return;
+    }
+
+    if (crawl_state.prev_cmd != CMD_WAIT)
+        end_searing_ray();
+
     ASSERT_RANGE(you.attribute[ATTR_SEARING_RAY], 1, 4);
 
     // All of these effects interrupt a channeled ray
@@ -3928,6 +3942,182 @@ dice_def ramparts_damage(int pow, bool random)
     return dice_def(1, size);
 }
 
+static bool _act_worth_targeting(const actor& caster, const actor& a)
+{
+    if (!caster.see_cell_no_trans(a.pos()))
+        return false;
+    if (a.is_player())
+        return true;
+    const monster& m = *a.as_monster();
+    return !mons_is_firewood(m)
+        && !mons_is_conjured(m.type)
+        && (!caster.is_player() || !god_protects(&you, &m, true));
+}
+
+
+static bool _maxwells_target_check(monster& m)
+{
+    return _act_worth_targeting(you, m)
+        && !m.wont_attack();
+}
+
+bool wait_spell_active(spell_type spell)
+{
+    // XX deduplicate code somehow
+    return spell == SPELL_SEARING_RAY
+        && you.attribute[ATTR_SEARING_RAY] != 0
+        || spell == SPELL_MAXWELLS_COUPLING
+        && you.props.exists(COUPLING_TIME_KEY);
+}
+// returns the closest target to the player, choosing randomly if there are more
+// than one (see `fair` argument to distance_iterator).
+static monster* _find_maxwells_target(bool tracer)
+{
+    for (distance_iterator di(you.pos(), !tracer, true, LOS_RADIUS); di; ++di)
+    {
+        monster* mon = monster_at(*di);
+        if (mon && _maxwells_target_check(*mon)
+            && (!tracer || you.can_see(*mon)))
+        {
+            return mon;
+        }
+    }
+
+    return nullptr;
+}
+
+// find all possible targets at the closest distance; used for targeting
+vector<monster*> find_maxwells_possibles()
+{
+    vector<monster*> result;
+    monster* seed = _find_maxwells_target(true);
+    if (seed)
+    {
+        const int distance = max(abs(you.pos().x - seed->pos().x),
+            abs(you.pos().y - seed->pos().y));
+        for (distance_iterator di(you.pos(), true, true, distance); di; ++di)
+        {
+            monster* mon = monster_at(*di);
+            if (mon && _maxwells_target_check(*mon) && you.can_see(*mon))
+                result.push_back(mon);
+        }
+    }
+    return result;
+}
+
+spret cast_maxwells_coupling(int pow, bool fail, bool tracer)
+{
+    monster* const mon = _find_maxwells_target(tracer);
+
+    if (tracer)
+    {
+        if (!mon || !you.can_see(*mon))
+            return spret::abort;
+        else
+            return spret::success;
+    }
+
+    fail_check();
+
+    mpr("You begin accumulating electric charge.");
+    string msg = "(Press <w>%</w> to continue charging.)";
+    insert_commands(msg, { CMD_WAIT });
+    mpr(msg);
+
+    you.props[COUPLING_TIME_KEY] =
+        -(30 + div_rand_round(random2((200 - pow) * 40), 200));
+    return spret::success;
+}
+
+static void _discharge_maxwells_coupling()
+{
+    monster* const mon = _find_maxwells_target(false);
+
+    if (!mon)
+    {
+        mpr("Your charge dissipates without a target.");
+        return;
+    }
+
+    targeter_radius hitfunc(&you, LOS_NO_TRANS);
+    flash_view_delay(UA_PLAYER, LIGHTCYAN, 100, &hitfunc);
+
+    god_conduct_trigger conducts[3];
+    set_attack_conducts(conducts, *mon, you.can_see(*mon));
+
+
+    if (mon->type == MONS_ROYAL_JELLY && !mon->is_summoned())
+    {
+        // need to do this here, because react_to_damage is never called
+        mprf("A cloud of jellies burst out of %s as the current"
+            " ripples through it!", mon->name(DESC_THE).c_str());
+        trj_spawn_fineff::schedule(&you, mon, mon->pos(), mon->hit_points);
+    }
+    else
+    {
+        mprf("The electricity discharges through %s!", mon->name(DESC_THE).c_str());
+    }
+
+
+
+    const bool goldify = have_passive(passive_t::goldify_corpses);
+
+    if (goldify)
+        simple_monster_message(*mon, " vapourizes and condenses as gold!");
+    else
+        simple_monster_message(*mon, " vapourizes in an electric haze!");
+
+    const coord_def pos = mon->pos();
+    item_def* corpse = monster_die(*mon, KILL_YOU,
+        actor_to_death_source(&you));
+    if (corpse && !goldify)
+        destroy_item(corpse->index());
+
+    noisy(spell_effect_noise(SPELL_MAXWELLS_COUPLING), pos, you.mid);
+}
+
+void handle_maxwells_coupling()
+{
+    if (!you.props.exists(COUPLING_TIME_KEY))
+        return;
+
+    int charging_auts_remaining = you.props[COUPLING_TIME_KEY].get_int();
+
+    if (charging_auts_remaining < 0)
+    {
+        mpr("You feel charge building up...");
+        you.props[COUPLING_TIME_KEY] = -(charging_auts_remaining
+            + you.time_taken);
+        return;
+    }
+
+    if (crawl_state.prev_cmd != CMD_WAIT)
+    {
+        end_maxwells_coupling();
+        return;
+    }
+
+    if (charging_auts_remaining <= you.time_taken)
+    {
+        you.time_taken = charging_auts_remaining;
+        you.props.erase(COUPLING_TIME_KEY);
+        _discharge_maxwells_coupling();
+        return;
+    }
+
+    you.props[COUPLING_TIME_KEY] = charging_auts_remaining
+        - you.time_taken;
+    mpr("You feel charge building up...");
+}
+
+void end_maxwells_coupling()
+{
+    if (you.props.exists(COUPLING_TIME_KEY))
+    {
+        mpr("The insufficient charge disappates harmlessly.");
+        you.props.erase(COUPLING_TIME_KEY);
+    }
+}
 
 /**
  * Hailstorm the given cell. (Per the spell.)

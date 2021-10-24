@@ -94,7 +94,7 @@ static const vector<spell_type> spellbook_templates[] =
 {   // Book of Lightning
     SPELL_DISCHARGE,
     SPELL_LIGHTNING_BOLT,
-    //SPELL_MAXWELLS_COUPLING
+    SPELL_MAXWELLS_COUPLING
 },
 
 {   // Book of Death
@@ -160,7 +160,7 @@ static const vector<spell_type> spellbook_templates[] =
 {   // Book of the Sky
     SPELL_SUMMON_LIGHTNING_SPIRE,
     SPELL_STORM_FORM,
-    //SPELL_MAXWELLS_COUPLING
+    SPELL_MAXWELLS_COUPLING
 },
 
 {   // Book of the Warp

@@ -2294,6 +2294,9 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
     case SPELL_HAILSTORM:
         return cast_hailstorm(powc, fail);
 
+    case SPELL_MAXWELLS_COUPLING:
+        return cast_maxwells_coupling(powc, fail);
+
     case SPELL_STARBURST:
         return cast_starburst(powc, fail);
 
@@ -2615,6 +2618,8 @@ string spell_damage_string(spell_type spell, bool evoked)
 {
     switch (spell)
     {
+    case SPELL_MAXWELLS_COUPLING:
+        return "¡Ä";
     case SPELL_VAMPIRIC_DRAINING:
     {
         const int power = _spell_power(spell, false);

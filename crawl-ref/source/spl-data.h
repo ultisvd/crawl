@@ -4344,6 +4344,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_MAXWELLS_COUPLING, "Maxwell's Capacitive Coupling",
+    spschool::air,
+    spflag::no_ghost,
+    8,
+    200,
+    LOS_RADIUS, LOS_RADIUS,
+    7, 25,
+    TILEG_MAXWELLS_COUPLING,
+},
+
+{
     SPELL_HAILSTORM, "Hailstorm",
     spschool::conjuration | spschool::ice,
     spflag::area,
