@@ -51,6 +51,7 @@ static const map<job_type, job_def> job_data =
         SPELL_REPEL_MISSILES,
         SPELL_DISCHARGE,
         SPELL_AIRSTRIKE,
+        SPELL_LIGHTNING_BOLT
     },
     { "robe" },
     WCHOICE_NONE,
@@ -68,6 +69,7 @@ static const map<job_type, job_def> job_data =
         SPELL_INNER_FLAME,
         SPELL_PORTAL_PROJECTILE,
         SPELL_CAUSE_FEAR,
+        SPELL_LEDAS_LIQUEFACTION
     },
     { "robe" },
     WCHOICE_RANGED,
@@ -131,8 +133,9 @@ static const map<job_type, job_def> job_data =
         SPELL_MAGIC_DART,
         SPELL_SEARING_RAY,
         SPELL_DAZZLING_SPRAY,
-        SPELL_FULMINANT_PRISM,
+        SPELL_FORCE_LANCE,
         SPELL_ISKENDERUNS_MYSTIC_BLAST,
+        SPELL_FULMINANT_PRISM
     },
     { "robe" },
     WCHOICE_NONE,
@@ -151,6 +154,7 @@ static const map<job_type, job_def> job_data =
         SPELL_PASSWALL,
         SPELL_STONE_ARROW,
         SPELL_PETRIFY,
+        SPELL_LRD
     },
     { "stone q:30", "robe", },
     WCHOICE_NONE,
@@ -233,7 +237,7 @@ static const map<job_type, job_def> job_data =
     0, 7, 5,
     { SP_DEEP_ELF, SP_MERFOLK, SP_NAGA, SP_BASE_DRACONIAN, SP_DEMIGOD,
       SP_GARGOYLE, },
-    { SPELL_FREEZE, SPELL_OZOCUBUS_ARMOUR }, //select ice spell
+    { SPELL_FREEZE, SPELL_OZOCUBUS_ARMOUR, SPELL_SUMMON_ICE_BEAST }, //select ice spell
     { "robe" },
     WCHOICE_NONE,
     { { SK_CONJURATIONS, 1 }, { SK_ICE_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
@@ -250,6 +254,7 @@ static const map<job_type, job_def> job_data =
         SPELL_PASSWALL,
         SPELL_PETRIFY,
         SPELL_WILL_OF_EARTH,
+        SPELL_WALL_MELTING
     },
     { "dagger plus:2", "robe", "cloak", "potion of degeneration q:2" },
     WCHOICE_NONE,
@@ -309,6 +314,7 @@ static const map<job_type, job_def> job_data =
         SPELL_SONG_OF_SLAYING,
         SPELL_SPECTRAL_WEAPON,
         SPELL_REGENERATION,
+        SPELL_BARRIER
     },
     { "leather armour" },
     WCHOICE_PLAIN,
@@ -344,6 +350,7 @@ static const map<job_type, job_def> job_data =
         SPELL_STICKS_TO_SNAKES,
         SPELL_SPIDER_FORM,
         SPELL_ICE_FORM,
+        SPELL_BLADE_HANDS
     },
     { "arrow q:12", "robe" },
     WCHOICE_NONE,
@@ -361,6 +368,7 @@ static const map<job_type, job_def> job_data =
         SPELL_POISONOUS_VAPOURS,
         SPELL_MEPHITIC_CLOUD,
         SPELL_OLGREBS_TOXIC_RADIANCE,
+        SPELL_VENOM_BOLT
     },
     { "robe" },
     WCHOICE_NONE,
