@@ -367,8 +367,8 @@ static const map<job_type, job_def> job_data =
         SPELL_STING,
         SPELL_POISONOUS_VAPOURS,
         SPELL_MEPHITIC_CLOUD,
-        SPELL_OLGREBS_TOXIC_RADIANCE,
-        SPELL_VENOM_BOLT
+        SPELL_IGNITE_POISON,
+        SPELL_OLGREBS_TOXIC_RADIANCE
     },
     { "robe" },
     WCHOICE_NONE,
