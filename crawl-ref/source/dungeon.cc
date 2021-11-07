@@ -5852,6 +5852,15 @@ static void _stock_shop_item(int j, shop_type shop_type_,
                     item.name(DESC_PLAIN, false, true).c_str());
 }
 
+static shop_type _random_shop()
+{
+    //except SHOP_EVOKABLES, SHOP_MERCENARY
+    return random_choose(SHOP_WEAPON, SHOP_ARMOUR, SHOP_WEAPON_ANTIQUE,
+        SHOP_ARMOUR_ANTIQUE, SHOP_GENERAL_ANTIQUE,
+        SHOP_JEWELLERY, SHOP_BOOK, SHOP_FOOD,
+        SHOP_DISTILLERY, SHOP_SCROLL, SHOP_GENERAL);
+}
+
 /**
  * Attempt to place a shop in a given location.
  *
@@ -5878,7 +5887,7 @@ void place_spec_shop(const coord_def& where, shop_spec &spec, int shop_level)
     shop.level = level_number * 2;
     shop.type = spec.sh_type;
     if (shop.type == SHOP_RANDOM)
-        shop.type = static_cast<shop_type>(random2(NUM_SHOPS));
+        shop.type = _random_shop();
     if (shop.type == SHOP_MERCENARY && x_chance_in_y(3,5))
         shop.type = static_cast<shop_type>(random2(NUM_SHOPS));
     shop.greed = _shop_greed(shop.type, level_number, spec.greed);
