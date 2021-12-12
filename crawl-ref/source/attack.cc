@@ -1231,10 +1231,6 @@ int attack::player_apply_final_multipliers(int damage)
     if (you.form == transformation::shadow)
         damage = div_rand_round(damage, 2);
     
-    // Hydra is too strong now.
-    if (you.has_hydra_multi_attack())
-        damage = div_rand_round(damage, 2);
-
     return damage;
 }
 
