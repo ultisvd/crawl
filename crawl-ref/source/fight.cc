@@ -276,7 +276,7 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit, bool simu, int
                 if (!defender->is_monster() || defender->as_monster()->get_client_id() != placeholder)
                     break;
 
-                melee_attack attk(&you, defender, 7, i, i);
+                melee_attack attk(&you, defender, 7, i, False);
                 if (i+1 != attack_num)
                     attk.quiet = true;
                 if (simu)
