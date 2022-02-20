@@ -2141,6 +2141,12 @@ static const mutation_def mut_data[] =
   {"The iron in your fist is starting to melt.", "", ""},
 },
 
+{ MUT_WORD_OF_POWER, 0, 1, mutflag::good, false, "word of power",
+{"Your divinity infuses more power into scrolls of holy word.", "", ""},
+{"Thy tongue art a sword of truth. (+holy word)", "", ""},
+{"Thy word is mundane and plain.", "", ""},
+},
+
 };
 
 static const mutation_category_def category_mut_data[] =

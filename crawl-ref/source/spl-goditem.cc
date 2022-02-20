@@ -1157,6 +1157,8 @@ void holy_word_monsters(coord_def where, int pow, holy_word_source_type source,
     {
         if (source == HOLY_WORD_ZIN)
             simple_monster_message(*mons, " is blasted by Zin's holy word!");
+        else if (you.has_mutation(MUT_WORD_OF_POWER))
+            simple_monster_message(*mons, " is blasted by Your holy word!");
         else
             simple_monster_message(*mons, " convulses!");
 
