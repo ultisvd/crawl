@@ -4178,7 +4178,13 @@ void read_scroll(item_def& scroll)
 
     case SCR_HOLY_WORD:
     {
-        holy_word(100, HOLY_WORD_SCROLL, you.pos(), false, &you);
+        if (you.has_mutation(MUT_WORD_OF_POWER)) {
+            holy_word(200, HOLY_WORD_SCROLL, you.pos(), false, &you);
+            flash_view(UA_PLAYER, WHITE);
+            scaled_delay(200);
+        }
+        else
+            holy_word(100, HOLY_WORD_SCROLL, you.pos(), false, &you);
 
         // This is always naughty, even if you didn't affect anyone.
         // Don't speak those foul holy words even in jest!
