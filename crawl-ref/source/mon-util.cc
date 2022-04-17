@@ -3744,6 +3744,7 @@ void mons_pacify(monster& mon, mon_attitude_type att, bool no_xp)
         case MONS_IRON_DRAGON:
         case MONS_GOLDEN_DRAGON:
         case MONS_SHADOW_DRAGON:
+	case MONS_STORM_DRAGON:
         {
             mprf("%s is become a blessed pearl dragon.",
                 mon.name(DESC_THE, false).c_str());
