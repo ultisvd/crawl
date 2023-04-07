@@ -364,6 +364,7 @@ hellwing MONS_HELLWING
 
 # type '5' demons
 crimson_imp MONS_CRIMSON_IMP
+cerulean_imp MONS_CERULEAN_IMP
 %rim 0
 quasit MONS_QUASIT
 %rim 1
