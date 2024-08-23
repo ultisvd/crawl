@@ -62,7 +62,7 @@ LUAFN(l_spells_level)
 LUAFN(l_spells_mana_cost)
 {
     spell_type spell = spell_by_name(luaL_checkstring(ls, 1), false);
-    PLUARET(number, spell_mana(spell));
+    PLUARET(number, spell_mana(spell, true));
 }
 
 /*** The current range of the spell.

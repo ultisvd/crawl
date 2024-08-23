@@ -473,6 +473,15 @@ int spell_mana(spell_type which_spell, bool real_spell)
     return level;
 }
 
+int spell_mana(spell_type which_spell)
+{
+    //exception case...
+    int add_ = pakellas_addtional_difficult(which_spell);
+
+    const int level = _seekspell(which_spell)->level + add_;
+
+    return level;  // round up
+}
 // applied in naughties (more difficult = higher level knowledge = worse)
 // and triggers for Sif acting (same reasoning as above, just good) {dlb}
 int spell_difficulty(spell_type which_spell)
