@@ -7,6 +7,7 @@ import os
 import sys
 import traceback
 import collections
+import collections.abc
 import re
 
 import yaml  # pip install pyyaml
@@ -17,7 +18,7 @@ def quote_or_nullptr(key, d):
     else:
         return 'nullptr'
 
-class Species(collections.MutableMapping):
+class Species(collections.abc.MutableMapping):
     """Parser for YAML definition files.
 
     If any YAML content is invalid, the relevant parser function below should
