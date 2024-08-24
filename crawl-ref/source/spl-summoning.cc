@@ -1276,7 +1276,7 @@ spret cast_summon_guardian_golem(int pow, god_type god, bool fail)
  */
 spret cast_call_imp(int pow, god_type god, bool fail)
 {
-    if (stop_summoning_prompt(MR_RES_POISON, M_FLIES))
+    if (!you.is_auto_spell() && otr_stop_summoning_prompt())
         return spret::abort;
 
     fail_check();
@@ -3744,7 +3744,7 @@ static const map<spell_type, summon_cap> summonsdata =
     { SPELL_SUMMON_HYDRA,               { 3, 2 } },
     { SPELL_SUMMON_MANA_VIPER,          { 2, 2 } },
     // Demons
-    { SPELL_CALL_IMP,                   { 3, 3 } },
+    { SPELL_CALL_IMP,                   { 2, 2 } },
     { SPELL_SUMMON_DEMON,               { 3, 2 } },
     { SPELL_SUMMON_GREATER_DEMON,       { 3, 2 } },
     // General monsters
